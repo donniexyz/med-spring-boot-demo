@@ -1,0 +1,6 @@
+# Tcn 001 - Repository, Service, Controller
+
+Endpoints:
+* `/accountOwner` AccountOwner process will be handled by @RepositoryRestResource [AccountOwnerRepository](..%2F..%2Fsrc%2Fmain%2Fjava%2Fcom%2Fgithub%2Fdonniexyz%2Fdemo%2Fsbnative%2Frepository%2FAccountOwnerRepository.java)
+* `/cashAccount` [CashAccount](..%2F..%2Fsrc%2Fmain%2Fjava%2Fcom%2Fgithub%2Fdonniexyz%2Fdemo%2Fmed%2Fentity%2FCashAccount.java) process will be handled by [CashAccountController](..%2F..%2Fsrc%2Fmain%2Fjava%2Fcom%2Fgithub%2Fdonniexyz%2Fdemo%2Fsbnative%2Fcontroller%2FCashAccountController.java)
+* `/accountTransaction` [AccountTransaction](..%2F..%2Fsrc%2Fmain%2Fjava%2Fcom%2Fgithub%2Fdonniexyz%2Fdemo%2Fsbnative%2Fentity%2FAccountTransaction.java) process will be handled by [AccountTransactionService](..%2F..%2Fsrc%2Fmain%2Fjava%2Fcom%2Fgithub%2Fdonniexyz%2Fdemo%2Fsbnative%2Fservice%2FAccountTransactionService.java) and [AccountTransactionController](..%2F..%2Fsrc%2Fmain%2Fjava%2Fcom%2Fgithub%2Fdonniexyz%2Fdemo%2Fmed%2Fcontroller%2FAccountTransactionController.java)
