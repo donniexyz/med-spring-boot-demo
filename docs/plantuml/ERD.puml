@@ -1,0 +1,48 @@
+@startuml
+entity AccountHistory {
+- Long id
+- String transactionType
+- BigDecimal balance
+- LocalDateTime transactionDate
+- String description
+- CashAccount account
++ AccountHistory copy()
+}
+
+
+entity CashAccount {
+- Long id
+- String title
+- BigDecimal balance
+- LocalDateTime lastTransactionDate
+- List<AccountHistory> accountHistories
+- AccountOwner accountOwner
++ CashAccount copy()
+}
+
+
+entity AccountOwner {
+- Long id
+- String firstName
+- String lastName
+- String email
+- String phoneNumber
++ AccountOwner copy()
+}
+
+
+entity AccountTransaction {
+- Long id
+- BigDecimal transactionAmount
+- String transactionType
+- LocalDateTime transactionDate
+- CashAccount fromAccount
+- CashAccount toAccount
++ AccountTransaction copy()
+}
+
+AccountOwner ||..o{ CashAccount
+AccountTransaction }o..|| CashAccount
+CashAccount ||..o{ AccountHistory
+
+@enduml
