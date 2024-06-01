@@ -25,6 +25,7 @@ public class CashAccount {
     private String title;
     private BigDecimal balance;
     private LocalDateTime lastTransactionDate;
+    private String notes;
 
     @OneToMany(mappedBy = "account")
     @JsonManagedReference
@@ -33,10 +34,16 @@ public class CashAccount {
     private List<AccountHistory> accountHistories;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "owner_id")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private AccountOwner accountOwner;
+
+    @ManyToOne
+    @JoinColumn(name = "type_code")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private AccountType accountType;
 
     // ------------------------------------------------------
 

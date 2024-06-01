@@ -23,6 +23,11 @@ public class AccountTransaction {
     private BigDecimal transactionAmount;
     private String transactionType; // e.g., "Deposit," "Withdrawal"
     private LocalDateTime transactionDate;
+    private String notes;
+
+    @ManyToOne
+    @JoinColumn(name = "type_code")
+    private AccountTransactionType type;
 
     @ManyToOne
     @JoinColumn(name = "from_account_id")
