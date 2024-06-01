@@ -29,6 +29,1139 @@
 			]
 		},
 		{
+			"name": "HATEOAS",
+			"item": [
+				{
+					"name": "create AccountOwnerType",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeCode\": \"CORP\",\r\n    \"name\": \"Corporate customer\",\r\n    \"notes\": \"Corporate or organization customer\",\r\n    \"individualOrGroup\": \"I\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountOwnerTypes",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountOwnerTypes"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "create AccountOwnerType CORP",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"CORP\",\r\n    \"name\": \"Corporate customer\",\r\n    \"notes\": \"Corporate or organization customer\",\r\n    \"individualOrGroup\": \"I\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountOwnerTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountOwnerTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountOwnerTypes/CORP"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 11:58:16 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Corporate customer\",\n    \"notes\": \"Corporate or organization customer\",\n    \"self\": null,\n    \"individualOrGroup\": \"INDIVIDUAL\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountOwnerTypes/CORP\"\n        },\n        \"accountOwnerType\": {\n            \"href\": \"http://127.0.0.1:12080/accountOwnerTypes/CORP\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountOwnerType STAFF",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"STAFF\",\r\n    \"name\": \"Staffs of the bank\",\r\n    \"notes\": \"Staffs might entitled to special rates, transaction fees discount, etc\",\r\n    \"individualOrGroup\": \"I\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountOwnerTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountOwnerTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountOwnerTypes/STAFF"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 11:56:04 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Staffs of the bank\",\n    \"notes\": \"Staffs might entitled to special rates, transaction fees discount, etc\",\n    \"self\": null,\n    \"individualOrGroup\": \"INDIVIDUAL\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountOwnerTypes/STAFF\"\n        },\n        \"accountOwnerType\": {\n            \"href\": \"http://127.0.0.1:12080/accountOwnerTypes/STAFF\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountOwnerType INDI",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"INDI\",\r\n    \"name\": \"Individual customer\",\r\n    \"notes\": \"Myriads of individual customer\",\r\n    \"individualOrGroup\": \"I\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountOwnerTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountOwnerTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountOwnerTypes/INDI"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 11:57:42 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Individual customer\",\n    \"notes\": \"Myriads of individual customer\",\n    \"self\": null,\n    \"individualOrGroup\": \"INDIVIDUAL\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountOwnerTypes/INDI\"\n        },\n        \"accountOwnerType\": {\n            \"href\": \"http://127.0.0.1:12080/accountOwnerTypes/INDI\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountOwnerType BANK_SELF",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"BANK_SELF\",\r\n    \"name\": \"The Finance Institution\",\r\n    \"notes\": \"This is the bank itself\",\r\n    \"self\": true,\r\n    \"individualOrGroup\": \"G\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountOwnerTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountOwnerTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountOwnerTypes/BANK_SELF"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 11:53:10 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"The Finance Institution\",\n    \"notes\": \"This is the bank itself\",\n    \"self\": true,\n    \"individualOrGroup\": \"GROUP\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountOwnerTypes/BANK_SELF\"\n        },\n        \"accountOwnerType\": {\n            \"href\": \"http://127.0.0.1:12080/accountOwnerTypes/BANK_SELF\"\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "create AccountType",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeCode\": \"INTERNAL_CR\",\r\n    \"name\": \"Internal Credit Accounts\",\r\n    \"balanceSheetEntry\": \"A\",\r\n    \"notes\": \"Assets account for internal use only\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountTypes",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountTypes"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "create AccountType-DRAWER",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"DRAWERS\",\r\n    \"name\": \"Physical Drawer\",\r\n    \"balanceSheetEntry\": \"ASSETS\",\r\n    \"minimumBalance\": 0,\r\n    \"notes\": \"Physical Drawer at Bank Branch\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTypes/DRAWERS"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:35:41 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Physical Drawer\",\n    \"balanceSheetEntry\": \"A\",\n    \"minimumBalance\": 0,\n    \"notes\": \"Physical Drawer at Bank Branch\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/DRAWERS\"\n        },\n        \"accountType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/DRAWERS\"\n        },\n        \"applicableToTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/DRAWERS/applicableToTransactionTypes\"\n        },\n        \"applicableFromTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/DRAWERS/applicableFromTransactionTypes\"\n        },\n        \"applicableForAccountOwnerTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/DRAWERS/applicableForAccountOwnerTypes\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountType-CLEARING",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"CLEARING\",\r\n    \"name\": \"Clearing Accounts\",\r\n    \"balanceSheetEntry\": \"ASSETS\",\r\n    \"notes\": \"to be used for incoming/outgoing transfer\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTypes/CLEARING"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:36:59 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Clearing Accounts\",\n    \"balanceSheetEntry\": \"A\",\n    \"minimumBalance\": null,\n    \"notes\": \"to be used for incoming/outgoing transfer\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/CLEARING\"\n        },\n        \"accountType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/CLEARING\"\n        },\n        \"applicableToTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/CLEARING/applicableToTransactionTypes\"\n        },\n        \"applicableFromTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/CLEARING/applicableFromTransactionTypes\"\n        },\n        \"applicableForAccountOwnerTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/CLEARING/applicableForAccountOwnerTypes\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountType-INTERNAL_DR",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"INTERNAL_DR\",\r\n    \"name\": \"Internal Debit Accounts\",\r\n    \"balanceSheetEntry\": \"L\",\r\n    \"notes\": \"Liability account for internal use only\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTypes/INTERNAL_DR"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:38:05 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Internal Debit Accounts\",\n    \"balanceSheetEntry\": \"L\",\n    \"minimumBalance\": null,\n    \"notes\": \"Liability account for internal use only\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_DR\"\n        },\n        \"accountType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_DR\"\n        },\n        \"applicableToTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_DR/applicableToTransactionTypes\"\n        },\n        \"applicableFromTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_DR/applicableFromTransactionTypes\"\n        },\n        \"applicableForAccountOwnerTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_DR/applicableForAccountOwnerTypes\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountType-SAVING",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"SAVING\",\r\n    \"name\": \"Saving Account\",\r\n    \"balanceSheetEntry\": \"LIABILITIES\",\r\n    \"minimumBalance\": 0,\r\n    \"notes\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTypes/SAVING"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:34:15 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Saving Account\",\n    \"balanceSheetEntry\": \"L\",\n    \"minimumBalance\": 0,\n    \"notes\": \"\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/SAVING\"\n        },\n        \"accountType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/SAVING\"\n        },\n        \"applicableToTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/SAVING/applicableToTransactionTypes\"\n        },\n        \"applicableFromTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/SAVING/applicableFromTransactionTypes\"\n        },\n        \"applicableForAccountOwnerTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/SAVING/applicableForAccountOwnerTypes\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountType-INTERNAL_CR",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"INTERNAL_CR\",\r\n    \"name\": \"Internal Credit Accounts\",\r\n    \"balanceSheetEntry\": \"A\",\r\n    \"notes\": \"Assets account for internal use only\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTypes/INTERNAL_CR"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:38:38 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Internal Credit Accounts\",\n    \"balanceSheetEntry\": \"A\",\n    \"minimumBalance\": null,\n    \"notes\": \"Assets account for internal use only\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_CR\"\n        },\n        \"accountType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_CR\"\n        },\n        \"applicableToTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_CR/applicableToTransactionTypes\"\n        },\n        \"applicableFromTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_CR/applicableFromTransactionTypes\"\n        },\n        \"applicableForAccountOwnerTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_CR/applicableForAccountOwnerTypes\"\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "create AccountTransactionType",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeCode\": \"ADJUSTMENT_CR\",\r\n    \"name\": \"Adjustment credit transaction\",\r\n    \"notes\": \"Only for internal use only. Requires C Level and/or Finance Dept. approval.\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountTransactionTypes",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountTransactionTypes"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "create AccountTransactionType-INCOMING",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"INCOMING\",\r\n    \"name\": \"Incoming transfer\",\r\n    \"notes\": \"to be used for incoming transfer from clearing to customer account\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTransactionTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTransactionTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTransactionTypes/INCOMING"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:42:07 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Incoming transfer\",\n    \"notes\": \"to be used for incoming transfer from clearing to customer account\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/INCOMING\"\n        },\n        \"accountTransactionType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/INCOMING\"\n        },\n        \"applicableToAccountTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/INCOMING/applicableToAccountTypes\"\n        },\n        \"applicableFromAccountTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/INCOMING/applicableFromAccountTypes\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountTransactionType-OUTGOING",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"OUTGOING\",\r\n    \"name\": \"Outgoing transfer\",\r\n    \"notes\": \"to be used for outgoing transfer from customer account to clearing\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTransactionTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTransactionTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTransactionTypes/OUTGOING"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:44:27 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Outgoing transfer\",\n    \"notes\": \"to be used for outgoing transfer from customer account to clearing\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/OUTGOING\"\n        },\n        \"accountTransactionType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/OUTGOING\"\n        },\n        \"applicableToAccountTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/OUTGOING/applicableToAccountTypes\"\n        },\n        \"applicableFromAccountTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/OUTGOING/applicableFromAccountTypes\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountTransactionType-INTERNAL",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"INTERNAL\",\r\n    \"name\": \"Bank internal transfer\",\r\n    \"notes\": \"to be used for internal bank customer to customer transaction\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTransactionTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTransactionTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTransactionTypes/INTERNAL"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:41:29 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Bank internal transfer\",\n    \"notes\": \"to be used for internal bank customer to customer transaction\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/INTERNAL\"\n        },\n        \"accountTransactionType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/INTERNAL\"\n        },\n        \"applicableToAccountTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/INTERNAL/applicableToAccountTypes\"\n        },\n        \"applicableFromAccountTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/INTERNAL/applicableFromAccountTypes\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountTransactionType-ADJUSTMENT_CR",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"ADJUSTMENT_CR\",\r\n    \"name\": \"Adjustment credit transaction\",\r\n    \"notes\": \"Only for internal use only. Requires C Level and/or Finance Dept. approval.\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTransactionTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTransactionTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTransactionTypes/ADJUSTMENT_CR"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:43:57 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Adjustment credit transaction\",\n    \"notes\": \"Only for internal use only. Requires C Level and/or Finance Dept. approval.\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/ADJUSTMENT_CR\"\n        },\n        \"accountTransactionType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/ADJUSTMENT_CR\"\n        },\n        \"applicableToAccountTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/ADJUSTMENT_CR/applicableToAccountTypes\"\n        },\n        \"applicableFromAccountTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/ADJUSTMENT_CR/applicableFromAccountTypes\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountTransactionType-ADJUSTMENT_DR",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"ADJUSTMENT_DR\",\r\n    \"name\": \"Adjustment debit transaction\",\r\n    \"notes\": \"Only for internal use only. Requires C Level and/or Finance Dept. approval.\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTransactionTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTransactionTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTransactionTypes/ADJUSTMENT_DR"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:42:55 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Adjustment debit transaction\",\n    \"notes\": \"Only for internal use only. Requires C Level and/or Finance Dept. approval.\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/ADJUSTMENT_DR\"\n        },\n        \"accountTransactionType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/ADJUSTMENT_DR\"\n        },\n        \"applicableToAccountTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/ADJUSTMENT_DR/applicableToAccountTypes\"\n        },\n        \"applicableFromAccountTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/ADJUSTMENT_DR/applicableFromAccountTypes\"\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "create AccountOwner - Obsolete",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"ACME BANK\",\r\n    \"lastName\": \"\",\r\n    \"email\": \"corsec@acme.com\",\r\n    \"phoneNumber\": \"+00100010001\",\r\n    \"notes\": \"The Bank itself\",\r\n    \"type\": {\r\n        \"typeCode\": \"BANK_SELF\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountOwners",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountOwners"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "create AccountOwner",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"firstName\",\r\n    \"lastName\": \"lastName\",\r\n    \"email\": \"email@email.com\",\r\n    \"phoneNumber\": \"+00100010001\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountOwner",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountOwner"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountOwner/1"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 30 May 2024 13:35:30 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"firstName\": \"firstName\",\n    \"lastName\": \"lastName\",\n    \"email\": \"email@email.com\",\n    \"phoneNumber\": \"+00100010001\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountOwner/1\"\n        },\n        \"accountOwner\": {\n            \"href\": \"http://127.0.0.1:12080/accountOwner/1\"\n        }\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
 			"name": "get Account",
 			"request": {
 				"method": "GET",
@@ -45,6 +1178,85 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "create AccountOwner",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 0,\r\n    \"firstName\": \"ACME BANK\",\r\n    \"lastName\": \"\",\r\n    \"email\": \"corsec@acme.com\",\r\n    \"phoneNumber\": \"+00100010001\",\r\n    \"notes\": \"The Bank itself\",\r\n    \"type\": {\r\n        \"typeCode\": \"BANK_SELF\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{med_server}}/accountOwner",
+					"host": [
+						"{{med_server}}"
+					],
+					"path": [
+						"accountOwner"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "create AccountOwner",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 0,\r\n    \"firstName\": \"ACME BANK\",\r\n    \"lastName\": \"\",\r\n    \"email\": \"corsec@acme.com\",\r\n    \"phoneNumber\": \"+00100010001\",\r\n    \"notes\": \"The Bank itself\",\r\n    \"type\": {\r\n        \"typeCode\": \"BANK_SELF\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountOwner",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountOwner"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 01 Jun 2024 13:26:11 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"firstName\": \"ACME BANK\",\n    \"lastName\": \"\",\n    \"email\": \"corsec@acme.com\",\n    \"phoneNumber\": \"+00100010001\",\n    \"notes\": \"The Bank itself\",\n    \"type\": {\n        \"typeCode\": \"BANK_SELF\",\n        \"name\": \"The Finance Institution\",\n        \"notes\": \"This is the bank itself\",\n        \"self\": true,\n        \"individualOrGroup\": \"G\"\n    }\n}"
+				}
+			]
 		},
 		{
 			"name": "get /",
@@ -103,7 +1315,7 @@
 						},
 						{
 							"key": "Date",
-							"value": "Thu, 30 May 2024 13:37:15 GMT"
+							"value": "Sat, 01 Jun 2024 11:50:20 GMT"
 						},
 						{
 							"key": "Keep-Alive",
@@ -115,61 +1327,25 @@
 						}
 					],
 					"cookie": [],
-					"body": "{\n    \"_links\": {\n        \"accountHistories\": {\n            \"href\": \"http://127.0.0.1:12080/accountHistories{?page,size,sort}\",\n            \"templated\": true\n        },\n        \"accountTransactions\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactions{?page,size,sort}\",\n            \"templated\": true\n        },\n        \"cashAccounts\": {\n            \"href\": \"http://127.0.0.1:12080/cashAccounts{?page,size,sort}\",\n            \"templated\": true\n        },\n        \"accountOwners\": {\n            \"href\": \"http://127.0.0.1:12080/accountOwner{?page,size,sort}\",\n            \"templated\": true\n        },\n        \"profile\": {\n            \"href\": \"http://127.0.0.1:12080/profile\"\n        }\n    }\n}"
-				}
-			]
-		},
-		{
-			"name": "create AccountOwner",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"firstName\": \"firstName\",\r\n    \"lastName\": \"lastName\",\r\n    \"email\": \"email@email.com\",\r\n    \"phoneNumber\": \"+00100010001\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					"body": "{\n    \"_links\": {\n        \"accountOwnerTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountOwnerTypes{?page,size,sort}\",\n            \"templated\": true\n        },\n        \"cashAccounts\": {\n            \"href\": \"http://127.0.0.1:12080/cashAccounts{?page,size,sort}\",\n            \"templated\": true\n        },\n        \"accountTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes{?page,size,sort}\",\n            \"templated\": true\n        },\n        \"accountHistories\": {\n            \"href\": \"http://127.0.0.1:12080/accountHistories{?page,size,sort}\",\n            \"templated\": true\n        },\n        \"accountOwners\": {\n            \"href\": \"http://127.0.0.1:12080/accountOwner{?page,size,sort}\",\n            \"templated\": true\n        },\n        \"accountTransactions\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactions{?page,size,sort}\",\n            \"templated\": true\n        },\n        \"accountTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes{?page,size,sort}\",\n            \"templated\": true\n        },\n        \"profile\": {\n            \"href\": \"http://127.0.0.1:12080/profile\"\n        }\n    }\n}"
 				},
-				"url": {
-					"raw": "{{med_server}}/accountOwner",
-					"host": [
-						"{{med_server}}"
-					],
-					"path": [
-						"accountOwner"
-					]
-				}
-			},
-			"response": [
 				{
-					"name": "create AccountOwner",
+					"name": "get /",
 					"originalRequest": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"firstName\",\r\n    \"lastName\": \"lastName\",\r\n    \"email\": \"email@email.com\",\r\n    \"phoneNumber\": \"+00100010001\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{med_server}}/accountOwner",
+							"raw": "{{med_server}}/",
 							"host": [
 								"{{med_server}}"
 							],
 							"path": [
-								"accountOwner"
+								""
 							]
 						}
 					},
-					"status": "Created",
-					"code": 201,
+					"status": "OK",
+					"code": 200,
 					"_postman_previewlanguage": "json",
 					"header": [
 						{
@@ -185,10 +1361,6 @@
 							"value": "Access-Control-Request-Headers"
 						},
 						{
-							"key": "Location",
-							"value": "http://127.0.0.1:12080/accountOwner/1"
-						},
-						{
 							"key": "Content-Type",
 							"value": "application/hal+json"
 						},
@@ -198,7 +1370,7 @@
 						},
 						{
 							"key": "Date",
-							"value": "Thu, 30 May 2024 13:35:30 GMT"
+							"value": "Thu, 30 May 2024 13:37:15 GMT"
 						},
 						{
 							"key": "Keep-Alive",
@@ -210,7 +1382,7 @@
 						}
 					],
 					"cookie": [],
-					"body": "{\n    \"firstName\": \"firstName\",\n    \"lastName\": \"lastName\",\n    \"email\": \"email@email.com\",\n    \"phoneNumber\": \"+00100010001\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountOwner/1\"\n        },\n        \"accountOwner\": {\n            \"href\": \"http://127.0.0.1:12080/accountOwner/1\"\n        }\n    }\n}"
+					"body": "{\n    \"_links\": {\n        \"accountHistories\": {\n            \"href\": \"http://127.0.0.1:12080/accountHistories{?page,size,sort}\",\n            \"templated\": true\n        },\n        \"accountTransactions\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactions{?page,size,sort}\",\n            \"templated\": true\n        },\n        \"cashAccounts\": {\n            \"href\": \"http://127.0.0.1:12080/cashAccounts{?page,size,sort}\",\n            \"templated\": true\n        },\n        \"accountOwners\": {\n            \"href\": \"http://127.0.0.1:12080/accountOwner{?page,size,sort}\",\n            \"templated\": true\n        },\n        \"profile\": {\n            \"href\": \"http://127.0.0.1:12080/profile\"\n        }\n    }\n}"
 				}
 			]
 		}
