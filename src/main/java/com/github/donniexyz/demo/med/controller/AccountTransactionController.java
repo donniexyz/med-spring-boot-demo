@@ -3,6 +3,7 @@ package com.github.donniexyz.demo.med.controller;
 import com.github.donniexyz.demo.med.entity.AccountTransaction;
 import com.github.donniexyz.demo.med.service.AccountTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,7 +18,7 @@ public class AccountTransactionController {
         return accountTransactionService.get(id);
     }
 
-    @PostMapping("/")
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public AccountTransaction create(@RequestBody AccountTransaction accountTransaction) {
         return accountTransactionService.create(accountTransaction);
     }

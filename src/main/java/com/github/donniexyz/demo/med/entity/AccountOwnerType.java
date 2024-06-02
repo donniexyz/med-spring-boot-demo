@@ -1,11 +1,15 @@
 package com.github.donniexyz.demo.med.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.enums.IndividualGroupEnum;
+import com.github.donniexyz.demo.med.lib.LazyFieldsFilter;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import lombok.*;
+import lombok.experimental.Accessors;
 import lombok.experimental.WithBy;
 
 /**
@@ -24,6 +28,8 @@ import lombok.experimental.WithBy;
 @AllArgsConstructor
 @Data
 @Entity
+@Accessors(chain = true)
+@JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
 public class AccountOwnerType {
     @Id
     private String typeCode;
@@ -37,4 +43,16 @@ public class AccountOwnerType {
 
     @Enumerated(EnumType.STRING)
     private IndividualGroupEnum individualOrGroup;
+
+    // ----------------------------------------------------------------------------------
+
+    @JsonIgnore
+    public AccountOwnerType copy() {
+        return copy(null);
+    }
+
+    @JsonIgnore
+    public AccountOwnerType copy(Boolean cascade) {
+        return this.withTypeCode(this.typeCode);
+    }
 }

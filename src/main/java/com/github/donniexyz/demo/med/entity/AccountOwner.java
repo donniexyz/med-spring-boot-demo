@@ -1,8 +1,11 @@
 package com.github.donniexyz.demo.med.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.github.donniexyz.demo.med.lib.LazyFieldsFilter;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.Accessors;
 import lombok.experimental.WithBy;
 
 /**
@@ -21,6 +24,8 @@ import lombok.experimental.WithBy;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Accessors(chain = true)
+@JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
 public class AccountOwner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,6 +47,29 @@ public class AccountOwner {
 
     @JsonIgnore
     public AccountOwner copy() {
-        return this.withId(this.id);
+        return copy(null);
+    }
+
+    @JsonIgnore
+    public AccountOwner copy(Boolean cascade) {
+        return this.withType(null == type || Boolean.FALSE.equals(cascade) ? null : type.copy(false));
+    }
+
+    @JsonIgnore
+    public void copyFrom(AccountOwner setValuesFromThisInstance, boolean nonNullOnly) {
+        if (!nonNullOnly || null != setValuesFromThisInstance.id)
+            this.id = setValuesFromThisInstance.id;
+        if (!nonNullOnly || null != setValuesFromThisInstance.firstName)
+            this.firstName = setValuesFromThisInstance.firstName;
+        if (!nonNullOnly || null != setValuesFromThisInstance.lastName)
+            this.lastName = setValuesFromThisInstance.lastName;
+        if (!nonNullOnly || null != setValuesFromThisInstance.email)
+            this.email = setValuesFromThisInstance.email;
+        if (!nonNullOnly || null != setValuesFromThisInstance.phoneNumber)
+            this.phoneNumber = setValuesFromThisInstance.phoneNumber;
+        if (!nonNullOnly || null != setValuesFromThisInstance.notes)
+            this.notes = setValuesFromThisInstance.notes;
+        if (!nonNullOnly || null != setValuesFromThisInstance.type)
+            this.type = setValuesFromThisInstance.type;
     }
 }
