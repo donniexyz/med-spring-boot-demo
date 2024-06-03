@@ -2,11 +2,8 @@ package com.github.donniexyz.demo.med.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.github.donniexyz.demo.med.lib.LazyFieldsFilter;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import com.github.donniexyz.demo.med.lib.fieldsfilter.NonNullLazyFieldsFilter;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.WithBy;
@@ -32,19 +29,21 @@ import java.util.stream.Collectors;
 @Data
 @Entity
 @Accessors(chain = true)
-@JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
+@JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonNullLazyFieldsFilter.class)
 public class AccountTransactionType {
     @Id
     private String typeCode;
     private String name;
     private String notes;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable
+    @EqualsAndHashCode.Exclude
     private Set<AccountType> applicableFromAccountTypes;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable
+    @EqualsAndHashCode.Exclude
     private Set<AccountType> applicableToAccountTypes;
 
     // -------------------------------------------------------------------------------------------------
@@ -59,5 +58,20 @@ public class AccountTransactionType {
         return this
                 .withApplicableFromAccountTypes(null == applicableFromAccountTypes || !Boolean.TRUE.equals(cascade) ? null : applicableFromAccountTypes.stream().map(fromAccountType -> fromAccountType.copy(false)).collect(Collectors.toSet()))
                 .setApplicableToAccountTypes(null == applicableToAccountTypes || !Boolean.TRUE.equals(cascade) ? null : applicableToAccountTypes.stream().map(toAccountType -> toAccountType.copy(false)).collect(Collectors.toSet()));
+    }
+
+    @JsonIgnore
+    public AccountTransactionType copyFrom(AccountTransactionType setValuesFromThisInstance, boolean nonNullOnly) {
+        if (!nonNullOnly || null != setValuesFromThisInstance.typeCode)
+            this.typeCode = setValuesFromThisInstance.typeCode;
+        if (!nonNullOnly || null != setValuesFromThisInstance.name)
+            this.name = setValuesFromThisInstance.name;
+        if (!nonNullOnly || null != setValuesFromThisInstance.notes)
+            this.notes = setValuesFromThisInstance.notes;
+        if (!nonNullOnly || null != setValuesFromThisInstance.applicableFromAccountTypes)
+            this.applicableFromAccountTypes = setValuesFromThisInstance.applicableFromAccountTypes;
+        if (!nonNullOnly || null != setValuesFromThisInstance.applicableToAccountTypes)
+            this.applicableToAccountTypes = setValuesFromThisInstance.applicableToAccountTypes;
+        return this;
     }
 }

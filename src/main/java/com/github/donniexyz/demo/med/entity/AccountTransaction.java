@@ -1,9 +1,8 @@
 package com.github.donniexyz.demo.med.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.github.donniexyz.demo.med.lib.LazyFieldsFilter;
+import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;

@@ -1,4 +1,4 @@
-package com.github.donniexyz.demo.med.lib;
+package com.github.donniexyz.demo.med.lib.fieldsfilter;
 
 import jakarta.persistence.Persistence;
 

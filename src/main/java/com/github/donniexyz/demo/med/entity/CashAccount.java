@@ -3,7 +3,7 @@ package com.github.donniexyz.demo.med.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.github.donniexyz.demo.med.lib.LazyFieldsFilter;
+import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -64,7 +64,7 @@ public class CashAccount {
     }
 
     @JsonIgnore
-    public void copyFrom(CashAccount setValuesFromThisInstance, boolean nonNullOnly) {
+    public CashAccount copyFrom(CashAccount setValuesFromThisInstance, boolean nonNullOnly) {
         if (!nonNullOnly || null != setValuesFromThisInstance.id)
             this.id = setValuesFromThisInstance.id;
         if (!nonNullOnly || null != setValuesFromThisInstance.title)
@@ -81,5 +81,6 @@ public class CashAccount {
             this.accountOwner = setValuesFromThisInstance.accountOwner;
         if (!nonNullOnly || null != setValuesFromThisInstance.accountType)
             this.accountType = setValuesFromThisInstance.accountType;
+        return this;
     }
 }

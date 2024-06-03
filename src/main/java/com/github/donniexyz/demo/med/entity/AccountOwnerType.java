@@ -3,7 +3,7 @@ package com.github.donniexyz.demo.med.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.enums.IndividualGroupEnum;
-import com.github.donniexyz.demo.med.lib.LazyFieldsFilter;
+import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
