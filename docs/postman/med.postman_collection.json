@@ -704,7 +704,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"typeCode\": \"ADJUSTMENT_CR\",\r\n    \"name\": \"Adjustment credit transaction\",\r\n    \"notes\": \"Only for internal use only. Requires C Level and/or Finance Dept. approval.\"\r\n}",
+							"raw": "{\r\n    \"typeCode\": \"REDUCE_CLEARING\",\r\n    \"name\": \"Credit/reduce clearing accounts\",\r\n    \"notes\": \"To be used to decrease balance of clearing accounts\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -857,6 +857,74 @@
 							],
 							"cookie": [],
 							"body": "{\n    \"name\": \"Outgoing transfer\",\n    \"notes\": \"to be used for outgoing transfer from customer account to clearing\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/OUTGOING\"\n        },\n        \"accountTransactionType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/OUTGOING\"\n        },\n        \"applicableToAccountTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/OUTGOING/applicableToAccountTypes\"\n        },\n        \"applicableFromAccountTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/OUTGOING/applicableFromAccountTypes\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountTransactionType",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"REDUCE_CLEARING\",\r\n    \"name\": \"Credit/reduce clearing accounts\",\r\n    \"notes\": \"To be used to decrease balance of clearing accounts\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTransactionTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTransactionTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTransactionTypes/REDUCE_CLEARING"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 02 Jun 2024 12:15:29 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Credit/reduce clearing accounts\",\n    \"notes\": \"To be used to decrease balance of clearing accounts\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/REDUCE_CLEARING\"\n        },\n        \"accountTransactionType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/REDUCE_CLEARING\"\n        },\n        \"applicableFromAccountTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/REDUCE_CLEARING/applicableFromAccountTypes\"\n        },\n        \"applicableToAccountTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/REDUCE_CLEARING/applicableToAccountTypes\"\n        }\n    }\n}"
 						},
 						{
 							"name": "create AccountTransactionType-INTERNAL",
@@ -1065,6 +1133,57 @@
 					]
 				},
 				{
+					"name": "get AccountTransactionTypes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{med_server}}/accountTransactionTypes",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountTransactionTypes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "accountTransactionTypes applicableToAccountTypes",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\r\n    \"typeCode\": \"SAVING\"\r\n}]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountTransactionTypes/:trxType/applicableToAccountTypes",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountTransactionTypes",
+								":trxType",
+								"applicableToAccountTypes"
+							],
+							"variable": [
+								{
+									"key": "trxType",
+									"value": "INTERNAL"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "create AccountOwner - Obsolete",
 					"request": {
 						"method": "POST",
@@ -1162,6 +1281,584 @@
 			]
 		},
 		{
+			"name": "transactions",
+			"item": [
+				{
+					"name": "INCREASE_CLEARING",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"transactionAmount\": 1000000,\r\n    \"label\": \"Increase clearing account by 1mil\",\r\n    \"notes\": \"Increase clearing account by 1mil\",\r\n    \"fromAccount\": {\r\n        \"id\": 12\r\n    },\r\n    \"toAccount\": {\r\n        \"id\": 13\r\n    },\r\n    \"type\": {\r\n        \"typeCode\": \"INCREASE_CLEARING\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountTransaction",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountTransaction"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "INCREASE_CLEARING",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"transactionAmount\": 1000000,\r\n    \"label\": \"Increase clearing account by 1mil\",\r\n    \"notes\": \"Increase clearing account by 1mil\",\r\n    \"fromAccount\": {\r\n        \"id\": 12\r\n    },\r\n    \"toAccount\": {\r\n        \"id\": 13\r\n    },\r\n    \"type\": {\r\n        \"typeCode\": \"INCREASE_CLEARING\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTransaction",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTransaction"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 03 Jun 2024 10:14:40 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 3,\n    \"transactionAmount\": 1000000,\n    \"label\": \"Increase clearing account by 1mil\",\n    \"transactionDate\": \"2024-06-03T18:14:40.0898362\",\n    \"notes\": \"Increase clearing account by 1mil\",\n    \"type\": {\n        \"typeCode\": \"INCREASE_CLEARING\",\n        \"name\": \"Debit/increase clearing accounts\",\n        \"notes\": \"To be used to increase balance of clearing accounts\",\n        \"applicableFromAccountTypes\": [\n            {\n                \"typeCode\": \"INTERNAL_CR\",\n                \"name\": \"Internal Credit Accounts\",\n                \"balanceSheetEntry\": \"A\",\n                \"notes\": \"Assets account for internal use only\"\n            }\n        ],\n        \"applicableToAccountTypes\": [\n            {\n                \"typeCode\": \"CLEARING\",\n                \"name\": \"Clearing Accounts\",\n                \"balanceSheetEntry\": \"A\",\n                \"notes\": \"to be used for incoming/outgoing transfer\"\n            }\n        ]\n    },\n    \"fromAccount\": {\n        \"id\": 12,\n        \"title\": \"Bank Internal Cash Account Liabilities\",\n        \"balance\": -1000000,\n        \"lastTransactionDate\": \"2024-06-03T18:14:40.0898362\",\n        \"notes\": \"Bank Internal Cash Account Liabilities - under Finance Dept\",\n        \"accountOwner\": {\n            \"id\": 0,\n            \"firstName\": \"ACME BANK\",\n            \"lastName\": \"\",\n            \"email\": \"corsec@acme.com\",\n            \"phoneNumber\": \"+00100010001\",\n            \"notes\": \"The Bank itself\",\n            \"type\": {\n                \"typeCode\": \"BANK_SELF\",\n                \"name\": \"The Finance Institution\",\n                \"notes\": \"This is the bank itself\",\n                \"self\": true,\n                \"individualOrGroup\": \"G\"\n            }\n        },\n        \"accountType\": {\n            \"typeCode\": \"INTERNAL_CR\",\n            \"name\": \"Internal Credit Accounts\",\n            \"balanceSheetEntry\": \"A\",\n            \"notes\": \"Assets account for internal use only\"\n        }\n    },\n    \"toAccount\": {\n        \"id\": 13,\n        \"title\": \"Bank Internal Clearing Account Nostro\",\n        \"balance\": 1000000,\n        \"lastTransactionDate\": \"2024-06-03T18:14:40.0898362\",\n        \"notes\": \"Bank Internal Clearing Account Nostro - under Finance Dept\",\n        \"accountOwner\": {\n            \"id\": 0,\n            \"firstName\": \"ACME BANK\",\n            \"lastName\": \"\",\n            \"email\": \"corsec@acme.com\",\n            \"phoneNumber\": \"+00100010001\",\n            \"notes\": \"The Bank itself\",\n            \"type\": {\n                \"typeCode\": \"BANK_SELF\",\n                \"name\": \"The Finance Institution\",\n                \"notes\": \"This is the bank itself\",\n                \"self\": true,\n                \"individualOrGroup\": \"G\"\n            }\n        },\n        \"accountType\": {\n            \"typeCode\": \"CLEARING\",\n            \"name\": \"Clearing Accounts\",\n            \"balanceSheetEntry\": \"A\",\n            \"notes\": \"to be used for incoming/outgoing transfer\"\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "INCOMING SKYBRIDGE 100k",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"transactionAmount\": 100000,\r\n    \"label\": \"Incoming transfer\",\r\n    \"notes\": \"Fund transfer for payment of Order #10003\",\r\n    \"fromAccount\": {\r\n        \"id\": 13\r\n    },\r\n    \"toAccount\": {\r\n        \"id\": 17\r\n    },\r\n    \"type\": {\r\n        \"typeCode\": \"INCOMING\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountTransaction",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountTransaction"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "INCOMING SKYBRIDGE 100k",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"transactionAmount\": 100000,\r\n    \"label\": \"Incoming transfer\",\r\n    \"notes\": \"Fund transfer for payment of Order #10003\",\r\n    \"fromAccount\": {\r\n        \"id\": 13\r\n    },\r\n    \"toAccount\": {\r\n        \"id\": 17\r\n    },\r\n    \"type\": {\r\n        \"typeCode\": \"INCOMING\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTransaction",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTransaction"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 03 Jun 2024 10:23:32 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 4,\n    \"transactionAmount\": 100000,\n    \"label\": \"Incoming transfer\",\n    \"transactionDate\": \"2024-06-03T18:23:32.0607371\",\n    \"notes\": \"Fund transfer for payment of Order #10003\",\n    \"type\": {\n        \"typeCode\": \"INCOMING\",\n        \"name\": \"Incoming transfer\",\n        \"notes\": \"to be used for incoming transfer from clearing to customer account\",\n        \"applicableFromAccountTypes\": [\n            {\n                \"typeCode\": \"CLEARING\",\n                \"name\": \"Clearing Accounts\",\n                \"balanceSheetEntry\": \"A\",\n                \"notes\": \"to be used for incoming/outgoing transfer\"\n            }\n        ],\n        \"applicableToAccountTypes\": [\n            {\n                \"typeCode\": \"SAVING\",\n                \"name\": \"Saving Account\",\n                \"balanceSheetEntry\": \"L\",\n                \"minimumBalance\": 0,\n                \"notes\": \"\"\n            }\n        ]\n    },\n    \"fromAccount\": {\n        \"id\": 13,\n        \"title\": \"Bank Internal Clearing Account Nostro\",\n        \"balance\": 900000,\n        \"lastTransactionDate\": \"2024-06-03T18:23:32.0607371\",\n        \"notes\": \"Bank Internal Clearing Account Nostro - under Finance Dept\",\n        \"accountOwner\": {\n            \"id\": 0,\n            \"firstName\": \"ACME BANK\",\n            \"lastName\": \"\",\n            \"email\": \"corsec@acme.com\",\n            \"phoneNumber\": \"+00100010001\",\n            \"notes\": \"The Bank itself\",\n            \"type\": {\n                \"typeCode\": \"BANK_SELF\",\n                \"name\": \"The Finance Institution\",\n                \"notes\": \"This is the bank itself\",\n                \"self\": true,\n                \"individualOrGroup\": \"G\"\n            }\n        },\n        \"accountType\": {\n            \"typeCode\": \"CLEARING\",\n            \"name\": \"Clearing Accounts\",\n            \"balanceSheetEntry\": \"A\",\n            \"notes\": \"to be used for incoming/outgoing transfer\"\n        }\n    },\n    \"toAccount\": {\n        \"id\": 17,\n        \"title\": \"Saving Account #3\",\n        \"balance\": 100000,\n        \"lastTransactionDate\": \"2024-06-03T18:23:32.0607371\",\n        \"notes\": \"Saving Account #3 - owned by SKYBRIDGE Corp\",\n        \"accountOwner\": {\n            \"id\": 4,\n            \"firstName\": \"SKYBRIDGE Corp\",\n            \"lastName\": \"\",\n            \"email\": \"cs@skybridge.com\",\n            \"phoneNumber\": \"+00100010004\",\n            \"notes\": \"A normal corporate customer\",\n            \"type\": {\n                \"typeCode\": \"CORP\",\n                \"name\": \"Corporate customer\",\n                \"notes\": \"Corporate or organization customer\",\n                \"self\": null,\n                \"individualOrGroup\": \"G\"\n            }\n        },\n        \"accountType\": {\n            \"typeCode\": \"SAVING\",\n            \"name\": \"Saving Account\",\n            \"balanceSheetEntry\": \"L\",\n            \"minimumBalance\": 0,\n            \"notes\": \"\"\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "INTERNAL - SKYBRIDGE to Mr Joe 10k",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"transactionAmount\": 10000,\r\n    \"label\": \"Salary Payment\",\r\n    \"notes\": \"SKYBRIDGE Salary payment, Jan 2024\",\r\n    \"fromAccount\": {\r\n        \"id\": 17\r\n    },\r\n    \"toAccount\": {\r\n        \"id\": 15\r\n    },\r\n    \"type\": {\r\n        \"typeCode\": \"INTERNAL\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountTransaction",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountTransaction"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "INTERNAL - SKYBRIDGE to Mr Joe 10k",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"transactionAmount\": 10000,\r\n    \"label\": \"Salary Payment\",\r\n    \"notes\": \"SKYBRIDGE Salary payment, Jan 2024\",\r\n    \"fromAccount\": {\r\n        \"id\": 17\r\n    },\r\n    \"toAccount\": {\r\n        \"id\": 15\r\n    },\r\n    \"type\": {\r\n        \"typeCode\": \"INTERNAL\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTransaction",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTransaction"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 03 Jun 2024 10:28:46 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 5,\n    \"transactionAmount\": 10000,\n    \"label\": \"Salary Payment\",\n    \"transactionDate\": \"2024-06-03T18:28:46.614966\",\n    \"notes\": \"SKYBRIDGE Salary payment, Jan 2024\",\n    \"type\": {\n        \"typeCode\": \"INTERNAL\",\n        \"name\": \"Bank internal transfer\",\n        \"notes\": \"to be used for internal bank customer to customer transaction\",\n        \"applicableFromAccountTypes\": [\n            {\n                \"typeCode\": \"SAVING\",\n                \"name\": \"Saving Account\",\n                \"balanceSheetEntry\": \"L\",\n                \"minimumBalance\": 0,\n                \"notes\": \"\"\n            }\n        ],\n        \"applicableToAccountTypes\": [\n            {\n                \"typeCode\": \"SAVING\",\n                \"name\": \"Saving Account\",\n                \"balanceSheetEntry\": \"L\",\n                \"minimumBalance\": 0,\n                \"notes\": \"\"\n            }\n        ]\n    },\n    \"fromAccount\": {\n        \"id\": 17,\n        \"title\": \"Saving Account #3\",\n        \"balance\": 90000,\n        \"lastTransactionDate\": \"2024-06-03T18:28:46.614966\",\n        \"notes\": \"Saving Account #3 - owned by SKYBRIDGE Corp\",\n        \"accountOwner\": {\n            \"id\": 4,\n            \"firstName\": \"SKYBRIDGE Corp\",\n            \"lastName\": \"\",\n            \"email\": \"cs@skybridge.com\",\n            \"phoneNumber\": \"+00100010004\",\n            \"notes\": \"A normal corporate customer\",\n            \"type\": {\n                \"typeCode\": \"CORP\",\n                \"name\": \"Corporate customer\",\n                \"notes\": \"Corporate or organization customer\",\n                \"self\": null,\n                \"individualOrGroup\": \"G\"\n            }\n        },\n        \"accountType\": {\n            \"typeCode\": \"SAVING\",\n            \"name\": \"Saving Account\",\n            \"balanceSheetEntry\": \"L\",\n            \"minimumBalance\": 0,\n            \"notes\": \"\"\n        }\n    },\n    \"toAccount\": {\n        \"id\": 15,\n        \"title\": \"Saving Account #1\",\n        \"balance\": 10000,\n        \"lastTransactionDate\": \"2024-06-03T18:28:46.614966\",\n        \"notes\": \"Saving Account #1 - owned by Mr Joe Luck S\",\n        \"accountOwner\": {\n            \"id\": 2,\n            \"firstName\": \"Mr Joe\",\n            \"lastName\": \"Luck S\",\n            \"email\": \"jl@acme.com\",\n            \"phoneNumber\": \"+00100010002\",\n            \"notes\": \"A bank's normal staff\",\n            \"type\": {\n                \"typeCode\": \"STAFF\",\n                \"name\": \"Staffs of the bank\",\n                \"notes\": \"Staffs might entitled to special rates, transaction fees discount, etc\",\n                \"self\": null,\n                \"individualOrGroup\": \"I\"\n            }\n        },\n        \"accountType\": {\n            \"typeCode\": \"SAVING\",\n            \"name\": \"Saving Account\",\n            \"balanceSheetEntry\": \"L\",\n            \"minimumBalance\": 0,\n            \"notes\": \"\"\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "INTERNAL - Mr Joe to Ms Jean 1k",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"transactionAmount\": 1000,\r\n    \"label\": \"Fund Transfer\",\r\n    \"notes\": \"Rental fees month Feb\",\r\n    \"fromAccount\": {\r\n        \"id\": 15\r\n    },\r\n    \"toAccount\": {\r\n        \"id\": 16\r\n    },\r\n    \"type\": {\r\n        \"typeCode\": \"INTERNAL\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountTransaction",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountTransaction"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "INTERNAL - Mr Joe to Ms Jean 1k",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"transactionAmount\": 1000,\r\n    \"label\": \"Fund Transfer\",\r\n    \"notes\": \"Rental fees month Feb\",\r\n    \"fromAccount\": {\r\n        \"id\": 15\r\n    },\r\n    \"toAccount\": {\r\n        \"id\": 16\r\n    },\r\n    \"type\": {\r\n        \"typeCode\": \"INTERNAL\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTransaction",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTransaction"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 03 Jun 2024 10:40:10 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 6,\n    \"transactionAmount\": 1000,\n    \"label\": \"Fund Transfer\",\n    \"transactionDate\": \"2024-06-03T18:40:10.1228968\",\n    \"notes\": \"Rental fees month Feb\",\n    \"type\": {\n        \"typeCode\": \"INTERNAL\",\n        \"name\": \"Bank internal transfer\",\n        \"notes\": \"to be used for internal bank customer to customer transaction\",\n        \"applicableFromAccountTypes\": [\n            {\n                \"typeCode\": \"SAVING\",\n                \"name\": \"Saving Account\",\n                \"balanceSheetEntry\": \"L\",\n                \"minimumBalance\": 0,\n                \"notes\": \"\"\n            }\n        ],\n        \"applicableToAccountTypes\": [\n            {\n                \"typeCode\": \"SAVING\",\n                \"name\": \"Saving Account\",\n                \"balanceSheetEntry\": \"L\",\n                \"minimumBalance\": 0,\n                \"notes\": \"\"\n            }\n        ]\n    },\n    \"fromAccount\": {\n        \"id\": 15,\n        \"title\": \"Saving Account #1\",\n        \"balance\": 9000,\n        \"lastTransactionDate\": \"2024-06-03T18:40:10.1228968\",\n        \"notes\": \"Saving Account #1 - owned by Mr Joe Luck S\",\n        \"accountOwner\": {\n            \"id\": 2,\n            \"firstName\": \"Mr Joe\",\n            \"lastName\": \"Luck S\",\n            \"email\": \"jl@skybridge.com\",\n            \"phoneNumber\": \"+00100010002\",\n            \"notes\": \"SkyBridge normal employee\",\n            \"type\": {\n                \"typeCode\": \"INDI\",\n                \"name\": \"Individual customer\",\n                \"notes\": \"Myriads of individual customer\",\n                \"self\": null,\n                \"individualOrGroup\": \"I\"\n            }\n        },\n        \"accountType\": {\n            \"typeCode\": \"SAVING\",\n            \"name\": \"Saving Account\",\n            \"balanceSheetEntry\": \"L\",\n            \"minimumBalance\": 0,\n            \"notes\": \"\"\n        }\n    },\n    \"toAccount\": {\n        \"id\": 16,\n        \"title\": \"Saving Account #2\",\n        \"balance\": 1000,\n        \"lastTransactionDate\": \"2024-06-03T18:40:10.1228968\",\n        \"notes\": \"Saving Account #2 - owned by Ms Jean Everdeen\",\n        \"accountOwner\": {\n            \"id\": 3,\n            \"firstName\": \"Ms Jean\",\n            \"lastName\": \"Everdeen\",\n            \"email\": \"je@corpA.com\",\n            \"phoneNumber\": \"+00100010003\",\n            \"notes\": \"A normal customer\",\n            \"type\": {\n                \"typeCode\": \"INDI\",\n                \"name\": \"Individual customer\",\n                \"notes\": \"Myriads of individual customer\",\n                \"self\": null,\n                \"individualOrGroup\": \"I\"\n            }\n        },\n        \"accountType\": {\n            \"typeCode\": \"SAVING\",\n            \"name\": \"Saving Account\",\n            \"balanceSheetEntry\": \"L\",\n            \"minimumBalance\": 0,\n            \"notes\": \"\"\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "INTERNAL - Mr Joe to Ms Jean 11k overlimit",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"transactionAmount\": 11000,\r\n    \"label\": \"Fund Transfer\",\r\n    \"notes\": \"Rental fees month Feb - simulate typo in amount\",\r\n    \"fromAccount\": {\r\n        \"id\": 15\r\n    },\r\n    \"toAccount\": {\r\n        \"id\": 16\r\n    },\r\n    \"type\": {\r\n        \"typeCode\": \"INTERNAL\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountTransaction",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountTransaction"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "INTERNAL - Mr Joe to Ms Jean 11k overlimit",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"transactionAmount\": 11000,\r\n    \"label\": \"Fund Transfer\",\r\n    \"notes\": \"Rental fees month Feb - simulate typo in amount\",\r\n    \"fromAccount\": {\r\n        \"id\": 15\r\n    },\r\n    \"toAccount\": {\r\n        \"id\": 16\r\n    },\r\n    \"type\": {\r\n        \"typeCode\": \"INTERNAL\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTransaction",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTransaction"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 03 Jun 2024 10:41:19 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"timestamp\": \"2024-06-03T10:41:19.209+00:00\",\n    \"status\": 500,\n    \"error\": \"Internal Server Error\",\n    \"path\": \"/accountTransaction\"\n}"
+						}
+					]
+				},
+				{
+					"name": "INTERNAL - Ms Jean to SKYBRIDGE 10",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"transactionAmount\": 10,\r\n    \"label\": \"Fund Transfer\",\r\n    \"notes\": \"Online purchase #1\",\r\n    \"fromAccount\": {\r\n        \"id\": 16\r\n    },\r\n    \"toAccount\": {\r\n        \"id\": 18\r\n    },\r\n    \"type\": {\r\n        \"typeCode\": \"INTERNAL\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountTransaction",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountTransaction"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "INTERNAL - Ms Jean to SKYBRIDGE 10",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"transactionAmount\": 10,\r\n    \"label\": \"Fund Transfer\",\r\n    \"notes\": \"Online purchase #1\",\r\n    \"fromAccount\": {\r\n        \"id\": 16\r\n    },\r\n    \"toAccount\": {\r\n        \"id\": 18\r\n    },\r\n    \"type\": {\r\n        \"typeCode\": \"INTERNAL\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTransaction",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTransaction"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 03 Jun 2024 10:57:50 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 7,\n    \"transactionAmount\": 10,\n    \"label\": \"Fund Transfer\",\n    \"transactionDate\": \"2024-06-03T18:57:50.1512419\",\n    \"notes\": \"Online purchase #1\",\n    \"type\": {\n        \"typeCode\": \"INTERNAL\",\n        \"name\": \"Bank internal transfer\",\n        \"notes\": \"to be used for internal bank customer to customer transaction\",\n        \"applicableFromAccountTypes\": [\n            {\n                \"typeCode\": \"SAVING\",\n                \"name\": \"Saving Account\",\n                \"balanceSheetEntry\": \"L\",\n                \"minimumBalance\": 0,\n                \"notes\": \"\"\n            }\n        ],\n        \"applicableToAccountTypes\": [\n            {\n                \"typeCode\": \"SAVING\",\n                \"name\": \"Saving Account\",\n                \"balanceSheetEntry\": \"L\",\n                \"minimumBalance\": 0,\n                \"notes\": \"\"\n            }\n        ]\n    },\n    \"fromAccount\": {\n        \"id\": 16,\n        \"title\": \"Saving Account #2\",\n        \"balance\": 990,\n        \"lastTransactionDate\": \"2024-06-03T18:57:50.1512419\",\n        \"notes\": \"Saving Account #2 - owned by Ms Jean Everdeen\",\n        \"accountOwner\": {\n            \"id\": 3,\n            \"firstName\": \"Ms Jean\",\n            \"lastName\": \"Everdeen\",\n            \"email\": \"je@corpA.com\",\n            \"phoneNumber\": \"+00100010003\",\n            \"notes\": \"A normal customer\",\n            \"type\": {\n                \"typeCode\": \"INDI\",\n                \"name\": \"Individual customer\",\n                \"notes\": \"Myriads of individual customer\",\n                \"self\": null,\n                \"individualOrGroup\": \"I\"\n            }\n        },\n        \"accountType\": {\n            \"typeCode\": \"SAVING\",\n            \"name\": \"Saving Account\",\n            \"balanceSheetEntry\": \"L\",\n            \"minimumBalance\": 0,\n            \"notes\": \"\"\n        }\n    },\n    \"toAccount\": {\n        \"id\": 18,\n        \"title\": \"Saving Account #4\",\n        \"balance\": 10,\n        \"lastTransactionDate\": \"2024-06-03T18:57:50.1512419\",\n        \"notes\": \"Saving Account #4 - owned by SKYBRIDGE Corp for Online Purchase\",\n        \"accountOwner\": {\n            \"id\": 4,\n            \"firstName\": \"SKYBRIDGE Corp\",\n            \"lastName\": \"\",\n            \"email\": \"cs@skybridge.com\",\n            \"phoneNumber\": \"+00100010004\",\n            \"notes\": \"A normal corporate customer\",\n            \"type\": {\n                \"typeCode\": \"CORP\",\n                \"name\": \"Corporate customer\",\n                \"notes\": \"Corporate or organization customer\",\n                \"self\": null,\n                \"individualOrGroup\": \"G\"\n            }\n        },\n        \"accountType\": {\n            \"typeCode\": \"SAVING\",\n            \"name\": \"Saving Account\",\n            \"balanceSheetEntry\": \"L\",\n            \"minimumBalance\": 0,\n            \"notes\": \"\"\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "INTERNAL - Ms Jean to SKYBRIDGE 11",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"transactionAmount\": 11,\r\n    \"label\": \"Fund Transfer\",\r\n    \"notes\": \"Online purchase #2\",\r\n    \"fromAccount\": {\r\n        \"id\": 16\r\n    },\r\n    \"toAccount\": {\r\n        \"id\": 18\r\n    },\r\n    \"type\": {\r\n        \"typeCode\": \"INTERNAL\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountTransaction",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountTransaction"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "INTERNAL - Ms Jean to SKYBRIDGE 11",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"transactionAmount\": 11,\r\n    \"label\": \"Fund Transfer\",\r\n    \"notes\": \"Online purchase #2\",\r\n    \"fromAccount\": {\r\n        \"id\": 16\r\n    },\r\n    \"toAccount\": {\r\n        \"id\": 18\r\n    },\r\n    \"type\": {\r\n        \"typeCode\": \"INTERNAL\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTransaction",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTransaction"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 03 Jun 2024 11:04:52 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 8,\n    \"transactionAmount\": 11,\n    \"label\": \"Fund Transfer\",\n    \"transactionDate\": \"2024-06-03T19:04:52.2125541\",\n    \"notes\": \"Online purchase #2\",\n    \"type\": {\n        \"typeCode\": \"INTERNAL\",\n        \"name\": \"Bank internal transfer\",\n        \"notes\": \"to be used for internal bank customer to customer transaction\",\n        \"applicableFromAccountTypes\": [\n            {\n                \"typeCode\": \"SAVING\",\n                \"name\": \"Saving Account\",\n                \"balanceSheetEntry\": \"L\",\n                \"minimumBalance\": 0,\n                \"notes\": \"\"\n            }\n        ],\n        \"applicableToAccountTypes\": [\n            {\n                \"typeCode\": \"SAVING\",\n                \"name\": \"Saving Account\",\n                \"balanceSheetEntry\": \"L\",\n                \"minimumBalance\": 0,\n                \"notes\": \"\"\n            }\n        ]\n    },\n    \"fromAccount\": {\n        \"id\": 16,\n        \"title\": \"Saving Account #2\",\n        \"balance\": 979,\n        \"lastTransactionDate\": \"2024-06-03T19:04:52.2125541\",\n        \"notes\": \"Saving Account #2 - owned by Ms Jean Everdeen\",\n        \"accountOwner\": {\n            \"id\": 3,\n            \"firstName\": \"Ms Jean\",\n            \"lastName\": \"Everdeen\",\n            \"email\": \"je@corpA.com\",\n            \"phoneNumber\": \"+00100010003\",\n            \"notes\": \"A normal customer\",\n            \"type\": {\n                \"typeCode\": \"INDI\",\n                \"name\": \"Individual customer\",\n                \"notes\": \"Myriads of individual customer\",\n                \"self\": null,\n                \"individualOrGroup\": \"I\"\n            }\n        },\n        \"accountType\": {\n            \"typeCode\": \"SAVING\",\n            \"name\": \"Saving Account\",\n            \"balanceSheetEntry\": \"L\",\n            \"minimumBalance\": 0,\n            \"notes\": \"\"\n        }\n    },\n    \"toAccount\": {\n        \"id\": 18,\n        \"title\": \"Saving Account #4\",\n        \"balance\": 21,\n        \"lastTransactionDate\": \"2024-06-03T19:04:52.2125541\",\n        \"notes\": \"Saving Account #4 - owned by SKYBRIDGE Corp for Online Purchase\",\n        \"accountOwner\": {\n            \"id\": 4,\n            \"firstName\": \"SKYBRIDGE Corp\",\n            \"lastName\": \"\",\n            \"email\": \"cs@skybridge.com\",\n            \"phoneNumber\": \"+00100010004\",\n            \"notes\": \"A normal corporate customer\",\n            \"type\": {\n                \"typeCode\": \"CORP\",\n                \"name\": \"Corporate customer\",\n                \"notes\": \"Corporate or organization customer\",\n                \"self\": null,\n                \"individualOrGroup\": \"G\"\n            }\n        },\n        \"accountType\": {\n            \"typeCode\": \"SAVING\",\n            \"name\": \"Saving Account\",\n            \"balanceSheetEntry\": \"L\",\n            \"minimumBalance\": 0,\n            \"notes\": \"\"\n        }\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "get accountTransaction",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{med_server}}/accountTransaction/:id",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountTransaction",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "get Account",
 			"request": {
 				"method": "GET",
@@ -1255,6 +1952,397 @@
 					],
 					"cookie": [],
 					"body": "{\n    \"id\": 1,\n    \"firstName\": \"ACME BANK\",\n    \"lastName\": \"\",\n    \"email\": \"corsec@acme.com\",\n    \"phoneNumber\": \"+00100010001\",\n    \"notes\": \"The Bank itself\",\n    \"type\": {\n        \"typeCode\": \"BANK_SELF\",\n        \"name\": \"The Finance Institution\",\n        \"notes\": \"This is the bank itself\",\n        \"self\": true,\n        \"individualOrGroup\": \"G\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "create CashAccount",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Bank Internal Clearing Account Nostro\",\r\n    \"balance\": 0,\r\n    \"notes\": \"Bank Internal Clearing Account - under Finance Dept\",\r\n    \"accountOwner\": {\r\n        \"id\": 0\r\n    },\r\n    \"accountType\": {\r\n        \"typeCode\": \"CLEARING\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{med_server}}/cashAccount",
+					"host": [
+						"{{med_server}}"
+					],
+					"path": [
+						"cashAccount"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "create CashAccount",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Bank Internal Cash Account Liabilities\",\r\n    \"balance\": 0,\r\n    \"notes\": \"Bank Internal Cash Account Liabilities - under Finance Dept\",\r\n    \"accountOwner\": {\r\n        \"id\": 0\r\n    },\r\n    \"accountType\": {\r\n        \"typeCode\": \"INTERNAL_CR\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/cashAccount",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"cashAccount"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 02 Jun 2024 11:29:11 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 12,\n    \"title\": \"Bank Internal Cash Account Liabilities\",\n    \"balance\": 0,\n    \"lastTransactionDate\": null,\n    \"notes\": \"Bank Internal Cash Account Liabilities - under Finance Dept\",\n    \"accountHistories\": null,\n    \"accountOwner\": {\n        \"id\": 0,\n        \"firstName\": null,\n        \"lastName\": null,\n        \"email\": null,\n        \"phoneNumber\": null,\n        \"notes\": null,\n        \"type\": null\n    },\n    \"accountType\": {\n        \"typeCode\": \"INTERNAL_CR\",\n        \"name\": \"Internal Credit Accounts\",\n        \"balanceSheetEntry\": \"A\",\n        \"minimumBalance\": null,\n        \"notes\": \"Assets account for internal use only\",\n        \"applicableForAccountOwnerTypes\": [\n            {\n                \"typeCode\": \"BANK_SELF\",\n                \"name\": \"The Finance Institution\",\n                \"notes\": \"This is the bank itself\",\n                \"self\": true,\n                \"individualOrGroup\": \"G\"\n            }\n        ]\n    }\n}"
+				},
+				{
+					"name": "create AccountOwner",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 0,\r\n    \"firstName\": \"ACME BANK\",\r\n    \"lastName\": \"\",\r\n    \"email\": \"corsec@acme.com\",\r\n    \"phoneNumber\": \"+00100010001\",\r\n    \"notes\": \"The Bank itself\",\r\n    \"type\": {\r\n        \"typeCode\": \"BANK_SELF\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountOwner",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountOwner"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 01 Jun 2024 13:26:11 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"firstName\": \"ACME BANK\",\n    \"lastName\": \"\",\n    \"email\": \"corsec@acme.com\",\n    \"phoneNumber\": \"+00100010001\",\n    \"notes\": \"The Bank itself\",\n    \"type\": {\n        \"typeCode\": \"BANK_SELF\",\n        \"name\": \"The Finance Institution\",\n        \"notes\": \"This is the bank itself\",\n        \"self\": true,\n        \"individualOrGroup\": \"G\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "create AccountTransaction",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"transactionAmount\": 1000000,\r\n    \"label\": \"Increase clearing account by 1mil\",\r\n    \"notes\": \"Increase clearing account by 1mil\",\r\n    \"fromAccount\": {\r\n        \"id\": 12\r\n    },\r\n    \"toAccount\": {\r\n        \"id\": 13\r\n    },\r\n    \"type\": {\r\n        \"typeCode\": \"INCREASE_CLEARING\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{med_server}}/accountTransaction",
+					"host": [
+						"{{med_server}}"
+					],
+					"path": [
+						"accountTransaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create AccountTransactionType",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"typeCode\": \"TEST\",\r\n    \"name\": \"Test tt\",\r\n    \"notes\": \"Test tt\",\r\n    \"applicableFromAccountTypes\": [{\r\n        \"typeCode\": \"SAVING\"\r\n    }],\r\n    \"applicableToAccountTypes\": [{\r\n        \"typeCode\": \"SAVING\"\r\n    }]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{med_server}}/accountTransactionType",
+					"host": [
+						"{{med_server}}"
+					],
+					"path": [
+						"accountTransactionType"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "create AccountTransactionType",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeCode\": \"TEST\",\r\n    \"name\": \"Test tt\",\r\n    \"notes\": \"Test tt\",\r\n    \"applicableFromAccountTypes\": [{\r\n        \"typeCode\": \"SAVING\"\r\n    }],\r\n    \"applicableToAccountTypes\": [{\r\n        \"typeCode\": \"SAVING\"\r\n    }]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountTransactionType",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountTransactionType"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 03 Jun 2024 04:48:31 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"typeCode\": \"TEST\",\n    \"name\": \"Test tt\",\n    \"notes\": \"Test tt\",\n    \"applicableFromAccountTypes\": [\n        {\n            \"typeCode\": \"SAVING\",\n            \"name\": \"Saving Account\",\n            \"balanceSheetEntry\": \"L\",\n            \"minimumBalance\": 0,\n            \"notes\": \"\"\n        }\n    ],\n    \"applicableToAccountTypes\": [\n        {\n            \"typeCode\": \"SAVING\",\n            \"name\": \"Saving Account\",\n            \"balanceSheetEntry\": \"L\",\n            \"minimumBalance\": 0,\n            \"notes\": \"\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "get AccountTransactionType",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"typeCode\": \"TEST\",\r\n    \"name\": \"Test tt\",\r\n    \"notes\": \"Test tt\",\r\n    \"applicableFromAccountTypes\": [{\r\n        \"typeCode\": \"SAVING\"\r\n    }],\r\n    \"applicableToAccountTypes\": [{\r\n        \"typeCode\": \"SAVING\"\r\n    }]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{med_server}}/accountTransactionType/:typeCode",
+					"host": [
+						"{{med_server}}"
+					],
+					"path": [
+						"accountTransactionType",
+						":typeCode"
+					],
+					"variable": [
+						{
+							"key": "typeCode",
+							"value": "INCOMING"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "get AccountTransactionType",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeCode\": \"TEST\",\r\n    \"name\": \"Test tt\",\r\n    \"notes\": \"Test tt\",\r\n    \"applicableFromAccountTypes\": [{\r\n        \"typeCode\": \"SAVING\"\r\n    }],\r\n    \"applicableToAccountTypes\": [{\r\n        \"typeCode\": \"SAVING\"\r\n    }]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountTransactionType/:typeCode",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountTransactionType",
+								":typeCode"
+							],
+							"variable": [
+								{
+									"key": "typeCode",
+									"value": "INTERNAL"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 03 Jun 2024 05:53:40 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"typeCode\": \"INTERNAL\",\n    \"name\": \"Bank internal transfer\",\n    \"notes\": \"to be used for internal bank customer to customer transaction\",\n    \"applicableFromAccountTypes\": [\n        {\n            \"typeCode\": \"SAVING\",\n            \"name\": \"Saving Account\",\n            \"balanceSheetEntry\": \"L\",\n            \"minimumBalance\": 0,\n            \"notes\": \"\"\n        }\n    ],\n    \"applicableToAccountTypes\": [\n        {\n            \"typeCode\": \"SAVING\",\n            \"name\": \"Saving Account\",\n            \"balanceSheetEntry\": \"L\",\n            \"minimumBalance\": 0,\n            \"notes\": \"\"\n        }\n    ]\n}"
+				},
+				{
+					"name": "get AccountTransactionType",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeCode\": \"TEST\",\r\n    \"name\": \"Test tt\",\r\n    \"notes\": \"Test tt\",\r\n    \"applicableFromAccountTypes\": [{\r\n        \"typeCode\": \"SAVING\"\r\n    }],\r\n    \"applicableToAccountTypes\": [{\r\n        \"typeCode\": \"SAVING\"\r\n    }]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountTransactionType/:typeCode",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountTransactionType",
+								":typeCode"
+							],
+							"variable": [
+								{
+									"key": "typeCode",
+									"value": "INCOMING"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 03 Jun 2024 05:54:43 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"typeCode\": \"INCOMING\",\n    \"name\": \"Incoming transfer\",\n    \"notes\": \"to be used for incoming transfer from clearing to customer account\",\n    \"applicableFromAccountTypes\": [\n        {\n            \"typeCode\": \"CLEARING\",\n            \"name\": \"Clearing Accounts\",\n            \"balanceSheetEntry\": \"A\",\n            \"notes\": \"to be used for incoming/outgoing transfer\"\n        }\n    ],\n    \"applicableToAccountTypes\": [\n        {\n            \"typeCode\": \"SAVING\",\n            \"name\": \"Saving Account\",\n            \"balanceSheetEntry\": \"L\",\n            \"minimumBalance\": 0,\n            \"notes\": \"\"\n        }\n    ]\n}"
 				}
 			]
 		},
