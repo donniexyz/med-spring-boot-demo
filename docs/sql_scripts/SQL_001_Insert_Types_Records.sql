@@ -14,3 +14,31 @@ INSERT INTO account_transaction_type (type_code, "name", notes) VALUES('INCOMING
 INSERT INTO account_transaction_type (type_code, "name", notes) VALUES('ADJUSTMENT_DR', 'Adjustment debit transaction', 'Only for internal use only. Requires C Level and/or Finance Dept. approval.');
 INSERT INTO account_transaction_type (type_code, "name", notes) VALUES('ADJUSTMENT_CR', 'Adjustment credit transaction', 'Only for internal use only. Requires C Level and/or Finance Dept. approval.');
 INSERT INTO account_transaction_type (type_code, "name", notes) VALUES('OUTGOING', 'Outgoing transfer', 'to be used for outgoing transfer from customer account to clearing');
+
+INSERT INTO account_transaction_type_applicable_from_account_types (applicable_from_transaction_types_type_code, applicable_from_account_types_type_code) VALUES('ADJUSTMENT_CR', 'INTERNAL_CR');
+INSERT INTO account_transaction_type_applicable_from_account_types (applicable_from_transaction_types_type_code, applicable_from_account_types_type_code) VALUES('ADJUSTMENT_DR', 'INTERNAL_DR');
+INSERT INTO account_transaction_type_applicable_from_account_types (applicable_from_transaction_types_type_code, applicable_from_account_types_type_code) VALUES('INCOMING', 'CLEARING');
+INSERT INTO account_transaction_type_applicable_from_account_types (applicable_from_transaction_types_type_code, applicable_from_account_types_type_code) VALUES('INCREASE_CLEARING', 'INTERNAL_CR');
+INSERT INTO account_transaction_type_applicable_from_account_types (applicable_from_transaction_types_type_code, applicable_from_account_types_type_code) VALUES('INTERNAL', 'SAVING');
+INSERT INTO account_transaction_type_applicable_from_account_types (applicable_from_transaction_types_type_code, applicable_from_account_types_type_code) VALUES('OUTGOING', 'SAVING');
+INSERT INTO account_transaction_type_applicable_from_account_types (applicable_from_transaction_types_type_code, applicable_from_account_types_type_code) VALUES('REDUCE_CLEARING', 'CLEARING');
+INSERT INTO account_transaction_type_applicable_from_account_types (applicable_from_transaction_types_type_code, applicable_from_account_types_type_code) VALUES('TEST', 'SAVING');
+
+INSERT INTO account_transaction_type_applicable_to_account_types (applicable_to_transaction_types_type_code, applicable_to_account_types_type_code) VALUES('ADJUSTMENT_CR', 'INTERNAL_DR');
+INSERT INTO account_transaction_type_applicable_to_account_types (applicable_to_transaction_types_type_code, applicable_to_account_types_type_code) VALUES('ADJUSTMENT_CR', 'INTERNAL_CR');
+INSERT INTO account_transaction_type_applicable_to_account_types (applicable_to_transaction_types_type_code, applicable_to_account_types_type_code) VALUES('ADJUSTMENT_DR', 'INTERNAL_DR');
+INSERT INTO account_transaction_type_applicable_to_account_types (applicable_to_transaction_types_type_code, applicable_to_account_types_type_code) VALUES('ADJUSTMENT_DR', 'INTERNAL_CR');
+INSERT INTO account_transaction_type_applicable_to_account_types (applicable_to_transaction_types_type_code, applicable_to_account_types_type_code) VALUES('INCOMING', 'SAVING');
+INSERT INTO account_transaction_type_applicable_to_account_types (applicable_to_transaction_types_type_code, applicable_to_account_types_type_code) VALUES('INCREASE_CLEARING', 'CLEARING');
+INSERT INTO account_transaction_type_applicable_to_account_types (applicable_to_transaction_types_type_code, applicable_to_account_types_type_code) VALUES('INTERNAL', 'SAVING');
+INSERT INTO account_transaction_type_applicable_to_account_types (applicable_to_transaction_types_type_code, applicable_to_account_types_type_code) VALUES('OUTGOING', 'CLEARING');
+INSERT INTO account_transaction_type_applicable_to_account_types (applicable_to_transaction_types_type_code, applicable_to_account_types_type_code) VALUES('REDUCE_CLEARING', 'INTERNAL_DR');
+INSERT INTO account_transaction_type_applicable_to_account_types (applicable_to_transaction_types_type_code, applicable_to_account_types_type_code) VALUES('TEST', 'SAVING');
+
+INSERT INTO account_type_applicable_for_account_owner_types (account_type_type_code, applicable_for_account_owner_types_type_code) VALUES('SAVING', 'STAFF');
+INSERT INTO account_type_applicable_for_account_owner_types (account_type_type_code, applicable_for_account_owner_types_type_code) VALUES('SAVING', 'INDI');
+INSERT INTO account_type_applicable_for_account_owner_types (account_type_type_code, applicable_for_account_owner_types_type_code) VALUES('SAVING', 'CORP');
+INSERT INTO account_type_applicable_for_account_owner_types (account_type_type_code, applicable_for_account_owner_types_type_code) VALUES('DRAWERS', 'BANK_SELF');
+INSERT INTO account_type_applicable_for_account_owner_types (account_type_type_code, applicable_for_account_owner_types_type_code) VALUES('CLEARING', 'BANK_SELF');
+INSERT INTO account_type_applicable_for_account_owner_types (account_type_type_code, applicable_for_account_owner_types_type_code) VALUES('INTERNAL_DR', 'BANK_SELF');
+INSERT INTO account_type_applicable_for_account_owner_types (account_type_type_code, applicable_for_account_owner_types_type_code) VALUES('INTERNAL_CR', 'BANK_SELF');
