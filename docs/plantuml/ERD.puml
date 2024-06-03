@@ -1,5 +1,16 @@
 @startuml
-entity AccountHistory {
+class AccountType {
+- String typeCode
+- String name
+- BalanceSheetComponentEnum balanceSheetEntry
+- BigDecimal minimumBalance
+- String notes
+- Set<AccountTransactionType> applicableFromTransactionTypes
+- Set<AccountTransactionType> applicableToTransactionTypes
+- Set<AccountOwnerType> applicableForAccountOwnerTypes
+}
+
+class AccountHistory {
 - Long id
 - String transactionType
 - BigDecimal balance
@@ -10,39 +21,67 @@ entity AccountHistory {
 }
 
 
-entity CashAccount {
+class AccountTransactionType {
+- String typeCode
+- String name
+- String notes
+- Set<AccountType> applicableFromAccountTypes
+- Set<AccountType> applicableToAccountTypes
+}
+
+class CashAccount {
 - Long id
 - String title
 - BigDecimal balance
 - LocalDateTime lastTransactionDate
+- String notes
 - List<AccountHistory> accountHistories
 - AccountOwner accountOwner
+- AccountType accountType
 + CashAccount copy()
 }
 
 
-entity AccountOwner {
+class AccountOwner {
 - Long id
 - String firstName
 - String lastName
 - String email
 - String phoneNumber
+- String notes
+- AccountOwnerType type
 + AccountOwner copy()
 }
 
 
-entity AccountTransaction {
+class AccountOwnerType {
+- String typeCode
+- String name
+- String notes
+- Boolean self
+- IndividualGroupEnum individualOrGroup
+}
+
+class AccountTransaction {
 - Long id
 - BigDecimal transactionAmount
 - String transactionType
 - LocalDateTime transactionDate
+- String notes
+- AccountTransactionType type
 - CashAccount fromAccount
 - CashAccount toAccount
 + AccountTransaction copy()
 }
 
-AccountOwner ||..o{ CashAccount
-AccountTransaction }o..|| CashAccount
-CashAccount ||..o{ AccountHistory
+AccountType ||..|{ AccountTransactionType :(join table) applicable for from* & to*
+AccountType ||..|{ AccountOwnerType :(join table) applicable for
+
+AccountOwnerType ||..|{ AccountOwner
+AccountTransactionType ||..|{ AccountTransaction
+
+CashAccount ||..|{ AccountType
+CashAccount ||..|{ AccountHistory
+CashAccount ||..|{ AccountTransaction
 
 @enduml
