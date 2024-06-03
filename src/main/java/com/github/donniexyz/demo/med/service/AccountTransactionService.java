@@ -51,9 +51,9 @@ public class AccountTransactionService {
                 .orElseThrow(() -> new RuntimeException("Invalid combination of trx type - from account type"));
 
         // make sure toAccount is allowed
-        CashAccount toAccount = cashAccountRepository.findById(accountTransaction.getFromAccount().getId()).orElseThrow();
+        CashAccount toAccount = cashAccountRepository.findById(accountTransaction.getToAccount().getId()).orElseThrow();
         AccountType toAccountType = toAccount.getAccountType();
-        transactionType.getApplicableFromAccountTypes().stream().filter(at -> at.getTypeCode().equals(toAccountType.getTypeCode())).findFirst()
+        transactionType.getApplicableToAccountTypes().stream().filter(at -> at.getTypeCode().equals(toAccountType.getTypeCode())).findFirst()
                 .orElseThrow(() -> new RuntimeException("Invalid combination of trx type - to account type"));
 
         // make sure balance is positive after transaction (configurable via AccountType.minimumBalance)
