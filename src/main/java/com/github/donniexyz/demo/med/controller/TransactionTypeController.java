@@ -37,10 +37,10 @@ public class TransactionTypeController {
 
         // get all AccountTypes in one go
         Set<String> applicableAccountTypeCodes = new HashSet<>();
-        if (!CollectionUtils.isEmpty(accountTransactionType.getApplicableFromAccountTypes()))
-            applicableAccountTypeCodes.addAll(accountTransactionType.getApplicableFromAccountTypes().stream().map(AccountType::getTypeCode).toList());
-        if (!CollectionUtils.isEmpty(accountTransactionType.getApplicableToAccountTypes()))
-            applicableAccountTypeCodes.addAll(accountTransactionType.getApplicableToAccountTypes().stream().map(AccountType::getTypeCode).toList());
+        if (!CollectionUtils.isEmpty(accountTransactionType.getApplicableDebitAccountTypes()))
+            applicableAccountTypeCodes.addAll(accountTransactionType.getApplicableDebitAccountTypes().stream().map(AccountType::getTypeCode).toList());
+        if (!CollectionUtils.isEmpty(accountTransactionType.getApplicableCreditAccountTypes()))
+            applicableAccountTypeCodes.addAll(accountTransactionType.getApplicableCreditAccountTypes().stream().map(AccountType::getTypeCode).toList());
         Map<String, AccountType> accountTypeMap = accountTypeRepository.findAllById(applicableAccountTypeCodes)
                 .stream().collect(Collectors.toMap(AccountType::getTypeCode, at -> at));
 
@@ -50,10 +50,10 @@ public class TransactionTypeController {
 
         // prepare record to be inserted
         AccountTransactionType prepared = accountTransactionType.copy(false)
-                .setApplicableToAccountTypes(null == accountTransactionType.getApplicableToAccountTypes() ? null
-                        : accountTransactionType.getApplicableToAccountTypes().stream().map(at -> accountTypeMap.get(at.getTypeCode())).collect(Collectors.toSet()))
-                .setApplicableFromAccountTypes(null == accountTransactionType.getApplicableFromAccountTypes() ? null
-                        : accountTransactionType.getApplicableFromAccountTypes().stream().map(at -> accountTypeMap.get(at.getTypeCode())).collect(Collectors.toSet()))
+                .setApplicableCreditAccountTypes(null == accountTransactionType.getApplicableCreditAccountTypes() ? null
+                        : accountTransactionType.getApplicableCreditAccountTypes().stream().map(at -> accountTypeMap.get(at.getTypeCode())).collect(Collectors.toSet()))
+                .setApplicableDebitAccountTypes(null == accountTransactionType.getApplicableDebitAccountTypes() ? null
+                        : accountTransactionType.getApplicableDebitAccountTypes().stream().map(at -> accountTypeMap.get(at.getTypeCode())).collect(Collectors.toSet()))
                 ;
         return transactionTypeRepository.save(prepared);
     }

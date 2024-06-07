@@ -2,6 +2,7 @@ package com.github.donniexyz.demo.med.controller;
 
 import com.github.donniexyz.demo.med.entity.AccountOwner;
 import com.github.donniexyz.demo.med.entity.AccountOwnerType;
+import com.github.donniexyz.demo.med.entity.AccountType;
 import com.github.donniexyz.demo.med.entity.CashAccount;
 import com.github.donniexyz.demo.med.repository.AccountOwnerRepository;
 import com.github.donniexyz.demo.med.repository.AccountOwnerTypeRepository;
@@ -12,7 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
+import static com.github.donniexyz.demo.med.lib.CashAccountConstants.MA;
 
 @RestController
 @RequestMapping("/cashAccount")
@@ -39,7 +40,8 @@ public class CashAccountController {
     @Transactional
     public CashAccount create(@RequestBody CashAccount cashAccount) {
         // make sure acct type exists
-        cashAccount.setAccountType(accountTypeRepository.findById(cashAccount.getAccountType().getTypeCode()).orElseThrow());
+        AccountType accountType = accountTypeRepository.findById(cashAccount.getAccountType().getTypeCode()).orElseThrow();
+        cashAccount.setAccountType(accountType);
         // make sure owner exists
         AccountOwner accountOwner = accountOwnerRepository.findById(cashAccount.getAccountOwner().getId()).orElseThrow();
         // make sure owner type exists
@@ -48,7 +50,9 @@ public class CashAccountController {
         cashAccount.getAccountType().getApplicableForAccountOwnerTypes().stream()
                 .filter(ot -> ot.getTypeCode().equals(accountOwnerType.getTypeCode())).findFirst()
                 .orElseThrow(() -> new RuntimeException("Invalid combination of owner type - account type"));
-        cashAccount.setBalance(BigDecimal.ZERO);
+
+        cashAccount.setAccountBalance(MA.ZERO_THROUGH_TEN_PER_CCY.get(accountType.getMinimumBalance().getCurrency())[0]);
+
         return cashAccountRepository.save(cashAccount);
     }
 
@@ -56,14 +60,17 @@ public class CashAccountController {
     @Transactional
     public CashAccount update(@RequestBody CashAccount cashAccount) {
         CashAccount fetchedFromDb = cashAccountRepository.findById(cashAccount.getId()).orElseThrow();
-        CashAccount comparator = fetchedFromDb.copy();
+        CashAccount ca = cashAccount.copy();
         // may not change balance
-        if (!fetchedFromDb.getBalance().equals(cashAccount.getBalance())
-                || !fetchedFromDb.getLastTransactionDate().equals(cashAccount.getLastTransactionDate())
-                || !fetchedFromDb.getAccountOwner().getId().equals(cashAccount.getAccountOwner().getId())
-                || !fetchedFromDb.getAccountType().getTypeCode().equals(cashAccount.getAccountType().getTypeCode()))
+        if ((null != ca.getAccountBalance() && fetchedFromDb.getAccountBalance().compareTo(ca.getAccountBalance()) != 0)
+                || (null != ca.getLastTransactionDate() && !fetchedFromDb.getLastTransactionDate().equals(ca.getLastTransactionDate()))
+                || (null != ca.getAccountOwner() && !fetchedFromDb.getAccountOwner().getId().equals(ca.getAccountOwner().getId()))
+                || (null != ca.getAccountType() && !fetchedFromDb.getAccountType().getTypeCode().equals(ca.getAccountType().getTypeCode())))
             throw new RuntimeException("Not allowed to directly update balance, lastTrxDate, owner, or acct type");
-        fetchedFromDb.copyFrom(cashAccount, true);
+        ca.setLastTransactionDate(null);
+        ca.setAccountOwner(null);
+        ca.setAccountType(null);
+        fetchedFromDb.copyFrom(ca, true);
         return cashAccountRepository.save(fetchedFromDb);
     }
 }
