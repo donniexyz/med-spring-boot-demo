@@ -23,6 +23,7 @@ public class CashAccountConstants {
         public static final CurrencyUnit USD = Monetary.getCurrency("USD");
 
         public static final List<CurrencyUnit> ALLOWED_CURRENCIES = List.of(USD);
+        public static final List<String> ALLOWED_CURRENCY_NAMES = ALLOWED_CURRENCIES.stream().map(CurrencyUnit::getCurrencyCode).toList();
 
         public static final Map<String, CurrencyUnit> CURRENCY_UNIT_MAP = ALLOWED_CURRENCIES.stream().collect(Collectors.toMap(CurrencyUnit::getCurrencyCode, k -> k));
 
