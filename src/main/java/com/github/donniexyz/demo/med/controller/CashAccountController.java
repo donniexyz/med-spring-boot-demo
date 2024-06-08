@@ -56,13 +56,14 @@ public class CashAccountController {
         return cashAccountRepository.save(cashAccount);
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
-    public CashAccount update(@RequestBody CashAccount cashAccount) {
-        CashAccount fetchedFromDb = cashAccountRepository.findById(cashAccount.getId()).orElseThrow();
+    public CashAccount update(@PathVariable("id") Long id, @RequestBody CashAccount cashAccount) {
+        CashAccount fetchedFromDb = cashAccountRepository.findById(id).orElseThrow();
         CashAccount ca = cashAccount.copy();
         // may not change balance
         if ((null != ca.getAccountBalance() && fetchedFromDb.getAccountBalance().compareTo(ca.getAccountBalance()) != 0)
+                || (null != ca.getId() && !fetchedFromDb.getId().equals(ca.getId()))
                 || (null != ca.getLastTransactionDate() && !fetchedFromDb.getLastTransactionDate().equals(ca.getLastTransactionDate()))
                 || (null != ca.getAccountOwner() && !fetchedFromDb.getAccountOwner().getId().equals(ca.getAccountOwner().getId()))
                 || (null != ca.getAccountType() && !fetchedFromDb.getAccountType().getTypeCode().equals(ca.getAccountType().getTypeCode())))

@@ -58,9 +58,9 @@ public class TransactionTypeController {
         return transactionTypeRepository.save(prepared);
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public AccountTransactionType update(@RequestBody AccountTransactionType accountTransactionType) {
-        AccountTransactionType fetchedFromDb = transactionTypeRepository.findById(accountTransactionType.getTypeCode()).orElseThrow();
+    @PutMapping(path = "/{typeCode}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public AccountTransactionType update(@PathVariable("typeCode") String typeCode, @RequestBody AccountTransactionType accountTransactionType) {
+        AccountTransactionType fetchedFromDb = transactionTypeRepository.findById(typeCode).orElseThrow();
         return transactionTypeRepository.save(fetchedFromDb.copyFrom(accountTransactionType, true));
     }
 
