@@ -41,7 +41,6 @@ public enum BalanceSheetComponentEnum {
                 .orElseThrow(() -> new IllegalArgumentException("Unknown value:" + code));
     }
 
-    @JsonCreator
     public static BalanceSheetComponentEnum forValue(char code) {
         return Stream.of(BalanceSheetComponentEnum.values())
                 .filter(e -> e.symbol == code)

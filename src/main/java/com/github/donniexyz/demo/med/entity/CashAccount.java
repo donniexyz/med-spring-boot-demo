@@ -3,13 +3,16 @@ package com.github.donniexyz.demo.med.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.github.donniexyz.demo.med.lib.CashAccountUtilities;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
+import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.WithBy;
+import org.hibernate.annotations.CompositeType;
 
-import java.math.BigDecimal;
+import javax.money.MonetaryAmount;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +31,12 @@ public class CashAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-    private BigDecimal balance;
+
+    @AttributeOverride(name = "amount", column = @Column(name = "acc_bal"))
+    @AttributeOverride(name = "currency", column = @Column(name = "acc_ccy"))
+    @CompositeType(MonetaryAmountType.class)
+    private MonetaryAmount accountBalance;
+
     private LocalDateTime lastTransactionDate;
     private String notes;
 
@@ -69,8 +77,8 @@ public class CashAccount {
             this.id = setValuesFromThisInstance.id;
         if (!nonNullOnly || null != setValuesFromThisInstance.title)
             this.title = setValuesFromThisInstance.title;
-        if (!nonNullOnly || null != setValuesFromThisInstance.balance)
-            this.balance = setValuesFromThisInstance.balance;
+        if (!nonNullOnly || null != setValuesFromThisInstance.accountBalance)
+            this.accountBalance = setValuesFromThisInstance.accountBalance;
         if (!nonNullOnly || null != setValuesFromThisInstance.lastTransactionDate)
             this.lastTransactionDate = setValuesFromThisInstance.lastTransactionDate;
         if (!nonNullOnly || null != setValuesFromThisInstance.notes)
@@ -81,6 +89,18 @@ public class CashAccount {
             this.accountOwner = setValuesFromThisInstance.accountOwner;
         if (!nonNullOnly || null != setValuesFromThisInstance.accountType)
             this.accountType = setValuesFromThisInstance.accountType;
+        return this;
+    }
+
+    @JsonIgnore
+    public CashAccount debit(MonetaryAmount amount) {
+        accountBalance = CashAccountUtilities.debit(accountBalance, amount, accountType.getBalanceSheetEntry());
+        return this;
+    }
+
+    @JsonIgnore
+    public CashAccount credit(MonetaryAmount amount) {
+        accountBalance = CashAccountUtilities.credit(accountBalance, amount, accountType.getBalanceSheetEntry());
         return this;
     }
 }
