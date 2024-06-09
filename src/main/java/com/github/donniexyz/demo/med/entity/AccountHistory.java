@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
+import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.WithBy;
+import org.hibernate.annotations.CompositeType;
 
-import java.math.BigDecimal;
+import javax.money.MonetaryAmount;
 import java.time.LocalDateTime;
 
 
@@ -27,7 +29,12 @@ public class AccountHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String transactionType; // e.g., "Deposit," "Withdrawal"
-    private BigDecimal balance;
+
+    @AttributeOverride(name = "amount", column = @Column(name = "acc_balance"))
+    @AttributeOverride(name = "currency", column = @Column(name = "acc_ccy"))
+    @CompositeType(MonetaryAmountType.class)
+    private MonetaryAmount balance;
+
     private LocalDateTime transactionDate;
     private String description;
 

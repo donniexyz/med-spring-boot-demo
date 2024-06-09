@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.enums.BalanceSheetComponentEnum;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.NonNullLazyFieldsFilter;
+import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.WithBy;
+import org.hibernate.annotations.CompositeType;
 
-import java.math.BigDecimal;
+import javax.money.MonetaryAmount;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,16 +41,20 @@ public class AccountType {
     @Enumerated(EnumType.STRING)
     private BalanceSheetComponentEnum balanceSheetEntry;
 
-    private BigDecimal minimumBalance;
+    @AttributeOverride(name = "amount", column = @Column(name = "min_bal"))
+    @AttributeOverride(name = "currency", column = @Column(name = "min_bal_ccy"))
+    @CompositeType(MonetaryAmountType.class)
+    private MonetaryAmount minimumBalance;
+
     private String notes;
 
-    @ManyToMany(mappedBy = "applicableFromAccountTypes")
+    @ManyToMany(mappedBy = "applicableDebitAccountTypes")
     @EqualsAndHashCode.Exclude
-    private Set<AccountTransactionType> applicableFromTransactionTypes;
+    private Set<AccountTransactionType> applicableDebitTransactionTypes;
 
-    @ManyToMany(mappedBy = "applicableToAccountTypes")
+    @ManyToMany(mappedBy = "applicableCreditAccountTypes")
     @EqualsAndHashCode.Exclude
-    private Set<AccountTransactionType> applicableToTransactionTypes;
+    private Set<AccountTransactionType> applicableCreditTransactionTypes;
 
     @ManyToMany
     @JoinTable
@@ -66,8 +72,8 @@ public class AccountType {
     public AccountType copy(Boolean cascade) {
         return this
                 .withApplicableForAccountOwnerTypes(null == applicableForAccountOwnerTypes || !Boolean.TRUE.equals(cascade) ? null : applicableForAccountOwnerTypes.stream().map(accountOwnerType -> accountOwnerType.copy(false)).collect(Collectors.toSet()))
-                .setApplicableFromTransactionTypes(null == applicableFromTransactionTypes || !Boolean.TRUE.equals(cascade) ? null : applicableFromTransactionTypes.stream().map(fromAccountTransactionType -> fromAccountTransactionType.copy(false)).collect(Collectors.toSet()))
-                .setApplicableToTransactionTypes(null == applicableToTransactionTypes || !Boolean.TRUE.equals(cascade) ? null : applicableToTransactionTypes.stream().map(toAccountTransactionType -> toAccountTransactionType.copy(false)).collect(Collectors.toSet()));
+                .setApplicableDebitTransactionTypes(null == applicableDebitTransactionTypes || !Boolean.TRUE.equals(cascade) ? null : applicableDebitTransactionTypes.stream().map(debitAccountTransactionType -> debitAccountTransactionType.copy(false)).collect(Collectors.toSet()))
+                .setApplicableCreditTransactionTypes(null == applicableCreditTransactionTypes || !Boolean.TRUE.equals(cascade) ? null : applicableCreditTransactionTypes.stream().map(creditAccountTransactionType -> creditAccountTransactionType.copy(false)).collect(Collectors.toSet()));
     }
 
     @JsonIgnore
@@ -82,10 +88,10 @@ public class AccountType {
             this.minimumBalance = setValuesFromThisInstance.minimumBalance;
         if (!nonNullOnly || null != setValuesFromThisInstance.notes)
             this.notes = setValuesFromThisInstance.notes;
-        if (!nonNullOnly || null != setValuesFromThisInstance.applicableFromTransactionTypes)
-            this.applicableFromTransactionTypes = setValuesFromThisInstance.applicableFromTransactionTypes;
-        if (!nonNullOnly || null != setValuesFromThisInstance.applicableToTransactionTypes)
-            this.applicableToTransactionTypes = setValuesFromThisInstance.applicableToTransactionTypes;
+        if (!nonNullOnly || null != setValuesFromThisInstance.applicableDebitTransactionTypes)
+            this.applicableDebitTransactionTypes = setValuesFromThisInstance.applicableDebitTransactionTypes;
+        if (!nonNullOnly || null != setValuesFromThisInstance.applicableCreditTransactionTypes)
+            this.applicableCreditTransactionTypes = setValuesFromThisInstance.applicableCreditTransactionTypes;
         if (!nonNullOnly || null != setValuesFromThisInstance.applicableForAccountOwnerTypes)
             this.applicableForAccountOwnerTypes = setValuesFromThisInstance.applicableForAccountOwnerTypes;
         return this;

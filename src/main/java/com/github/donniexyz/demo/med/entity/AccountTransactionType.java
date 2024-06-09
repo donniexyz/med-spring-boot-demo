@@ -39,12 +39,12 @@ public class AccountTransactionType {
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable
     @EqualsAndHashCode.Exclude
-    private Set<AccountType> applicableFromAccountTypes;
+    private Set<AccountType> applicableDebitAccountTypes;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable
     @EqualsAndHashCode.Exclude
-    private Set<AccountType> applicableToAccountTypes;
+    private Set<AccountType> applicableCreditAccountTypes;
 
     // -------------------------------------------------------------------------------------------------
 
@@ -56,8 +56,8 @@ public class AccountTransactionType {
     @JsonIgnore
     public AccountTransactionType copy(Boolean cascade) {
         return this
-                .withApplicableFromAccountTypes(null == applicableFromAccountTypes || !Boolean.TRUE.equals(cascade) ? null : applicableFromAccountTypes.stream().map(fromAccountType -> fromAccountType.copy(false)).collect(Collectors.toSet()))
-                .setApplicableToAccountTypes(null == applicableToAccountTypes || !Boolean.TRUE.equals(cascade) ? null : applicableToAccountTypes.stream().map(toAccountType -> toAccountType.copy(false)).collect(Collectors.toSet()));
+                .withApplicableDebitAccountTypes(null == applicableDebitAccountTypes || !Boolean.TRUE.equals(cascade) ? null : applicableDebitAccountTypes.stream().map(debitAccountType -> debitAccountType.copy(false)).collect(Collectors.toSet()))
+                .setApplicableCreditAccountTypes(null == applicableCreditAccountTypes || !Boolean.TRUE.equals(cascade) ? null : applicableCreditAccountTypes.stream().map(creditAccountType -> creditAccountType.copy(false)).collect(Collectors.toSet()));
     }
 
     @JsonIgnore
@@ -68,10 +68,10 @@ public class AccountTransactionType {
             this.name = setValuesFromThisInstance.name;
         if (!nonNullOnly || null != setValuesFromThisInstance.notes)
             this.notes = setValuesFromThisInstance.notes;
-        if (!nonNullOnly || null != setValuesFromThisInstance.applicableFromAccountTypes)
-            this.applicableFromAccountTypes = setValuesFromThisInstance.applicableFromAccountTypes;
-        if (!nonNullOnly || null != setValuesFromThisInstance.applicableToAccountTypes)
-            this.applicableToAccountTypes = setValuesFromThisInstance.applicableToAccountTypes;
+        if (!nonNullOnly || null != setValuesFromThisInstance.applicableDebitAccountTypes)
+            this.applicableDebitAccountTypes = setValuesFromThisInstance.applicableDebitAccountTypes;
+        if (!nonNullOnly || null != setValuesFromThisInstance.applicableCreditAccountTypes)
+            this.applicableCreditAccountTypes = setValuesFromThisInstance.applicableCreditAccountTypes;
         return this;
     }
 }
