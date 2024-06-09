@@ -13,6 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.money.CurrencyUnit;
+import javax.money.MonetaryAmount;
+
 import static com.github.donniexyz.demo.med.lib.CashAccountConstants.MA;
 
 @RestController
@@ -51,7 +54,13 @@ public class CashAccountController {
                 .filter(ot -> ot.getTypeCode().equals(accountOwnerType.getTypeCode())).findFirst()
                 .orElseThrow(() -> new RuntimeException("Invalid combination of owner type - account type"));
 
-        cashAccount.setAccountBalance(MA.ZERO_THROUGH_TEN_PER_CCY.get(accountType.getMinimumBalance().getCurrency())[0]);
+        CurrencyUnit currency;
+        if (null != accountType.getMinimumBalance()) {
+            currency = accountType.getMinimumBalance().getCurrency();
+        } else
+            currency = MA.ALLOWED_CURRENCIES.get(0);
+        MonetaryAmount accountBalance = MA.ZERO_THROUGH_TEN_PER_CCY.get(currency)[0];
+        cashAccount.setAccountBalance(accountBalance);
 
         return cashAccountRepository.save(cashAccount);
     }
@@ -73,5 +82,15 @@ public class CashAccountController {
         ca.setAccountType(null);
         fetchedFromDb.copyFrom(ca, true);
         return cashAccountRepository.save(fetchedFromDb);
+    }
+
+    @PostMapping("/changeId")
+    @Transactional
+    public CashAccount changeId(@RequestParam("from") Long from, @RequestParam("to") Long to) {
+        if (!from.equals(to)) {
+            int updatedCount = cashAccountRepository.changeId(from, to);
+            if (updatedCount < 1) throw new RuntimeException("Unable to update record");
+        }
+        return cashAccountRepository.findById(to).orElseThrow();
     }
 }

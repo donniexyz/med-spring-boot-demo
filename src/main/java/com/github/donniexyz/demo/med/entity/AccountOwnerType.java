@@ -55,4 +55,18 @@ public class AccountOwnerType {
     public AccountOwnerType copy(Boolean cascade) {
         return this.withTypeCode(this.typeCode);
     }
+
+    @JsonIgnore
+    public void copyFrom(AccountOwnerType setValuesFromThisInstance, boolean nonNullOnly) {
+        if (!nonNullOnly || null != setValuesFromThisInstance.typeCode)
+            this.typeCode = setValuesFromThisInstance.typeCode;
+        if (!nonNullOnly || null != setValuesFromThisInstance.name)
+            this.name = setValuesFromThisInstance.name;
+        if (!nonNullOnly || null != setValuesFromThisInstance.notes)
+            this.notes = setValuesFromThisInstance.notes;
+        if (!nonNullOnly || null != setValuesFromThisInstance.self)
+            this.self = setValuesFromThisInstance.self;
+        if (!nonNullOnly || null != setValuesFromThisInstance.individualOrGroup)
+            this.individualOrGroup = setValuesFromThisInstance.individualOrGroup;
+    }
 }

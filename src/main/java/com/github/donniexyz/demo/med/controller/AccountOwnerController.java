@@ -38,10 +38,32 @@ public class AccountOwnerController {
                                @RequestBody AccountOwner accountOwner) {
         AccountOwner fetchedFromDb = accountOwnerRepository.findById(id).orElseThrow();
         // cannot change ownerType
-        if (!fetchedFromDb.getType().getTypeCode().equals(accountOwner.getType().getTypeCode()))
+        if (null != accountOwner.getType() && !fetchedFromDb.getType().getTypeCode().equals(accountOwner.getType().getTypeCode()))
+            throw new RuntimeException("Not allowed to change type");
+        accountOwner.setType(fetchedFromDb.getType());
+        return accountOwnerRepository.save(accountOwner);
+    }
+
+    @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
+    public AccountOwner patch(@PathVariable("id") Long id,
+                               @RequestBody AccountOwner accountOwner) {
+        AccountOwner fetchedFromDb = accountOwnerRepository.findById(id).orElseThrow();
+        // cannot change ownerType
+        if (null != accountOwner.getType() && !fetchedFromDb.getType().getTypeCode().equals(accountOwner.getType().getTypeCode()))
             throw new RuntimeException("Not allowed to change type");
         accountOwner.setType(null);
         fetchedFromDb.copyFrom(accountOwner, true);
         return accountOwnerRepository.save(fetchedFromDb);
+    }
+
+    @PostMapping("/changeId")
+    @Transactional
+    public AccountOwner changeId(@RequestParam("from") Long from, @RequestParam("to") Long to) {
+        if (!from.equals(to)) {
+            int updatedCount = accountOwnerRepository.changeId(from, to);
+            if (updatedCount < 1) throw new RuntimeException("Unable to update record");
+        }
+        return accountOwnerRepository.findById(to).orElseThrow();
     }
 }
