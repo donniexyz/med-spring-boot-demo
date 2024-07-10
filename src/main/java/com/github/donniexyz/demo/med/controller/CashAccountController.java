@@ -9,6 +9,8 @@ import com.github.donniexyz.demo.med.repository.AccountOwnerTypeRepository;
 import com.github.donniexyz.demo.med.repository.AccountTypeRepository;
 import com.github.donniexyz.demo.med.repository.CashAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +38,12 @@ public class CashAccountController {
 
     @GetMapping("/{id}")
     public CashAccount get(@PathVariable("id") Long id) {
-        return cashAccountRepository.getReferenceById(id);
+        return cashAccountRepository.findById(id).orElseThrow();
+    }
+
+    @GetMapping("/")
+    public Page<CashAccount> getAll(Pageable pageable) {
+        return cashAccountRepository.findAll(null == pageable ? Pageable.unpaged() : pageable);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
