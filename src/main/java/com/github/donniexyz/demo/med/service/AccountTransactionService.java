@@ -58,8 +58,8 @@ public class AccountTransactionService {
                 .orElseThrow(() -> new RuntimeException("Invalid combination of trx type - to account type"));
 
         // no currency conversion for now
-        if (!accountTransaction.getTransactionAmount().getCurrency().equals(debitAccountType.getMinimumBalance().getCurrency())
-                || !accountTransaction.getTransactionAmount().getCurrency().equals(creditAccountType.getMinimumBalance().getCurrency())) {
+        if ((null != debitAccountType.getMinimumBalance() && !accountTransaction.getTransactionAmount().getCurrency().equals(debitAccountType.getMinimumBalance().getCurrency()))
+                || (null != creditAccountType.getMinimumBalance() && !accountTransaction.getTransactionAmount().getCurrency().equals(creditAccountType.getMinimumBalance().getCurrency()))) {
             throw new RuntimeException("Invalid combination of currencies");
         }
 
