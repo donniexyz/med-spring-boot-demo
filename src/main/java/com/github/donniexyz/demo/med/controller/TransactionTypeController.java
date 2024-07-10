@@ -33,6 +33,7 @@ public class TransactionTypeController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
     public AccountTransactionType create(@RequestBody AccountTransactionType accountTransactionType) {
         String typeCode = accountTransactionType.getTypeCode();
         if (transactionTypeRepository.existsById(typeCode))
@@ -61,6 +62,7 @@ public class TransactionTypeController {
     }
 
     @PutMapping(path = "/{typeCode}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
     public AccountTransactionType update(@PathVariable("typeCode") String typeCode, @RequestBody AccountTransactionType accountTransactionType) {
         AccountTransactionType fetchedFromDb = transactionTypeRepository.findById(typeCode).orElseThrow();
 
@@ -90,6 +92,7 @@ public class TransactionTypeController {
     }
 
     @PatchMapping(path = "/{typeCode}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
     public AccountTransactionType patch(@PathVariable("typeCode") String typeCode, @RequestBody AccountTransactionType accountTransactionType) {
         AccountTransactionType fetchedFromDb = transactionTypeRepository.findById(typeCode).orElseThrow();
 
