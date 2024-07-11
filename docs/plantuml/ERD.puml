@@ -17,7 +17,6 @@ class AccountHistory {
 - LocalDateTime transactionDate
 - String description
 - CashAccount account
-+ AccountHistory copy()
 }
 
 
@@ -38,7 +37,6 @@ class CashAccount {
 - List<AccountHistory> accountHistories
 - AccountOwner accountOwner
 - AccountType accountType
-+ CashAccount copy()
 }
 
 
@@ -50,7 +48,6 @@ class AccountOwner {
 - String phoneNumber
 - String notes
 - AccountOwnerType type
-+ AccountOwner copy()
 }
 
 
@@ -71,7 +68,6 @@ class AccountTransaction {
 - AccountTransactionType type
 - CashAccount fromAccount
 - CashAccount toAccount
-+ AccountTransaction copy()
 }
 
 AccountType ||..|{ AccountTransactionType :(join table) applicable for from* & to*

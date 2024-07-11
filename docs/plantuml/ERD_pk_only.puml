@@ -1,0 +1,55 @@
+@startuml
+
+package "transaction entities" <<Frame>> {
+    class AccountHistory {
+    - Long **id**
+    - CashAccount account
+    }
+    class CashAccount {
+    - Long **id**
+    - List<AccountHistory> accountHistories
+    - AccountOwner accountOwner
+    - AccountType accountType
+    }
+    class AccountOwner {
+    - Long **id**
+    - AccountOwnerType type
+    + AccountOwner copy()
+    }
+    class AccountTransaction {
+    - Long **id**
+    - AccountTransactionType type
+    - CashAccount fromAccount
+    - CashAccount toAccount
+    }
+}
+
+package "configuration entities" <<Frame>> {
+    class AccountType {
+    - String **typeCode**
+    - Set<AccountTransactionType> applicableFromTransactionTypes
+    - Set<AccountTransactionType> applicableToTransactionTypes
+    - Set<AccountOwnerType> applicableForAccountOwnerTypes
+    }
+    class AccountTransactionType {
+    - String **typeCode**
+    - Set<AccountType> applicableFromAccountTypes
+    - Set<AccountType> applicableToAccountTypes
+    }
+    class AccountOwnerType {
+    - String **typeCode**
+    - IndividualGroupEnum individualOrGroup
+    }
+}
+
+CashAccount ||.|{ AccountType
+CashAccount ||..|{ AccountHistory
+CashAccount ||..|{ AccountTransaction
+
+AccountType ||..|{ AccountTransactionType
+AccountType ||..|{ AccountOwnerType
+
+AccountOwnerType ||..|{ AccountOwner
+AccountTransactionType ||.|{ AccountTransaction
+
+@enduml
