@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.WithBy;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,6 +31,8 @@ import java.util.stream.Collectors;
 @Entity
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonNullLazyFieldsFilter.class)
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class AccountTransactionType {
     @Id
     private String typeCode;

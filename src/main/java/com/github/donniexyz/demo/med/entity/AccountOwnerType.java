@@ -4,13 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.enums.IndividualGroupEnum;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.WithBy;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * <ul>
@@ -30,6 +28,8 @@ import lombok.experimental.WithBy;
 @Entity
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class AccountOwnerType {
     @Id
     private String typeCode;
