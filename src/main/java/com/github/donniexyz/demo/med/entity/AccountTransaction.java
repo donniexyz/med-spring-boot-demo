@@ -36,7 +36,7 @@ public class AccountTransaction {
     private LocalDateTime transactionDate;
     private String notes;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type_code")
     private AccountTransactionType type;
 

@@ -52,7 +52,7 @@ public class CashAccount {
     @EqualsAndHashCode.Exclude
     private AccountOwner accountOwner;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type_code")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

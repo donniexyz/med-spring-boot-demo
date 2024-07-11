@@ -39,7 +39,7 @@ public class AccountOwner {
 
     // Other relevant fields (e.g., address, phone number, etc.)
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type_code")
     private AccountOwnerType type;
 
