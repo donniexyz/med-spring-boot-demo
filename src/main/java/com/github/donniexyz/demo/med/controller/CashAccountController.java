@@ -11,6 +11,7 @@ import com.github.donniexyz.demo.med.repository.CashAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +47,11 @@ public class CashAccountController {
     @GetMapping("/")
     @Transactional(readOnly = true)
     public Page<CashAccount> getAll(Pageable pageable) {
-        return cashAccountRepository.findAll(null == pageable ? Pageable.unpaged() : pageable)
+        Specification<CashAccount> cashAccountSpecification = (root, query, criteriaBuilder) -> {
+            root.fetch("accountOwner");
+            return criteriaBuilder.conjunction();
+        };
+        return cashAccountRepository.findAll(cashAccountSpecification, null == pageable ? Pageable.unpaged() : pageable)
                 .map(ca -> ca.copy());
     }
 
