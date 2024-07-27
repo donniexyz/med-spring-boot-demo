@@ -7,6 +7,7 @@ import com.github.donniexyz.demo.med.repository.AccountTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
@@ -33,6 +34,10 @@ public class AccountTypeController {
     public AccountType create(@RequestBody AccountType accountType) {
         if (accountTypeRepository.existsById(accountType.getTypeCode()))
             throw new RuntimeException("Record already exists");
+        accountType.setApplicableForAccountOwnerTypes(
+                CollectionUtils.isEmpty(accountType.getApplicableForAccountOwnerTypes()) ? null
+                        : new HashSet<>(accountOwnerTypeRepository.findAllById(accountType.getApplicableForAccountOwnerTypes().stream().map(AccountOwnerType::getTypeCode).collect(Collectors.toSet()))
+                ));
         return accountTypeRepository.save(accountType);
     }
 

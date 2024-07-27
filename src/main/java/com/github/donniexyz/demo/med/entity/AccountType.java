@@ -2,6 +2,9 @@ package com.github.donniexyz.demo.med.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
+import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
+import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
 import com.github.donniexyz.demo.med.enums.BalanceSheetComponentEnum;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.NonNullLazyFieldsFilter;
 import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
@@ -9,12 +12,15 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.WithBy;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.CompositeType;
+import org.hibernate.annotations.*;
+import org.jetbrains.annotations.NotNull;
 
 import javax.money.MonetaryAmount;
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * <ul>
@@ -37,7 +43,11 @@ import java.util.stream.Collectors;
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonNullLazyFieldsFilter.class)
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-public class AccountType {
+public class AccountType implements IBaseEntity<AccountType>, IHasCopy<AccountType>, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -5832102092513250717L;
+
     @Id
     private String typeCode;
     private String name;
@@ -64,19 +74,57 @@ public class AccountType {
     @EqualsAndHashCode.Exclude
     private Set<AccountOwnerType> applicableForAccountOwnerTypes;
 
+    // ==============================================================
+    // BaseEntity fields
+    //---------------------------------------------------------------
+
+    @Formula("true")
+    @JsonIgnore
+    private transient Boolean retrievedFromDb;
+
+    @Version
+    private Integer version;
+
+    @CreationTimestamp
+    private OffsetDateTime createdDateTime;
+
+    @CurrentTimestamp
+    private OffsetDateTime lastModifiedDate;
+
+    /**
+     * Explaining the status of this record:
+     * A: Active
+     * I: Inactive
+     * D: Soft Deleted (will be hidden from .findAll() because entities has @Where(statusMajor not in ['D', 'R', 'V'])
+     * R: Reserved (on case bulk creation of records, but the records actually not yet in use)
+     * V: Marked for archival
+     */
+    private Character recordStatusMajor;
+
+    /**
+     * Further explaining the record status. Not handled by common libs. To be handled by individual lib.
+     */
+    private Character statusMinor;
+
     // --------------------------------------------------------------------------
 
     @JsonIgnore
-    public AccountType copy() {
-        return copy(null);
+
+    public AccountType copy(Boolean cascade) {
+        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
+                .setApplicableForAccountOwnerTypes(BaseEntity.cascadeSet(cascade, AccountOwnerType.class, applicableForAccountOwnerTypes))
+                .setApplicableDebitTransactionTypes(BaseEntity.cascadeSet(cascade, AccountTransactionType.class, applicableDebitTransactionTypes))
+                .setApplicableCreditTransactionTypes(BaseEntity.cascadeSet(cascade, AccountTransactionType.class, applicableCreditTransactionTypes))
+                ;
     }
 
     @JsonIgnore
-    public AccountType copy(Boolean cascade) {
-        return this
-                .withApplicableForAccountOwnerTypes(null == applicableForAccountOwnerTypes || !Boolean.TRUE.equals(cascade) ? null : applicableForAccountOwnerTypes.stream().map(accountOwnerType -> accountOwnerType.copy(false)).collect(Collectors.toSet()))
-                .setApplicableDebitTransactionTypes(null == applicableDebitTransactionTypes || !Boolean.TRUE.equals(cascade) ? null : applicableDebitTransactionTypes.stream().map(debitAccountTransactionType -> debitAccountTransactionType.copy(false)).collect(Collectors.toSet()))
-                .setApplicableCreditTransactionTypes(null == applicableCreditTransactionTypes || !Boolean.TRUE.equals(cascade) ? null : applicableCreditTransactionTypes.stream().map(creditAccountTransactionType -> creditAccountTransactionType.copy(false)).collect(Collectors.toSet()));
+    public AccountType copy(@NotNull List<String> relFields) {
+        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
+                .setApplicableForAccountOwnerTypes(BaseEntity.cascadeSet("applicableForAccountOwnerTypes", relFields, AccountOwnerType.class, applicableForAccountOwnerTypes))
+                .setApplicableDebitTransactionTypes(BaseEntity.cascadeSet("applicableDebitTransactionTypes", relFields, AccountTransactionType.class, applicableDebitTransactionTypes))
+                .setApplicableCreditTransactionTypes(BaseEntity.cascadeSet("applicableCreditTransactionTypes", relFields, AccountTransactionType.class, applicableCreditTransactionTypes))
+                ;
     }
 
     @JsonIgnore

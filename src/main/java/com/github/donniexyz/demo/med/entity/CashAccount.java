@@ -3,6 +3,9 @@ package com.github.donniexyz.demo.med.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
+import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
+import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
 import com.github.donniexyz.demo.med.lib.CashAccountUtilities;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
 import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
@@ -11,9 +14,17 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.WithBy;
 import org.hibernate.annotations.CompositeType;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.CurrentTimestamp;
+import org.hibernate.annotations.Formula;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.money.MonetaryAmount;
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +37,11 @@ import java.util.stream.Collectors;
 @Entity
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
-public class CashAccount {
+public class CashAccount implements IBaseEntity<CashAccount>, IHasCopy<CashAccount>, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1968894442408558988L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,6 +59,7 @@ public class CashAccount {
     @JsonManagedReference
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<AccountHistory> accountHistories;
 
     @ManyToOne
@@ -58,17 +74,60 @@ public class CashAccount {
     @EqualsAndHashCode.Exclude
     private AccountType accountType;
 
+    // ==============================================================
+    // BaseEntity fields
+    //---------------------------------------------------------------
+
+    @Formula("true")
+    @JsonIgnore
+    @Transient
+    @org.springframework.data.annotation.Transient
+    private transient Boolean retrievedFromDb;
+
+    @Version
+    private Integer version;
+
+    @CreationTimestamp
+    private OffsetDateTime createdDateTime;
+
+    @CurrentTimestamp
+    private OffsetDateTime lastModifiedDate;
+
+    /**
+     * Explaining the status of this record:
+     * A: Active
+     * I: Inactive
+     * D: Soft Deleted (will be hidden from .findAll() because entities has @Where(statusMajor not in ['D', 'R', 'V'])
+     * R: Reserved (on case bulk creation of records, but the records actually not yet in use)
+     * V: Marked for archival
+     */
+    private Character recordStatusMajor;
+
+    /**
+     * Further explaining the record status. Not handled by common libs. To be handled by individual lib.
+     */
+    private Character statusMinor;
+
     // ------------------------------------------------------
 
     @JsonIgnore
-    public CashAccount copy() {
-        return copy(null);
+    public CashAccount copy(Boolean cascade) {
+        return this
+                .withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
+                .setAccountOwner(BaseEntity.cascade(cascade, AccountOwner.class, accountOwner))
+                .setAccountType(BaseEntity.cascade(cascade, AccountType.class, accountType))
+                .setAccountHistories(BaseEntity.cascade(cascade, AccountHistory.class, accountHistories))
+                ;
     }
 
-    public CashAccount copy(Boolean cascade) {
-        return this.withAccountOwner(null == accountOwner || Boolean.FALSE.equals(cascade) ? null : accountOwner.copy(false))
-                .setAccountType(null == accountType || Boolean.FALSE.equals(cascade) ? null : accountType.copy(false))
-                .setAccountHistories(null == accountHistories || !Boolean.TRUE.equals(cascade) ? null : accountHistories.stream().map(accountHistory -> accountHistory.copy(false)).collect(Collectors.toList()));
+    @JsonIgnore
+    public CashAccount copy(@NotNull List<String> relFields) {
+        return this
+                .withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
+                .setAccountOwner(BaseEntity.cascade("accountOwner", relFields, AccountOwner.class, accountOwner))
+                .setAccountType(BaseEntity.cascade("accountType", relFields, AccountType.class, accountType))
+                .setAccountHistories(BaseEntity.cascade("accountHistories", relFields, AccountHistory.class, accountHistories))
+                ;
     }
 
     @JsonIgnore

@@ -37,13 +37,17 @@ public class CashAccountController {
     private AccountOwnerTypeRepository accountOwnerTypeRepository;
 
     @GetMapping("/{id}")
-    public CashAccount get(@PathVariable("id") Long id) {
-        return cashAccountRepository.findById(id).orElseThrow();
+    @Transactional(readOnly = true)
+    public CashAccount get(@PathVariable("id") Long id,
+                           @RequestParam(value = "cascade", required = false) String cascade) {
+        return cashAccountRepository.findById(id).orElseThrow().copy(null == cascade || cascade.isEmpty() ? null : "true".equals(cascade));
     }
 
     @GetMapping("/")
+    @Transactional(readOnly = true)
     public Page<CashAccount> getAll(Pageable pageable) {
-        return cashAccountRepository.findAll(null == pageable ? Pageable.unpaged() : pageable);
+        return cashAccountRepository.findAll(null == pageable ? Pageable.unpaged() : pageable)
+                .map(ca -> ca.copy());
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -60,6 +64,7 @@ public class CashAccountController {
         cashAccount.getAccountType().getApplicableForAccountOwnerTypes().stream()
                 .filter(ot -> ot.getTypeCode().equals(accountOwnerType.getTypeCode())).findFirst()
                 .orElseThrow(() -> new RuntimeException("Invalid combination of owner type - account type"));
+        cashAccount.setAccountOwner(accountOwner);
 
         CurrencyUnit currency;
         if (null != accountType.getMinimumBalance()) {
