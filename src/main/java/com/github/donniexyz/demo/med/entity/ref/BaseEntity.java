@@ -2,12 +2,14 @@ package com.github.donniexyz.demo.med.entity.ref;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
+import lombok.experimental.FieldNameConstants;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.CurrentTimestamp;
@@ -31,6 +33,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
+@FieldNameConstants(asEnum = true)
 public class BaseEntity implements IBaseEntity {
 
     // ==============================================================
@@ -39,6 +42,9 @@ public class BaseEntity implements IBaseEntity {
 
     @Formula("true")
     @JsonIgnore
+    @Transient
+    @org.springframework.data.annotation.Transient
+    @FieldNameConstants.Exclude
     private transient Boolean retrievedFromDb;
 
     @Version

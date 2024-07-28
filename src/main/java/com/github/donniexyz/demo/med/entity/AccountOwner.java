@@ -5,10 +5,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
+import com.github.donniexyz.demo.med.lib.PatchMapper;
+import com.github.donniexyz.demo.med.lib.PutMapper;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.experimental.FieldNameConstants;
 import lombok.experimental.SuperBuilder;
 import lombok.experimental.WithBy;
 import org.hibernate.annotations.CreationTimestamp;
@@ -39,6 +42,7 @@ import java.util.List;
 @Entity
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
+@FieldNameConstants(asEnum = true)
 public class AccountOwner implements IBaseEntity<AccountOwner>, IHasCopy<AccountOwner>, Serializable {
 
     @Serial
@@ -66,6 +70,9 @@ public class AccountOwner implements IBaseEntity<AccountOwner>, IHasCopy<Account
 
     @Formula("true")
     @JsonIgnore
+    @Transient
+    @org.springframework.data.annotation.Transient
+    @FieldNameConstants.Exclude
     private transient Boolean retrievedFromDb;
 
     @Version
@@ -104,25 +111,14 @@ public class AccountOwner implements IBaseEntity<AccountOwner>, IHasCopy<Account
     @JsonIgnore
     public AccountOwner copy(@NonNull List<String> relFields) {
         return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setType(BaseEntity.cascade("type", relFields, AccountOwnerType.class, type))
+                .setType(BaseEntity.cascade(Fields.type.name(), relFields, AccountOwnerType.class, type))
                 ;
     }
 
     @JsonIgnore
-    public void copyFrom(AccountOwner setValuesFromThisInstance, boolean nonNullOnly) {
-        if (!nonNullOnly || null != setValuesFromThisInstance.id)
-            this.id = setValuesFromThisInstance.id;
-        if (!nonNullOnly || null != setValuesFromThisInstance.firstName)
-            this.firstName = setValuesFromThisInstance.firstName;
-        if (!nonNullOnly || null != setValuesFromThisInstance.lastName)
-            this.lastName = setValuesFromThisInstance.lastName;
-        if (!nonNullOnly || null != setValuesFromThisInstance.email)
-            this.email = setValuesFromThisInstance.email;
-        if (!nonNullOnly || null != setValuesFromThisInstance.phoneNumber)
-            this.phoneNumber = setValuesFromThisInstance.phoneNumber;
-        if (!nonNullOnly || null != setValuesFromThisInstance.notes)
-            this.notes = setValuesFromThisInstance.notes;
-        if (!nonNullOnly || null != setValuesFromThisInstance.type)
-            this.type = setValuesFromThisInstance.type;
+    public AccountOwner copyFrom(AccountOwner setValuesFromThisInstance, boolean nonNullOnly) {
+        return nonNullOnly
+                ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
+                : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
     }
 }

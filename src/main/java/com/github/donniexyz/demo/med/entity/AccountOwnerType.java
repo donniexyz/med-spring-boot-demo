@@ -6,10 +6,13 @@ import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
 import com.github.donniexyz.demo.med.enums.IndividualGroupEnum;
+import com.github.donniexyz.demo.med.lib.PatchMapper;
+import com.github.donniexyz.demo.med.lib.PutMapper;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.experimental.FieldNameConstants;
 import lombok.experimental.WithBy;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
@@ -42,6 +45,7 @@ import java.util.List;
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@FieldNameConstants(asEnum = true)
 public class AccountOwnerType implements IBaseEntity<AccountOwnerType>, IHasCopy<AccountOwnerType>, Serializable {
 
     @Serial
@@ -66,6 +70,9 @@ public class AccountOwnerType implements IBaseEntity<AccountOwnerType>, IHasCopy
 
     @Formula("true")
     @JsonIgnore
+    @Transient
+    @org.springframework.data.annotation.Transient
+    @FieldNameConstants.Exclude
     private transient Boolean retrievedFromDb;
 
     @Version
@@ -109,16 +116,9 @@ public class AccountOwnerType implements IBaseEntity<AccountOwnerType>, IHasCopy
     }
 
     @JsonIgnore
-    public void copyFrom(AccountOwnerType setValuesFromThisInstance, boolean nonNullOnly) {
-        if (!nonNullOnly || null != setValuesFromThisInstance.typeCode)
-            this.typeCode = setValuesFromThisInstance.typeCode;
-        if (!nonNullOnly || null != setValuesFromThisInstance.name)
-            this.name = setValuesFromThisInstance.name;
-        if (!nonNullOnly || null != setValuesFromThisInstance.notes)
-            this.notes = setValuesFromThisInstance.notes;
-        if (!nonNullOnly || null != setValuesFromThisInstance.self)
-            this.self = setValuesFromThisInstance.self;
-        if (!nonNullOnly || null != setValuesFromThisInstance.individualOrGroup)
-            this.individualOrGroup = setValuesFromThisInstance.individualOrGroup;
+    public AccountOwnerType copyFrom(AccountOwnerType setValuesFromThisInstance, boolean nonNullOnly) {
+        return nonNullOnly
+                ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
+                : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
     }
 }

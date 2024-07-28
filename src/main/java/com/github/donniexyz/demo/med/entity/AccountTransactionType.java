@@ -5,10 +5,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
+import com.github.donniexyz.demo.med.lib.PatchMapper;
+import com.github.donniexyz.demo.med.lib.PutMapper;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.NonNullLazyFieldsFilter;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.experimental.FieldNameConstants;
 import lombok.experimental.SuperBuilder;
 import lombok.experimental.WithBy;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -45,6 +48,7 @@ import java.util.Set;
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonNullLazyFieldsFilter.class)
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@FieldNameConstants(asEnum = true)
 public class AccountTransactionType implements IBaseEntity<AccountTransactionType>, IHasCopy<AccountTransactionType>, Serializable {
 
     @Serial
@@ -71,6 +75,9 @@ public class AccountTransactionType implements IBaseEntity<AccountTransactionTyp
 
     @Formula("true")
     @JsonIgnore
+    @Transient
+    @org.springframework.data.annotation.Transient
+    @FieldNameConstants.Exclude
     private transient Boolean retrievedFromDb;
 
     @Version
@@ -110,23 +117,15 @@ public class AccountTransactionType implements IBaseEntity<AccountTransactionTyp
     @JsonIgnore
     public AccountTransactionType copy(@NotNull List<String> relFields) {
         return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setApplicableDebitAccountTypes(BaseEntity.cascadeSet("applicableDebitAccountTypes", relFields, AccountType.class, applicableDebitAccountTypes))
-                .setApplicableCreditAccountTypes(BaseEntity.cascadeSet("applicableCreditAccountTypes", relFields, AccountType.class, applicableCreditAccountTypes))
+                .setApplicableDebitAccountTypes(BaseEntity.cascadeSet(Fields.applicableDebitAccountTypes.name(), relFields, AccountType.class, applicableDebitAccountTypes))
+                .setApplicableCreditAccountTypes(BaseEntity.cascadeSet(Fields.applicableCreditAccountTypes.name(), relFields, AccountType.class, applicableCreditAccountTypes))
                 ;
     }
 
     @JsonIgnore
     public AccountTransactionType copyFrom(AccountTransactionType setValuesFromThisInstance, boolean nonNullOnly) {
-        if (!nonNullOnly || null != setValuesFromThisInstance.typeCode)
-            this.typeCode = setValuesFromThisInstance.typeCode;
-        if (!nonNullOnly || null != setValuesFromThisInstance.name)
-            this.name = setValuesFromThisInstance.name;
-        if (!nonNullOnly || null != setValuesFromThisInstance.notes)
-            this.notes = setValuesFromThisInstance.notes;
-        if (!nonNullOnly || null != setValuesFromThisInstance.applicableDebitAccountTypes)
-            this.applicableDebitAccountTypes = setValuesFromThisInstance.applicableDebitAccountTypes;
-        if (!nonNullOnly || null != setValuesFromThisInstance.applicableCreditAccountTypes)
-            this.applicableCreditAccountTypes = setValuesFromThisInstance.applicableCreditAccountTypes;
-        return this;
+        return nonNullOnly
+                ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
+                : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
     }
 }

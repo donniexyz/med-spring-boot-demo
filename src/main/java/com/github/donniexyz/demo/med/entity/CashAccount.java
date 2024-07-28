@@ -7,11 +7,14 @@ import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
 import com.github.donniexyz.demo.med.lib.CashAccountUtilities;
+import com.github.donniexyz.demo.med.lib.PatchMapper;
+import com.github.donniexyz.demo.med.lib.PutMapper;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
 import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.experimental.FieldNameConstants;
 import lombok.experimental.WithBy;
 import org.hibernate.annotations.CompositeType;
 import org.hibernate.annotations.CreationTimestamp;
@@ -37,6 +40,7 @@ import java.util.stream.Collectors;
 @Entity
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
+@FieldNameConstants(asEnum = true)
 public class CashAccount implements IBaseEntity<CashAccount>, IHasCopy<CashAccount>, Serializable {
 
     @Serial
@@ -82,6 +86,7 @@ public class CashAccount implements IBaseEntity<CashAccount>, IHasCopy<CashAccou
     @JsonIgnore
     @Transient
     @org.springframework.data.annotation.Transient
+    @FieldNameConstants.Exclude
     private transient Boolean retrievedFromDb;
 
     @Version
@@ -124,31 +129,17 @@ public class CashAccount implements IBaseEntity<CashAccount>, IHasCopy<CashAccou
     public CashAccount copy(@NotNull List<String> relFields) {
         return this
                 .withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setAccountOwner(BaseEntity.cascade("accountOwner", relFields, AccountOwner.class, accountOwner))
-                .setAccountType(BaseEntity.cascade("accountType", relFields, AccountType.class, accountType))
-                .setAccountHistories(BaseEntity.cascade("accountHistories", relFields, AccountHistory.class, accountHistories))
+                .setAccountOwner(BaseEntity.cascade(Fields.accountOwner.name(), relFields, AccountOwner.class, accountOwner))
+                .setAccountType(BaseEntity.cascade(Fields.accountType.name(), relFields, AccountType.class, accountType))
+                .setAccountHistories(BaseEntity.cascade(Fields.accountHistories.name(), relFields, AccountHistory.class, accountHistories))
                 ;
     }
 
     @JsonIgnore
     public CashAccount copyFrom(CashAccount setValuesFromThisInstance, boolean nonNullOnly) {
-        if (!nonNullOnly || null != setValuesFromThisInstance.id)
-            this.id = setValuesFromThisInstance.id;
-        if (!nonNullOnly || null != setValuesFromThisInstance.title)
-            this.title = setValuesFromThisInstance.title;
-        if (!nonNullOnly || null != setValuesFromThisInstance.accountBalance)
-            this.accountBalance = setValuesFromThisInstance.accountBalance;
-        if (!nonNullOnly || null != setValuesFromThisInstance.lastTransactionDate)
-            this.lastTransactionDate = setValuesFromThisInstance.lastTransactionDate;
-        if (!nonNullOnly || null != setValuesFromThisInstance.notes)
-            this.notes = setValuesFromThisInstance.notes;
-        if (!nonNullOnly || null != setValuesFromThisInstance.accountHistories)
-            this.accountHistories = setValuesFromThisInstance.accountHistories;
-        if (!nonNullOnly || null != setValuesFromThisInstance.accountOwner)
-            this.accountOwner = setValuesFromThisInstance.accountOwner;
-        if (!nonNullOnly || null != setValuesFromThisInstance.accountType)
-            this.accountType = setValuesFromThisInstance.accountType;
-        return this;
+        return nonNullOnly
+                ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
+                : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
     }
 
     @JsonIgnore

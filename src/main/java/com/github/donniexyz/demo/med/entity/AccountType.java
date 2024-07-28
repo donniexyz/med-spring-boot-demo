@@ -6,11 +6,14 @@ import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
 import com.github.donniexyz.demo.med.enums.BalanceSheetComponentEnum;
+import com.github.donniexyz.demo.med.lib.PatchMapper;
+import com.github.donniexyz.demo.med.lib.PutMapper;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.NonNullLazyFieldsFilter;
 import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.experimental.FieldNameConstants;
 import lombok.experimental.WithBy;
 import org.hibernate.annotations.*;
 import org.jetbrains.annotations.NotNull;
@@ -43,6 +46,7 @@ import java.util.Set;
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonNullLazyFieldsFilter.class)
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@FieldNameConstants(asEnum = true)
 public class AccountType implements IBaseEntity<AccountType>, IHasCopy<AccountType>, Serializable {
 
     @Serial
@@ -63,10 +67,12 @@ public class AccountType implements IBaseEntity<AccountType>, IHasCopy<AccountTy
 
     @ManyToMany(mappedBy = "applicableDebitAccountTypes")
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<AccountTransactionType> applicableDebitTransactionTypes;
 
     @ManyToMany(mappedBy = "applicableCreditAccountTypes")
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<AccountTransactionType> applicableCreditTransactionTypes;
 
     @ManyToMany
@@ -80,6 +86,9 @@ public class AccountType implements IBaseEntity<AccountType>, IHasCopy<AccountTy
 
     @Formula("true")
     @JsonIgnore
+    @Transient
+    @org.springframework.data.annotation.Transient
+    @FieldNameConstants.Exclude
     private transient Boolean retrievedFromDb;
 
     @Version
@@ -121,30 +130,16 @@ public class AccountType implements IBaseEntity<AccountType>, IHasCopy<AccountTy
     @JsonIgnore
     public AccountType copy(@NotNull List<String> relFields) {
         return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setApplicableForAccountOwnerTypes(BaseEntity.cascadeSet("applicableForAccountOwnerTypes", relFields, AccountOwnerType.class, applicableForAccountOwnerTypes))
-                .setApplicableDebitTransactionTypes(BaseEntity.cascadeSet("applicableDebitTransactionTypes", relFields, AccountTransactionType.class, applicableDebitTransactionTypes))
-                .setApplicableCreditTransactionTypes(BaseEntity.cascadeSet("applicableCreditTransactionTypes", relFields, AccountTransactionType.class, applicableCreditTransactionTypes))
+                .setApplicableForAccountOwnerTypes(BaseEntity.cascadeSet(Fields.applicableForAccountOwnerTypes.name(), relFields, AccountOwnerType.class, applicableForAccountOwnerTypes))
+                .setApplicableDebitTransactionTypes(BaseEntity.cascadeSet(Fields.applicableDebitTransactionTypes.name(), relFields, AccountTransactionType.class, applicableDebitTransactionTypes))
+                .setApplicableCreditTransactionTypes(BaseEntity.cascadeSet(Fields.applicableCreditTransactionTypes.name(), relFields, AccountTransactionType.class, applicableCreditTransactionTypes))
                 ;
     }
 
     @JsonIgnore
     public AccountType copyFrom(AccountType setValuesFromThisInstance, boolean nonNullOnly) {
-        if (!nonNullOnly || null != setValuesFromThisInstance.typeCode)
-            this.typeCode = setValuesFromThisInstance.typeCode;
-        if (!nonNullOnly || null != setValuesFromThisInstance.name)
-            this.name = setValuesFromThisInstance.name;
-        if (!nonNullOnly || null != setValuesFromThisInstance.balanceSheetEntry)
-            this.balanceSheetEntry = setValuesFromThisInstance.balanceSheetEntry;
-        if (!nonNullOnly || null != setValuesFromThisInstance.minimumBalance)
-            this.minimumBalance = setValuesFromThisInstance.minimumBalance;
-        if (!nonNullOnly || null != setValuesFromThisInstance.notes)
-            this.notes = setValuesFromThisInstance.notes;
-        if (!nonNullOnly || null != setValuesFromThisInstance.applicableDebitTransactionTypes)
-            this.applicableDebitTransactionTypes = setValuesFromThisInstance.applicableDebitTransactionTypes;
-        if (!nonNullOnly || null != setValuesFromThisInstance.applicableCreditTransactionTypes)
-            this.applicableCreditTransactionTypes = setValuesFromThisInstance.applicableCreditTransactionTypes;
-        if (!nonNullOnly || null != setValuesFromThisInstance.applicableForAccountOwnerTypes)
-            this.applicableForAccountOwnerTypes = setValuesFromThisInstance.applicableForAccountOwnerTypes;
-        return this;
+        return nonNullOnly
+                ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
+                : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
     }
 }

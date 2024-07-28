@@ -11,6 +11,7 @@ import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.experimental.FieldNameConstants;
 import lombok.experimental.WithBy;
 import org.hibernate.annotations.CompositeType;
 import org.hibernate.annotations.CreationTimestamp;
@@ -35,6 +36,7 @@ import java.util.List;
 @Entity
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
+@FieldNameConstants(asEnum = true)
 public class AccountHistory implements IBaseEntity<AccountHistory>, IHasCopy<AccountHistory>, Serializable {
 
     @Serial
@@ -66,6 +68,9 @@ public class AccountHistory implements IBaseEntity<AccountHistory>, IHasCopy<Acc
 
     @Formula("true")
     @JsonIgnore
+    @Transient
+    @org.springframework.data.annotation.Transient
+    @FieldNameConstants.Exclude
     private transient Boolean retrievedFromDb;
 
     @Version
@@ -104,7 +109,7 @@ public class AccountHistory implements IBaseEntity<AccountHistory>, IHasCopy<Acc
     @JsonIgnore
     public AccountHistory copy(@NotNull List<String> relFields) {
         return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setAccount(BaseEntity.cascade("account", relFields, CashAccount.class, account))
+                .setAccount(BaseEntity.cascade(Fields.account.name(), relFields, CashAccount.class, account))
                 ;
     }
 
