@@ -1290,7 +1290,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"transactionAmount\": 1000000,\r\n    \"label\": \"Increase clearing account by 1mil\",\r\n    \"notes\": \"Increase clearing account by 1mil\",\r\n    \"fromAccount\": {\r\n        \"id\": 12\r\n    },\r\n    \"toAccount\": {\r\n        \"id\": 13\r\n    },\r\n    \"type\": {\r\n        \"typeCode\": \"INCREASE_CLEARING\"\r\n    }\r\n}",
+							"raw": "{\r\n    \"transactionAmount\": \"USD 1000000\",\r\n    \"label\": \"Increase clearing account by 1mil\",\r\n    \"notes\": \"Increase clearing account by 1mil\",\r\n    \"debitAccount\": {\r\n        \"id\": 1\r\n    },\r\n    \"creditAccount\": {\r\n        \"id\": 3\r\n    },\r\n    \"type\": {\r\n        \"typeCode\": \"INCREASE_CLEARING\"\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4491,7 +4491,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"title\": \"Bank Internal Cash Account Asset\",\r\n    \"notes\": \"Bank Internal Cash Account Asset - under Finance Dept\",\r\n    \"accountOwner\": {\r\n        \"id\": 0\r\n    },\r\n    \"accountType\": {\r\n        \"typeCode\": \"INTERNAL_DR\"\r\n    }\r\n}",
+									"raw": "{\r\n    \"title\": \"Bank Internal Cash Account Liabilities\",\r\n    \"notes\": \"Bank Internal Cash Account Liabilities - under Finance Dept\",\r\n    \"accountOwner\": {\r\n        \"id\": 0\r\n    },\r\n    \"accountType\": {\r\n        \"typeCode\": \"INTERNAL_DR\"\r\n    }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -4585,7 +4585,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"title\": \"Bank Internal Cash Account Liabilities\",\r\n    \"notes\": \"Bank Internal Cash Account Liabilities - under Finance Dept\",\r\n    \"accountOwner\": {\r\n        \"id\": 0\r\n    },\r\n    \"accountType\": {\r\n        \"typeCode\": \"INTERNAL_CR\"\r\n    }\r\n}",
+									"raw": "{\r\n    \"title\": \"Bank Internal Cash Account Assets\",\r\n    \"notes\": \"Bank Internal Cash Account Assets - under Finance Dept\",\r\n    \"accountOwner\": {\r\n        \"id\": 0\r\n    },\r\n    \"accountType\": {\r\n        \"typeCode\": \"INTERNAL_CR\"\r\n    }\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -5230,13 +5230,37 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{med_server}}/cashAccount/1",
+					"raw": "{{med_server}}/cashAccount/:accNo",
 					"host": [
 						"{{med_server}}"
 					],
 					"path": [
 						"cashAccount",
-						"1"
+						":accNo"
+					],
+					"variable": [
+						{
+							"key": "accNo",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get Account All",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{med_server}}/cashAccount/",
+					"host": [
+						"{{med_server}}"
+					],
+					"path": [
+						"cashAccount",
+						""
 					]
 				}
 			},

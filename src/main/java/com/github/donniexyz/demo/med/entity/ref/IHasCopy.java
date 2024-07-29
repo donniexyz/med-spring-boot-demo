@@ -21,28 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.donniexyz.demo.med.converter;
+package com.github.donniexyz.demo.med.entity.ref;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.NonNull;
 
-import javax.money.MonetaryAmount;
-import java.io.IOException;
+import java.util.List;
 
-public class MonetaryAmountSerializer extends StdSerializer<MonetaryAmount> {
+public interface IHasCopy<T> {
 
-    public MonetaryAmountSerializer() {
-        super(MonetaryAmount.class);
+    @JsonIgnore
+    default T copy() {
+        return copy((Boolean) null);
     }
 
-    public MonetaryAmountSerializer(Class<?> vc) {
-        super(vc, false);
-    }
+    @JsonIgnore
+    T copy(Boolean cascade);
 
-    @Override
-    public void serialize(MonetaryAmount value, JsonGenerator json, SerializerProvider provider) throws IOException {
-        json.writeString(value.toString());
-    }
+    @JsonIgnore
+    T copy(@NonNull List<String> relFields);
 
 }
