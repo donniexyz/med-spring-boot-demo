@@ -24,27 +24,46 @@
 package com.github.donniexyz.demo.med.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 import java.util.stream.Stream;
 
+@Getter
 public enum BalanceSheetComponentEnum {
 
-    ASSETS('A', "Assets"),
-    LIABILITIES('L', "Liabilities"),
-    EQUITY('E', "Equity"),
+    ASSETS('A', "Assets", true, false),
+    LIABILITIES('L', "Liabilities", false, true),
+    EQUITY('E', "Equity", false, true),
+    REVENUES('R', "Revenues", false, true),
+    EXPENSES('X', "Expenses", true, false),
+
+    /**
+     * PnL Loss account
+     * Do not use PnL account unless during PnL recognitions process (usually EndOfYear process).
+     */
+    LOSS('O', "Loss", true, false),
+
+    /**
+     * PnL Profit or Gain account
+     * Do not use PnL account unless during PnL recognitions process (usually EndOfYear process).
+     */
+    GAIN('G', "Profit", false, true),
     ;
 
     private final char symbol;
-    @Getter
     private final String label;
+    private final boolean increaseInDebit;
+    private final boolean increaseInCredit;
 
     // --------------------------------------------------------------
 
-    BalanceSheetComponentEnum(char symbol, String label) {
+    BalanceSheetComponentEnum(char symbol, String label, boolean increaseInDebit, boolean increaseInCredit) {
         this.symbol = symbol;
         this.label = label;
+        this.increaseInDebit = increaseInDebit;
+        this.increaseInCredit = increaseInCredit;
     }
 
     @JsonValue
@@ -64,6 +83,13 @@ public enum BalanceSheetComponentEnum {
                 .orElseThrow(() -> new IllegalArgumentException("Unknown value:" + code));
     }
 
+    @JsonIgnore
+    public boolean isToBeIncreased(DebitCreditEnum debitCreditSign) {
+        return DebitCreditEnum.DEBIT.equals(debitCreditSign) ? increaseInDebit : increaseInCredit;
+    }
+
+    // -----------------------------------------------------------------------------------------------
+    // static methods
     public static BalanceSheetComponentEnum forValue(char code) {
         return Stream.of(BalanceSheetComponentEnum.values())
                 .filter(e -> e.symbol == code)
@@ -71,5 +97,11 @@ public enum BalanceSheetComponentEnum {
                 .orElseThrow(() -> new IllegalArgumentException("Unknown value:" + code));
     }
 
+    public static boolean isToBeIncreased(BalanceSheetComponentEnum balanceSheetEntry, DebitCreditEnum debitCreditSign) {
+        return switch (debitCreditSign) {
+            case DEBIT -> balanceSheetEntry.isIncreaseInDebit();
+            case CREDIT -> balanceSheetEntry.isIncreaseInCredit();
+        };
+    }
 
 }

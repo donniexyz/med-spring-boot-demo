@@ -26,6 +26,7 @@ package com.github.donniexyz.demo.med.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
@@ -48,7 +49,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Set;
 
 /**
  * <ul>
@@ -72,26 +72,41 @@ import java.util.Set;
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonNullLazyFieldsFilter.class)
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@FieldNameConstants(asEnum = true)
+@FieldNameConstants
 public class AccountTransactionType implements IBaseEntity<AccountTransactionType>, IHasCopy<AccountTransactionType>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = -6621150075810071365L;
+    private static final long serialVersionUID = -4281996479630423914L;
 
     @Id
     private String typeCode;
     private String name;
     private String notes;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable
-    @EqualsAndHashCode.Exclude
-    private Set<AccountType> applicableDebitAccountTypes;
+    /**
+     * If true there can be only one account to debit
+     */
+    private Boolean singleDebit;
+    /**
+     * If true there can be only one account to credit
+     */
+    private Boolean singleCredit;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    @JoinTable
+//    @EqualsAndHashCode.Exclude
+//    private Set<AccountType> applicableDebitAccountTypes;
+//
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    @JoinTable
+//    @EqualsAndHashCode.Exclude
+//    private Set<AccountType> applicableCreditAccountTypes;
+
+    @OneToMany(mappedBy = "transactionType", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JsonManagedReference("transactionTypeToAccountType")
     @EqualsAndHashCode.Exclude
-    private Set<AccountType> applicableCreditAccountTypes;
+    @OrderBy(AccountTypeApplicableToTransactionType.Fields.order)
+    private List<AccountTypeApplicableToTransactionType> applicableAccountTypes;
 
     // ==============================================================
     // BaseEntity fields
@@ -128,23 +143,25 @@ public class AccountTransactionType implements IBaseEntity<AccountTransactionTyp
     /**
      * Further explaining the record status. Not handled by common libs. To be handled by individual lib.
      */
-    private Character statusMinor;
+    private String statusMinor;
 
     // -------------------------------------------------------------------------------------------------
 
     @JsonIgnore
     public AccountTransactionType copy(Boolean cascade) {
         return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setApplicableDebitAccountTypes(BaseEntity.cascadeSet(cascade, AccountType.class, applicableDebitAccountTypes))
-                .setApplicableCreditAccountTypes(BaseEntity.cascadeSet(cascade, AccountType.class, applicableCreditAccountTypes))
+                .setApplicableAccountTypes(BaseEntity.cascade(cascade, AccountTypeApplicableToTransactionType.class, applicableAccountTypes))
+//                .setApplicableDebitAccountTypes(BaseEntity.cascadeSet(cascade, AccountType.class, applicableDebitAccountTypes))
+//                .setApplicableCreditAccountTypes(BaseEntity.cascadeSet(cascade, AccountType.class, applicableCreditAccountTypes))
                 ;
     }
 
     @JsonIgnore
     public AccountTransactionType copy(@NotNull List<String> relFields) {
         return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setApplicableDebitAccountTypes(BaseEntity.cascadeSet(Fields.applicableDebitAccountTypes.name(), relFields, AccountType.class, applicableDebitAccountTypes))
-                .setApplicableCreditAccountTypes(BaseEntity.cascadeSet(Fields.applicableCreditAccountTypes.name(), relFields, AccountType.class, applicableCreditAccountTypes))
+                .setApplicableAccountTypes(BaseEntity.cascade(Fields.applicableAccountTypes, relFields, AccountTypeApplicableToTransactionType.class, applicableAccountTypes))
+//                .setApplicableDebitAccountTypes(BaseEntity.cascadeSet(Fields.applicableDebitAccountTypes, relFields, AccountType.class, applicableDebitAccountTypes))
+//                .setApplicableCreditAccountTypes(BaseEntity.cascadeSet(Fields.applicableCreditAccountTypes, relFields, AccountType.class, applicableCreditAccountTypes))
                 ;
     }
 

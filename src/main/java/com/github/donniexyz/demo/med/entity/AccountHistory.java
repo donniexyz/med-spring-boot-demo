@@ -60,7 +60,7 @@ import java.util.List;
 @Entity
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
-@FieldNameConstants(asEnum = true)
+@FieldNameConstants
 public class AccountHistory implements IBaseEntity<AccountHistory>, IHasCopy<AccountHistory>, Serializable {
 
     @Serial
@@ -69,6 +69,17 @@ public class AccountHistory implements IBaseEntity<AccountHistory>, IHasCopy<Acc
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /**
+     * <ul>
+     * History types:
+     * <li>TRANSACTION, inserted when transaction occurs</li>
+     * <li>END_OF_DAY, inserted when EOD balance closure</li>
+     * <li>END_OF_MONTH, inserted when EOM balance closure</li>
+     * <li>END_OF_YEAR, inserted when EOY balance closure</li>
+     * </ul>
+     */
+    private String historyType;
     private String transactionType; // e.g., "Deposit," "Withdrawal"
 
     @AttributeOverride(name = "amount", column = @Column(name = "acc_balance"))
@@ -121,7 +132,7 @@ public class AccountHistory implements IBaseEntity<AccountHistory>, IHasCopy<Acc
     /**
      * Further explaining the record status. Not handled by common libs. To be handled by individual lib.
      */
-    private Character statusMinor;
+    private String statusMinor;
 
     // -------------------------------------------------------------------
 
@@ -135,7 +146,7 @@ public class AccountHistory implements IBaseEntity<AccountHistory>, IHasCopy<Acc
     @JsonIgnore
     public AccountHistory copy(@NotNull List<String> relFields) {
         return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setAccount(BaseEntity.cascade(Fields.account.name(), relFields, CashAccount.class, account))
+                .setAccount(BaseEntity.cascade(Fields.account, relFields, CashAccount.class, account))
                 ;
     }
 

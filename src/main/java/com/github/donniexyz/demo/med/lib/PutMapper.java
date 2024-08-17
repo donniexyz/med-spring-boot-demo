@@ -48,4 +48,7 @@ public interface PutMapper {
 
     @InheritConfiguration
     CashAccount put(CashAccount setValuesFromThisInstance, @MappingTarget CashAccount cashAccount);
+
+    @InheritConfiguration
+    AccountHistoryType put(AccountHistoryType setValuesFromThisInstance, @MappingTarget AccountHistoryType accountHistoryType);
 }

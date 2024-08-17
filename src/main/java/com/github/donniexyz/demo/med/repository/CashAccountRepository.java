@@ -30,6 +30,9 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryImplementati
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.List;
+
 @Repository
 public interface CashAccountRepository extends JpaRepositoryImplementation<CashAccount, Long> {
 
@@ -37,4 +40,6 @@ public interface CashAccountRepository extends JpaRepositoryImplementation<CashA
     @Transactional
     @Modifying
     int changeId(Long from, Long to);
+
+    List<CashAccount> findByIdInAndRecordStatus(Collection<Long> accountIdList, Character recordStatusMajor);
 }

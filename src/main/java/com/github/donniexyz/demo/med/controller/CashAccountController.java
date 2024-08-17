@@ -71,7 +71,7 @@ public class CashAccountController {
     @Transactional(readOnly = true)
     public Page<CashAccount> getAll(Pageable pageable) {
         Specification<CashAccount> cashAccountSpecification = (root, query, criteriaBuilder) -> {
-            root.fetch("accountOwner");
+            root.fetch(CashAccount.Fields.accountOwner);
             return criteriaBuilder.conjunction();
         };
         return cashAccountRepository.findAll(cashAccountSpecification, null == pageable ? Pageable.unpaged() : pageable)

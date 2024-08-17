@@ -66,7 +66,7 @@ import java.util.List;
 @Entity
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
-@FieldNameConstants(asEnum = true)
+@FieldNameConstants
 public class AccountOwner implements IBaseEntity<AccountOwner>, IHasCopy<AccountOwner>, Serializable {
 
     @Serial
@@ -123,7 +123,7 @@ public class AccountOwner implements IBaseEntity<AccountOwner>, IHasCopy<Account
     /**
      * Further explaining the record status. Not handled by common libs. To be handled by individual lib.
      */
-    private Character statusMinor;
+    private String statusMinor;
 
     // --------------------------------------------------------------------------
 
@@ -137,7 +137,7 @@ public class AccountOwner implements IBaseEntity<AccountOwner>, IHasCopy<Account
     @JsonIgnore
     public AccountOwner copy(@NonNull List<String> relFields) {
         return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setType(BaseEntity.cascade(Fields.type.name(), relFields, AccountOwnerType.class, type))
+                .setType(BaseEntity.cascade(Fields.type, relFields, AccountOwnerType.class, type))
                 ;
     }
 

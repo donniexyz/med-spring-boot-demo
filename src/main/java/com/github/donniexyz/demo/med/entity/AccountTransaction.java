@@ -57,7 +57,7 @@ import java.util.List;
 @Entity
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
-@FieldNameConstants(asEnum = true)
+@FieldNameConstants
 public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHasCopy<AccountTransaction>, Serializable {
 
     @Serial
@@ -80,17 +80,20 @@ public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHas
     @JoinColumn(name = "type_code")
     private AccountTransactionType type;
 
-    @ManyToOne
-    @JoinColumn(name = "dr_account_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private CashAccount debitAccount;
+//    @ManyToOne
+//    @JoinColumn(name = "dr_account_id")
+//    @ToString.Exclude
+//    @EqualsAndHashCode.Exclude
+//    private CashAccount debitAccount;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "cr_account_id")
+//    @ToString.Exclude
+//    @EqualsAndHashCode.Exclude
+//    private CashAccount creditAccount;
 
-    @ManyToOne
-    @JoinColumn(name = "cr_account_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private CashAccount creditAccount;
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<AccountTransactionItem> items;
 
     // ==============================================================
     // BaseEntity fields
@@ -127,7 +130,7 @@ public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHas
     /**
      * Further explaining the record status. Not handled by common libs. To be handled by individual lib.
      */
-    private Character statusMinor;
+    private String statusMinor;
 
     // --------------------------------------------------------------------------------
 
@@ -135,17 +138,15 @@ public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHas
     public AccountTransaction copy(Boolean cascade) {
         return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
                 .setType(BaseEntity.cascade(cascade, AccountTransactionType.class, type))
-                .setDebitAccount(BaseEntity.cascade(cascade, CashAccount.class, debitAccount))
-                .setCreditAccount(BaseEntity.cascade(cascade, CashAccount.class, creditAccount))
+                .setItems(BaseEntity.cascade(cascade, AccountTransactionItem.class, items))
                 ;
     }
 
     @Override
     public AccountTransaction copy(@NonNull List<String> relFields) {
         return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setType(BaseEntity.cascade(Fields.type.name(), relFields, AccountTransactionType.class, type))
-                .setDebitAccount(BaseEntity.cascade(Fields.debitAccount.name(), relFields, CashAccount.class, debitAccount))
-                .setCreditAccount(BaseEntity.cascade(Fields.creditAccount.name(), relFields, CashAccount.class, creditAccount))
+                .setType(BaseEntity.cascade(Fields.type, relFields, AccountTransactionType.class, type))
+                .setItems(BaseEntity.cascade(Fields.items, relFields, AccountTransactionItem.class, items))
                 ;
     }
 }

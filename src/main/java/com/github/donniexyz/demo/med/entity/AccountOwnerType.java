@@ -69,7 +69,7 @@ import java.util.List;
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@FieldNameConstants(asEnum = true)
+@FieldNameConstants
 public class AccountOwnerType implements IBaseEntity<AccountOwnerType>, IHasCopy<AccountOwnerType>, Serializable {
 
     @Serial
@@ -123,7 +123,7 @@ public class AccountOwnerType implements IBaseEntity<AccountOwnerType>, IHasCopy
     /**
      * Further explaining the record status. Not handled by common libs. To be handled by individual lib.
      */
-    private Character statusMinor;
+    private String statusMinor;
 
     // ----------------------------------------------------------------------------------
 

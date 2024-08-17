@@ -26,13 +26,10 @@ package com.github.donniexyz.demo.med.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
-import com.github.donniexyz.demo.med.lib.CashAccountUtilities;
-import com.github.donniexyz.demo.med.lib.PatchMapper;
-import com.github.donniexyz.demo.med.lib.PutMapper;
+import com.github.donniexyz.demo.med.enums.DebitCreditEnum;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
 import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
 import jakarta.persistence.*;
@@ -44,67 +41,72 @@ import org.hibernate.annotations.CompositeType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.Formula;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.money.MonetaryAmount;
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @WithBy
 @With
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Entity
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
 @FieldNameConstants
-public class CashAccount implements IBaseEntity<CashAccount>, IHasCopy<CashAccount>, Serializable {
+public class AccountTransactionItem implements IBaseEntity<AccountTransactionItem>, IHasCopy<AccountTransactionItem>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 1968894442408558988L;
+    private static final long serialVersionUID = -2224985971646147708L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String title;
+    @Column(name = "trx_id")
+    private Long transactionId;
 
-    @AttributeOverride(name = "amount", column = @Column(name = "acc_bal"))
-    @AttributeOverride(name = "currency", column = @Column(name = "acc_ccy"))
+    @Id
+    @Column(name = "acc_id")
+    private Long accountId;
+
+    @Id
+    @Column(nullable = false)
+    private Integer order;
+
+    @Column(nullable = false)
+    private DebitCreditEnum debitCredit;
+
+    @AttributeOverride(name = "amount", column = @Column(name = "trx_amount"))
+    @AttributeOverride(name = "currency", column = @Column(name = "trx_ccy"))
     @CompositeType(MonetaryAmountType.class)
-    private MonetaryAmount accountBalance;
+    private MonetaryAmount transactionAmount;
 
-    private LocalDateTime lastTransactionDate;
+    private String label; // e.g., "Deposit," "Withdrawal"
     private String notes;
 
-    /**
-     * This will be used to insert history upon updates of cashAccount (if enabled).
-     * This is not to be used to retrieve history! Retrieving history must be done via API with Pagination support.
-     */
-    @OneToMany(mappedBy = "account", cascade = CascadeType.MERGE)
-    @JsonManagedReference
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<AccountHistory> accountHistories;
-
-    @ManyToOne
-    @JoinColumn(name = "owner_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private AccountOwner accountOwner;
+    @Column(name = "trx_tcode")
+    private String transactionTypeCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_code")
-    @ToString.Exclude
+    @JoinColumn(name = "trx_tcode", insertable = false, updatable = false)
     @EqualsAndHashCode.Exclude
-    private AccountType accountType;
+    @ToString.Exclude
+    @JsonIgnore
+    private AccountTransactionType type;
+
+    @OneToOne
+    @JoinColumn(name = "acc_id")
+    @EqualsAndHashCode.Exclude
+    @JsonIgnore
+    private CashAccount account;
+
+    @OneToOne
+    @JoinColumn(name = "trx_id")
+    @EqualsAndHashCode.Exclude
+    @JsonIgnore
+    private AccountTransaction accountTransaction;
 
     // ==============================================================
     // BaseEntity fields
@@ -143,44 +145,32 @@ public class CashAccount implements IBaseEntity<CashAccount>, IHasCopy<CashAccou
      */
     private String statusMinor;
 
-    // ------------------------------------------------------
+    // --------------------------------------------------------------------------------
 
     @JsonIgnore
-    public CashAccount copy(Boolean cascade) {
-        return this
-                .withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setAccountOwner(BaseEntity.cascade(cascade, AccountOwner.class, accountOwner))
-                .setAccountType(BaseEntity.cascade(cascade, AccountType.class, accountType))
-                .setAccountHistories(BaseEntity.cascade(cascade, AccountHistory.class, accountHistories))
+    public AccountTransactionItem copy(Boolean cascade) {
+        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
+                .setType(BaseEntity.cascade(cascade, AccountTransactionType.class, type))
+                .setAccount(BaseEntity.cascade(cascade, CashAccount.class, account))
+                .setAccountTransaction(BaseEntity.cascade(cascade, AccountTransaction.class, accountTransaction))
                 ;
     }
 
-    @JsonIgnore
-    public CashAccount copy(@NotNull List<String> relFields) {
-        return this
-                .withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setAccountOwner(BaseEntity.cascade(Fields.accountOwner, relFields, AccountOwner.class, accountOwner))
-                .setAccountType(BaseEntity.cascade(Fields.accountType, relFields, AccountType.class, accountType))
-                .setAccountHistories(BaseEntity.cascade(Fields.accountHistories, relFields, AccountHistory.class, accountHistories))
+    @Override
+    public AccountTransactionItem copy(@NonNull List<String> relFields) {
+        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
+                .setType(BaseEntity.cascade(Fields.type, relFields, AccountTransactionType.class, type))
+                .setAccount(BaseEntity.cascade(Fields.account, relFields, CashAccount.class, account))
+                .setAccountTransaction(BaseEntity.cascade(Fields.accountTransaction, relFields, AccountTransaction.class, accountTransaction))
                 ;
     }
 
-    @JsonIgnore
-    public CashAccount copyFrom(CashAccount setValuesFromThisInstance, boolean nonNullOnly) {
-        return nonNullOnly
-                ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
-                : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
-    }
+    // --------------------------------------------------------------------------------
 
-    @JsonIgnore
-    public CashAccount debit(MonetaryAmount amount) {
-        accountBalance = CashAccountUtilities.debit(accountBalance, amount, accountType.getBalanceSheetEntry());
+    public AccountTransactionItem setType(AccountTransactionType type) {
+        this.type = type;
+        if (null != type) transactionTypeCode = type.getTypeCode();
         return this;
     }
 
-    @JsonIgnore
-    public CashAccount credit(MonetaryAmount amount) {
-        accountBalance = CashAccountUtilities.credit(accountBalance, amount, accountType.getBalanceSheetEntry());
-        return this;
-    }
 }

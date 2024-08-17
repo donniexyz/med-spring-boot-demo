@@ -57,7 +57,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@FieldNameConstants(asEnum = true)
+@FieldNameConstants
 public class BaseEntity implements IBaseEntity {
 
     // ==============================================================
@@ -95,7 +95,7 @@ public class BaseEntity implements IBaseEntity {
     /**
      * Further explaining the record status. Not handled by common libs. To be handled by individual lib.
      */
-    private Character statusMinor;
+    private String statusMinor;
 
 
     // =================================================================================================
