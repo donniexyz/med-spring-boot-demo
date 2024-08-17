@@ -24,13 +24,13 @@
 package com.github.donniexyz.demo.med.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.NonNullLazyFieldsFilter;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -56,7 +56,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(indexes = {@Index(columnList = "transactionTypeCode,accountTypeCode,order", unique = true)})
+@Table
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonNullLazyFieldsFilter.class)
 @Cacheable
@@ -75,20 +75,19 @@ public class AccountOwnerTypeApplicableToAccountType implements IBaseEntity<Acco
     @Column(name = "own_tcode")
     private String ownerTypeCode;
 
-    @Column(nullable = false)
-    private Boolean optional;
-
     private String notes;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "own_tcode", insertable = false, updatable = false)
+    @JoinColumn(name = "own_tcode", insertable = false, updatable = false,
+            foreignKey = @ForeignKey(name = "fk_AccOwnTypeApplToAccType_ownType"))
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonBackReference("ownerType")
     private AccountOwnerType ownerType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "acc_tcode", insertable = false, updatable = false)
+    @JoinColumn(name = "acc_tcode", insertable = false, updatable = false,
+            foreignKey = @ForeignKey(name = "fk_AccOwnTypeApplToAccType_accType"))
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonBackReference("accountTypeToOwnerType")
@@ -109,11 +108,12 @@ public class AccountOwnerTypeApplicableToAccountType implements IBaseEntity<Acco
     private Integer version;
 
     @CreationTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
+    @Column(updatable = false)
     private OffsetDateTime createdDateTime;
 
     @CurrentTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
     private OffsetDateTime lastModifiedDate;
 
     /**
@@ -149,4 +149,15 @@ public class AccountOwnerTypeApplicableToAccountType implements IBaseEntity<Acco
                 ;
     }
 
+    public AccountOwnerTypeApplicableToAccountType setOwnerType(AccountOwnerType ownerType) {
+        this.ownerType = ownerType;
+        if (null != ownerType) this.ownerTypeCode = ownerType.getTypeCode();
+        return this;
+    }
+
+    public AccountOwnerTypeApplicableToAccountType setAccountType(AccountType accountType) {
+        this.accountType = accountType;
+        if (null != accountType) this.accountTypeCode = accountType.getTypeCode();
+        return this;
+    }
 }

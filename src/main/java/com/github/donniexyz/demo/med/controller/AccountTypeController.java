@@ -23,18 +23,19 @@
  */
 package com.github.donniexyz.demo.med.controller;
 
-import com.github.donniexyz.demo.med.entity.AccountOwnerType;
+import com.github.donniexyz.demo.med.entity.AccountOwnerTypeApplicableToAccountType;
 import com.github.donniexyz.demo.med.entity.AccountType;
+import com.github.donniexyz.demo.med.lib.PatchMapper;
 import com.github.donniexyz.demo.med.repository.AccountOwnerTypeRepository;
 import com.github.donniexyz.demo.med.repository.AccountTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RestController
@@ -48,8 +49,12 @@ public class AccountTypeController {
     private AccountOwnerTypeRepository accountOwnerTypeRepository;
 
     @GetMapping("/{typeCode}")
-    public AccountType get(@PathVariable("typeCode") String typeCode) {
-        return accountTypeRepository.findById(typeCode).orElseThrow();
+    @Transactional(readOnly = true)
+    public AccountType get(@PathVariable("typeCode") String typeCode,
+                           @RequestParam(required = false) Boolean cascade,
+                           @RequestParam(required = false) List<String> relFields) {
+        AccountType fetched = accountTypeRepository.findById(typeCode).orElseThrow();
+        return null != relFields ? fetched.copy(relFields) : fetched.copy(cascade);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -57,10 +62,6 @@ public class AccountTypeController {
     public AccountType create(@RequestBody AccountType accountType) {
         if (accountTypeRepository.existsById(accountType.getTypeCode()))
             throw new RuntimeException("Record already exists");
-        accountType.setApplicableForAccountOwnerTypes(
-                CollectionUtils.isEmpty(accountType.getApplicableForAccountOwnerTypes()) ? null
-                        : new HashSet<>(accountOwnerTypeRepository.findAllById(accountType.getApplicableForAccountOwnerTypes().stream().map(AccountOwnerType::getTypeCode).collect(Collectors.toSet()))
-                ));
         return accountTypeRepository.save(accountType);
     }
 
@@ -68,50 +69,62 @@ public class AccountTypeController {
     @Transactional
     public AccountType update(@PathVariable("typeCode") String typeCode,
                               @RequestBody AccountType accountType) {
+
+        Assert.isTrue(typeCode.equals(accountType.getTypeCode()), "Invalid request: id mismatch");
+        Assert.notNull(accountType.getVersion(), "Invalid request: version field is null");
+
         AccountType fetchedFromDb = accountTypeRepository.findById(typeCode).orElseThrow();
+        if (!fetchedFromDb.getVersion().equals(accountType.getVersion()))
+            throw new RuntimeException("Optimistic locking check failed");
         // cannot change balanceSheetEntry
         if (!fetchedFromDb.getBalanceSheetEntry().equals(accountType.getBalanceSheetEntry()))
             throw new RuntimeException("Not allowed to change balanceSheetEntry");
 
-        // ownerTypes
-        Set<String> ownerTypeCodes = accountType.getApplicableForAccountOwnerTypes().stream().map(AccountOwnerType::getTypeCode).collect(Collectors.toSet());
-        HashSet<AccountOwnerType> accountOwnerTypes = new HashSet<>(accountOwnerTypeRepository.findAllById(ownerTypeCodes));
-        if (ownerTypeCodes.size() != accountOwnerTypes.size())
-            throw new RuntimeException("Invalid ownerTypes");
-
-        accountType.setApplicableForAccountOwnerTypes(accountOwnerTypes);
-
-        // transactionTypes
-        accountType.setApplicableDebitTransactionTypes(fetchedFromDb.getApplicableDebitTransactionTypes());
-        accountType.setApplicableCreditTransactionTypes(fetchedFromDb.getApplicableCreditTransactionTypes());
-
-        return accountTypeRepository.save(accountType);
+        var tempApplicableOwnerTypes = accountType.getApplicableOwnerTypes();
+        try {
+            accountType.setApplicableTransactionTypes(fetchedFromDb.getApplicableTransactionTypes());
+            return accountTypeRepository.save(accountType);
+        } finally {
+            accountType.setApplicableOwnerTypes(tempApplicableOwnerTypes);
+        }
     }
 
     @PatchMapping(path = "/{typeCode}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     public AccountType patch(@PathVariable("typeCode") String typeCode,
                              @RequestBody AccountType accountType) {
+
+        Assert.isTrue(typeCode.equals(accountType.getTypeCode()), "Invalid request: id mismatch");
+        Assert.notNull(accountType.getVersion(), "Invalid request: version field is null");
+
         AccountType fetchedFromDb = accountTypeRepository.findById(typeCode).orElseThrow();
+        if (!fetchedFromDb.getVersion().equals(accountType.getVersion()))
+            throw new RuntimeException("Optimistic locking check failed");
         // cannot change balanceSheetEntry
         if (null != accountType.getBalanceSheetEntry() && !fetchedFromDb.getBalanceSheetEntry().equals(accountType.getBalanceSheetEntry()))
             throw new RuntimeException("Not allowed to change balanceSheetEntry");
 
-        // ownerTypes
-        if (null != accountType.getApplicableForAccountOwnerTypes()) {
-            Set<String> ownerTypeCodes = accountType.getApplicableForAccountOwnerTypes().stream().map(AccountOwnerType::getTypeCode).collect(Collectors.toSet());
-            HashSet<AccountOwnerType> accountOwnerTypes = new HashSet<>(accountOwnerTypeRepository.findAllById(ownerTypeCodes));
-            if (ownerTypeCodes.size() != accountOwnerTypes.size())
-                throw new RuntimeException("Invalid ownerTypes");
-
-            accountType.setApplicableForAccountOwnerTypes(accountOwnerTypes);
+        if (null != accountType.getApplicableOwnerTypes()) {
+            final Function<AccountOwnerTypeApplicableToAccountType, String> accountOwnerTypeApplicableToAccountTypeTypeCodeExtractorFunction = AccountOwnerTypeApplicableToAccountType::getOwnerTypeCode;
+            var applicableOwnerMapFromInput = accountType.getApplicableOwnerTypes().stream().collect(Collectors.toMap(accountOwnerTypeApplicableToAccountTypeTypeCodeExtractorFunction, Function.identity()));
+            for (AccountOwnerTypeApplicableToAccountType fetchedApplicableOwnerType : fetchedFromDb.getApplicableOwnerTypes()) {
+                if (applicableOwnerMapFromInput.containsKey(accountOwnerTypeApplicableToAccountTypeTypeCodeExtractorFunction.apply(fetchedApplicableOwnerType))) {
+                    PatchMapper.INSTANCE.patch(applicableOwnerMapFromInput.remove(accountOwnerTypeApplicableToAccountTypeTypeCodeExtractorFunction.apply(fetchedApplicableOwnerType)), fetchedApplicableOwnerType);
+                }
+            }
+            fetchedFromDb.getApplicableOwnerTypes().addAll(applicableOwnerMapFromInput.values());
         }
 
-        // do not handle transactionTypes
-        accountType.setApplicableDebitTransactionTypes(null);
-        accountType.setApplicableCreditTransactionTypes(null);
-
-        fetchedFromDb.copyFrom(accountType, true);
+        var tempApplicableOwnerTypes = accountType.getApplicableOwnerTypes();
+        var tempApplicableTransactionTypes = accountType.getApplicableTransactionTypes();
+        try {
+            accountType.setApplicableOwnerTypes(null);
+            accountType.setApplicableTransactionTypes(null);
+            PatchMapper.INSTANCE.patch(accountType, fetchedFromDb);
+        } finally {
+            accountType.setApplicableOwnerTypes(tempApplicableOwnerTypes);
+            accountType.setApplicableTransactionTypes(tempApplicableTransactionTypes);
+        }
         return accountTypeRepository.save(fetchedFromDb);
     }
 

@@ -42,7 +42,7 @@ public interface IBaseEntity<T> {
 
     Character getRecordStatusMajor();
 
-    Character getStatusMinor();
+    String getStatusMinor();
 
     /**
      * Explaining the status of this record:

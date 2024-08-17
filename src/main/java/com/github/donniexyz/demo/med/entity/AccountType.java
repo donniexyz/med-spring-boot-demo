@@ -23,7 +23,6 @@
  */
 package com.github.donniexyz.demo.med.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -34,9 +33,11 @@ import com.github.donniexyz.demo.med.enums.BalanceSheetComponentEnum;
 import com.github.donniexyz.demo.med.lib.PatchMapper;
 import com.github.donniexyz.demo.med.lib.PutMapper;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.NonNullLazyFieldsFilter;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.OrderBy;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
@@ -101,7 +102,7 @@ public class AccountType implements IBaseEntity<AccountType>, IHasCopy<AccountTy
 //    @ToString.Exclude
 //    private Set<AccountTransactionType> applicableCreditTransactionTypes;
 
-    @OneToMany(mappedBy = "accountType")
+    @OneToMany(mappedBy = "accountType", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JsonManagedReference("accountTypeToTransactionType")
     @EqualsAndHashCode.Exclude
     @OrderBy(AccountTypeApplicableToTransactionType.Fields.order)
@@ -112,7 +113,7 @@ public class AccountType implements IBaseEntity<AccountType>, IHasCopy<AccountTy
 //    @EqualsAndHashCode.Exclude
 //    private Set<AccountOwnerType> applicableForAccountOwnerTypes;
 
-    @OneToMany(mappedBy = "accountType")
+    @OneToMany(mappedBy = "accountType", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JsonManagedReference("accountTypeToOwnerType")
     @EqualsAndHashCode.Exclude
     private List<AccountOwnerTypeApplicableToAccountType> applicableOwnerTypes;
@@ -126,17 +127,21 @@ public class AccountType implements IBaseEntity<AccountType>, IHasCopy<AccountTy
     @Transient
     @org.springframework.data.annotation.Transient
     @FieldNameConstants.Exclude
+    @EqualsAndHashCode.Exclude
     private transient Boolean retrievedFromDb;
 
     @Version
     private Integer version;
 
     @CreationTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
+    @Column(updatable = false)
+    @EqualsAndHashCode.Exclude
     private OffsetDateTime createdDateTime;
 
     @CurrentTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
+    @EqualsAndHashCode.Exclude
     private OffsetDateTime lastModifiedDate;
 
     /**

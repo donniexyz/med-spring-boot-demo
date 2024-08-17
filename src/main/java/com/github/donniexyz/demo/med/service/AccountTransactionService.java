@@ -77,7 +77,7 @@ public class AccountTransactionService {
 
         // get all accounts
         Set<Long> accountsFromTransaction = accountTransaction.getItems().stream().map(AccountTransactionItem::getAccountId).collect(Collectors.toSet());
-        List<CashAccount> accounts = cashAccountRepository.findByIdInAndRecordStatus(accountsFromTransaction, RecordStatusMajorEnum.ACTIVE.getFlag());
+        List<CashAccount> accounts = cashAccountRepository.findByIdInAndRecordStatusMajor(accountsFromTransaction, RecordStatusMajorEnum.ACTIVE.getFlag());
         if (accountsFromTransaction.size() > accounts.size()) {
             log.error("Transaction account not found! accountsFromTransaction: {}, existingActiveAccount: {} ",
                     accountsFromTransaction, accounts.stream().map(CashAccount::getId).toList());

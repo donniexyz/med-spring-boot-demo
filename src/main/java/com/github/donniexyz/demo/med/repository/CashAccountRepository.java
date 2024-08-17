@@ -41,5 +41,5 @@ public interface CashAccountRepository extends JpaRepositoryImplementation<CashA
     @Modifying
     int changeId(Long from, Long to);
 
-    List<CashAccount> findByIdInAndRecordStatus(Collection<Long> accountIdList, Character recordStatusMajor);
+    List<CashAccount> findByIdInAndRecordStatusMajor(Collection<Long> accountIdList, Character recordStatusMajor);
 }

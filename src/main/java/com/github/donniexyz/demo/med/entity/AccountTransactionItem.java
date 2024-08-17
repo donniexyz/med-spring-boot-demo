@@ -23,7 +23,6 @@
  */
 package com.github.donniexyz.demo.med.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
@@ -31,6 +30,7 @@ import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
 import com.github.donniexyz.demo.med.enums.DebitCreditEnum;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -72,7 +72,7 @@ public class AccountTransactionItem implements IBaseEntity<AccountTransactionIte
     private Long accountId;
 
     @Id
-    @Column(nullable = false)
+    @Column(nullable = false, name = "'order'")
     private Integer order;
 
     @Column(nullable = false)
@@ -90,7 +90,8 @@ public class AccountTransactionItem implements IBaseEntity<AccountTransactionIte
     private String transactionTypeCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trx_tcode", insertable = false, updatable = false)
+    @JoinColumn(name = "trx_tcode", insertable = false, updatable = false,
+            foreignKey = @ForeignKey(name = "fk_AccTrxItem_type"))
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
@@ -123,11 +124,12 @@ public class AccountTransactionItem implements IBaseEntity<AccountTransactionIte
     private Integer version;
 
     @CreationTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
+    @Column(updatable = false)
     private OffsetDateTime createdDateTime;
 
     @CurrentTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
     private OffsetDateTime lastModifiedDate;
 
     /**

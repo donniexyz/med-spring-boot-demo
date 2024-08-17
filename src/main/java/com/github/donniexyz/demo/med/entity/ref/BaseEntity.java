@@ -23,8 +23,9 @@
  */
 package com.github.donniexyz.demo.med.entity.ref;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
@@ -75,11 +76,12 @@ public class BaseEntity implements IBaseEntity {
     private Integer version;
 
     @CreationTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
+    @Column(updatable = false)
     private OffsetDateTime createdDateTime;
 
     @CurrentTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
     private OffsetDateTime lastModifiedDate;
 
     /**

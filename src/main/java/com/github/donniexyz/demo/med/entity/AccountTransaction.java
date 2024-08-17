@@ -23,7 +23,7 @@
  */
 package com.github.donniexyz.demo.med.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
@@ -77,7 +77,7 @@ public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHas
     private String notes;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_code")
+    @JoinColumn(name = "type_code", foreignKey = @ForeignKey(name = "fk_AccTrx_type"))
     private AccountTransactionType type;
 
 //    @ManyToOne
@@ -110,11 +110,12 @@ public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHas
     private Integer version;
 
     @CreationTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
+    @Column(updatable = false)
     private OffsetDateTime createdDateTime;
 
     @CurrentTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
     private OffsetDateTime lastModifiedDate;
 
     /**

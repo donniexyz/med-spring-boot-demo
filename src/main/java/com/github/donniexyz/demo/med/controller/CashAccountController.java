@@ -89,8 +89,8 @@ public class CashAccountController {
         // make sure owner type exists
         AccountOwnerType accountOwnerType = accountOwner.getType();
         // make sure owner type is allowed
-        cashAccount.getAccountType().getApplicableForAccountOwnerTypes().stream()
-                .filter(ot -> ot.getTypeCode().equals(accountOwnerType.getTypeCode())).findFirst()
+        cashAccount.getAccountType().getApplicableOwnerTypes().stream()
+                .filter(ot -> ot.getOwnerTypeCode().equals(accountOwnerType.getTypeCode())).findFirst()
                 .orElseThrow(() -> new RuntimeException("Invalid combination of owner type - account type"));
         cashAccount.setAccountOwner(accountOwner);
 

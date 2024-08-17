@@ -23,7 +23,7 @@
  */
 package com.github.donniexyz.demo.med.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -45,7 +45,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.Formula;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.money.MonetaryAmount;
 import java.io.Serial;
@@ -53,7 +52,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @WithBy
 @With
@@ -95,13 +93,13 @@ public class CashAccount implements IBaseEntity<CashAccount>, IHasCopy<CashAccou
     private List<AccountHistory> accountHistories;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "owner_id", foreignKey = @ForeignKey(name = "fk_CashAcc_owner"))
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private AccountOwner accountOwner;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_code")
+    @JoinColumn(name = "type_code", foreignKey = @ForeignKey(name = "fk_CashAcc_type"))
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private AccountType accountType;
@@ -121,11 +119,12 @@ public class CashAccount implements IBaseEntity<CashAccount>, IHasCopy<CashAccou
     private Integer version;
 
     @CreationTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
+    @Column(updatable = false)
     private OffsetDateTime createdDateTime;
 
     @CurrentTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
     private OffsetDateTime lastModifiedDate;
 
     /**

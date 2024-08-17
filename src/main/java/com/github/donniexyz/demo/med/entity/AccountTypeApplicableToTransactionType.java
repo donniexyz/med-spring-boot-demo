@@ -24,7 +24,7 @@
 package com.github.donniexyz.demo.med.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
@@ -58,7 +58,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(indexes = {@Index(columnList = "transactionTypeCode,accountTypeCode,order", unique = true)})
+@Table(indexes = {@Index(name = "idx_accTypeApplToTrxType_trxTCode_order", columnList = "transactionTypeCode,order", unique = true)})
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonNullLazyFieldsFilter.class)
 @Cacheable
@@ -78,10 +78,11 @@ public class AccountTypeApplicableToTransactionType implements IBaseEntity<Accou
     private String accountTypeCode;
 
     @Id
-    @Column(nullable = false)
-    private Integer order;
+    @Column(name ="'order'")
+    private int order;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private DebitCreditEnum debitCredit;
 
     /**
@@ -99,14 +100,16 @@ public class AccountTypeApplicableToTransactionType implements IBaseEntity<Accou
     private String notes;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trx_tcode", insertable = false, updatable = false)
+    @JoinColumn(name = "trx_tcode", insertable = false, updatable = false,
+            foreignKey = @ForeignKey(name = "fk_AccTypeApplToTrxType_trxType"))
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonBackReference("transactionTypeToAccountType")
     private AccountTransactionType transactionType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "acc_tcode", insertable = false, updatable = false)
+    @JoinColumn(name = "acc_tcode", insertable = false, updatable = false,
+            foreignKey = @ForeignKey(name = "fk_AccTypeApplToTrxType_accType"))
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonBackReference("accountTypeToTransactionType")
@@ -127,11 +130,12 @@ public class AccountTypeApplicableToTransactionType implements IBaseEntity<Accou
     private Integer version;
 
     @CreationTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
+    @Column(updatable = false)
     private OffsetDateTime createdDateTime;
 
     @CurrentTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
     private OffsetDateTime lastModifiedDate;
 
     /**

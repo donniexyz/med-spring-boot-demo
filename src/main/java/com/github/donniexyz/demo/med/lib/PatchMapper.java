@@ -51,4 +51,7 @@ public interface PatchMapper {
 
     @InheritConfiguration
     AccountHistoryType patch(AccountHistoryType setValuesFromThisInstance, @MappingTarget AccountHistoryType accountHistoryType);
+
+    @InheritConfiguration
+    AccountOwnerTypeApplicableToAccountType patch(AccountOwnerTypeApplicableToAccountType setValuesFromThisInstance, @MappingTarget AccountOwnerTypeApplicableToAccountType accountOwnerTypeApplicableToAccountType);
 }
