@@ -31,6 +31,8 @@ import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/accountOwnerType")
 public class AccountOwnerTypeController {
@@ -39,8 +41,12 @@ public class AccountOwnerTypeController {
     private AccountOwnerTypeRepository accountOwnerTypeRepository;
 
     @GetMapping("/{typeCode}")
-    public AccountOwnerType get(@PathVariable("typeCode") String typeCode) {
-        return accountOwnerTypeRepository.findById(typeCode).orElseThrow();
+    @Transactional(readOnly = true)
+    public AccountOwnerType get(@PathVariable("typeCode") String typeCode,
+                                @RequestParam(required = false) Boolean cascade,
+                                @RequestParam(required = false) List<String> relFields) {
+        AccountOwnerType fetched = accountOwnerTypeRepository.findById(typeCode).orElseThrow();
+        return null != relFields ? fetched.copy(relFields) : fetched.copy(cascade);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

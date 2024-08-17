@@ -27,7 +27,10 @@ import com.github.donniexyz.demo.med.entity.AccountTransaction;
 import com.github.donniexyz.demo.med.service.AccountTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/accountTransaction")
@@ -37,8 +40,12 @@ public class AccountTransactionController {
     private AccountTransactionService accountTransactionService;
 
     @GetMapping("/{id}")
-    public AccountTransaction get(@PathVariable("id") Long id) {
-        return accountTransactionService.get(id);
+    @Transactional(readOnly = true)
+    public AccountTransaction get(@PathVariable("id") Long id,
+                                  @RequestParam(required = false) Boolean cascade,
+                                  @RequestParam(required = false) List<String> relFields) {
+        AccountTransaction fetched = accountTransactionService.get(id);
+        return null != relFields ? fetched.copy(relFields) : fetched.copy(cascade);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

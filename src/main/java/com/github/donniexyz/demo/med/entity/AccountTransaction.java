@@ -92,7 +92,7 @@ public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHas
 //    @EqualsAndHashCode.Exclude
 //    private CashAccount creditAccount;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "accountTransaction", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<AccountTransactionItem> items;
 
     // ==============================================================

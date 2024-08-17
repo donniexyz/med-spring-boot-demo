@@ -35,12 +35,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.money.CurrencyUnit;
 import javax.money.MonetaryAmount;
+import java.util.List;
 
 import static com.github.donniexyz.demo.med.lib.CashAccountConstants.MA;
 
@@ -63,19 +65,24 @@ public class CashAccountController {
     @GetMapping("/{id}")
     @Transactional(readOnly = true)
     public CashAccount get(@PathVariable("id") Long id,
-                           @RequestParam(value = "cascade", required = false) String cascade) {
-        return cashAccountRepository.findById(id).orElseThrow().copy(null == cascade || cascade.isEmpty() ? null : "true".equals(cascade));
+                           @RequestParam(required = false) Boolean cascade,
+                           @RequestParam(required = false) List<String> relFields) {
+        CashAccount fetched = cashAccountRepository.findById(id).orElseThrow();
+        return null != relFields ? fetched.copy(relFields) : fetched.copy(cascade);
     }
 
     @GetMapping("/")
     @Transactional(readOnly = true)
-    public Page<CashAccount> getAll(Pageable pageable) {
+    public Page<CashAccount> getAll(
+            @RequestParam(required = false) Boolean cascade,
+            @RequestParam(required = false) List<String> relFields,
+            @PageableDefault Pageable pageable) {
         Specification<CashAccount> cashAccountSpecification = (root, query, criteriaBuilder) -> {
             root.fetch(CashAccount.Fields.accountOwner);
             return criteriaBuilder.conjunction();
         };
         return cashAccountRepository.findAll(cashAccountSpecification, null == pageable ? Pageable.unpaged() : pageable)
-                .map(ca -> ca.copy());
+                .map(ca -> null != relFields ? ca.copy(relFields) : ca.copy(cascade));
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

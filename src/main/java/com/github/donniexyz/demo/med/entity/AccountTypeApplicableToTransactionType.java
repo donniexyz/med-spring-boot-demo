@@ -24,7 +24,6 @@
 package com.github.donniexyz.demo.med.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
@@ -32,6 +31,7 @@ import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
 import com.github.donniexyz.demo.med.enums.DebitCreditEnum;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.NonNullLazyFieldsFilter;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -58,7 +58,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(indexes = {@Index(name = "idx_accTypeApplToTrxType_trxTCode_order", columnList = "transactionTypeCode,order", unique = true)})
+@Table(indexes = {@Index(name = "idx_accTypeApplToTrxType_trxTCode_order", columnList = "trx_tcode,'order'", unique = true)})
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonNullLazyFieldsFilter.class)
 @Cacheable
@@ -73,12 +73,11 @@ public class AccountTypeApplicableToTransactionType implements IBaseEntity<Accou
     @Column(name = "trx_tcode")
     private String transactionTypeCode;
 
-    @Id
     @Column(name = "acc_tcode")
     private String accountTypeCode;
 
     @Id
-    @Column(name ="'order'")
+    @Column(name = "'order'")
     private int order;
 
     @Column(nullable = false)
@@ -169,5 +168,19 @@ public class AccountTypeApplicableToTransactionType implements IBaseEntity<Accou
                 .setAccountType(BaseEntity.cascade(Fields.accountType, relFields, AccountType.class, accountType))
                 .setTransactionType(BaseEntity.cascade(Fields.transactionType, relFields, AccountTransactionType.class, transactionType))
                 ;
+    }
+
+    // -------------------------------------------------------------------------------------------------
+
+    public AccountTypeApplicableToTransactionType setTransactionType(AccountTransactionType transactionType) {
+        this.transactionType = transactionType;
+        if (null != transactionType) this.transactionTypeCode = transactionType.getTypeCode();
+        return this;
+    }
+
+    public AccountTypeApplicableToTransactionType setAccountType(AccountType accountType) {
+        this.accountType = accountType;
+        if (null != accountType) this.accountTypeCode = accountType.getTypeCode();
+        return this;
     }
 }

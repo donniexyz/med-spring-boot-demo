@@ -35,10 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -52,9 +49,12 @@ public class TransactionTypeController {
     AccountTypeRepository accountTypeRepository;
 
     @GetMapping("/{typeCode}")
-    @Transactional
-    public AccountTransactionType get(@PathVariable("typeCode") String typeCode) {
-        return transactionTypeRepository.findById(typeCode).orElseThrow().copy(true);
+    @Transactional(readOnly = true)
+    public AccountTransactionType get(@PathVariable("typeCode") String typeCode,
+                                      @RequestParam(required = false) Boolean cascade,
+                                      @RequestParam(required = false) List<String> relFields) {
+        AccountTransactionType fetched = transactionTypeRepository.findById(typeCode).orElseThrow();
+        return null != relFields ? fetched.copy(relFields) : fetched.copy(cascade);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

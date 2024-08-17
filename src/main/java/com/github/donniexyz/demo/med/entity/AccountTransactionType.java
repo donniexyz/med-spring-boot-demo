@@ -102,7 +102,7 @@ public class AccountTransactionType implements IBaseEntity<AccountTransactionTyp
 //    @EqualsAndHashCode.Exclude
 //    private Set<AccountType> applicableCreditAccountTypes;
 
-    @OneToMany(mappedBy = "transactionType", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "transactionType", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JsonManagedReference("transactionTypeToAccountType")
     @EqualsAndHashCode.Exclude
     @OrderBy(AccountTypeApplicableToTransactionType.Fields.order)

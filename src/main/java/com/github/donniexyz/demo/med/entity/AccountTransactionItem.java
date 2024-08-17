@@ -76,6 +76,7 @@ public class AccountTransactionItem implements IBaseEntity<AccountTransactionIte
     private Integer order;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private DebitCreditEnum debitCredit;
 
     @AttributeOverride(name = "amount", column = @Column(name = "trx_amount"))
