@@ -59,7 +59,7 @@ import java.util.List;
 @EqualsAndHashCode
 @WithBy
 @With
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

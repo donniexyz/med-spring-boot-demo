@@ -23,20 +23,21 @@
  */
 package com.github.donniexyz.demo.med.entity;
 
-import com.github.donniexyz.demo.med.lib.PatchMapper;
-import com.github.donniexyz.demo.med.lib.PutMapper;
-import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
+import com.github.donniexyz.demo.med.lib.PatchMapper;
+import com.github.donniexyz.demo.med.lib.PutMapper;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
+import lombok.experimental.SuperBuilder;
 import lombok.experimental.WithBy;
 import org.hibernate.annotations.CompositeType;
 import org.hibernate.annotations.CreationTimestamp;
@@ -52,7 +53,7 @@ import java.util.List;
 
 @WithBy
 @With
-@Builder
+@SuperBuilder(toBuilder = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -139,7 +140,8 @@ public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHas
 
     @JsonIgnore
     public AccountTransaction copy(Boolean cascade) {
-        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
+        AccountTransaction result = this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb));
+        return result
                 .setType(BaseEntity.cascade(cascade, AccountTransactionType.class, type))
                 .setItems(BaseEntity.cascade(cascade, AccountTransactionItem.class, items))
                 ;

@@ -53,7 +53,7 @@ import java.util.List;
 
 @WithBy
 @With
-@Builder
+@Builder(toBuilder = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
