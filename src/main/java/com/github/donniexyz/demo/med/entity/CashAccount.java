@@ -171,6 +171,8 @@ public class CashAccount implements IBaseEntity<CashAccount>, IHasCopy<CashAccou
                 : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
     }
 
+    // ---------------------------------------------------------------------------------------------
+
     @JsonIgnore
     public CashAccount debit(MonetaryAmount amount) {
         accountBalance = CashAccountUtilities.debit(accountBalance, amount, accountType.getBalanceSheetEntry());

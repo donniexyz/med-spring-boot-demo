@@ -30,6 +30,8 @@ import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
 import com.github.donniexyz.demo.med.entity.ref.IHasOrderNumber;
 import com.github.donniexyz.demo.med.enums.DebitCreditEnum;
+import com.github.donniexyz.demo.med.lib.PatchMapper;
+import com.github.donniexyz.demo.med.lib.PutMapper;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
 import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
@@ -172,7 +174,13 @@ public class AccountTransactionItem implements IBaseEntity<AccountTransactionIte
                 ;
     }
 
-    // --------------------------------------------------------------------------------
+    @Override
+    public AccountTransactionItem copyFrom(AccountTransactionItem setValuesFromThisInstance, boolean nonNullOnly) {
+        return nonNullOnly
+                ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
+                : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
+    }
+// --------------------------------------------------------------------------------
 
     public AccountTransactionItem setType(AccountTransactionType type) {
         this.type = type;

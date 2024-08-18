@@ -23,6 +23,8 @@
  */
 package com.github.donniexyz.demo.med.entity;
 
+import com.github.donniexyz.demo.med.lib.PatchMapper;
+import com.github.donniexyz.demo.med.lib.PutMapper;
 import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -149,5 +151,12 @@ public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHas
                 .setType(BaseEntity.cascade(Fields.type, relFields, AccountTransactionType.class, type))
                 .setItems(BaseEntity.cascade(Fields.items, relFields, AccountTransactionItem.class, items))
                 ;
+    }
+
+    @Override
+    public AccountTransaction copyFrom(AccountTransaction setValuesFromThisInstance, boolean nonNullOnly) {
+        return nonNullOnly
+                ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
+                : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
     }
 }

@@ -124,10 +124,7 @@ public class CashAccountController {
                 || (null != ca.getAccountOwner() && !fetchedFromDb.getAccountOwner().getId().equals(ca.getAccountOwner().getId()))
                 || (null != ca.getAccountType() && !fetchedFromDb.getAccountType().getTypeCode().equals(ca.getAccountType().getTypeCode())))
             throw new RuntimeException("Not allowed to directly update balance, lastTrxDate, owner, or acct type");
-        ca.setLastTransactionDate(null);
-        ca.setAccountOwner(null);
-        ca.setAccountType(null);
-        fetchedFromDb.copyFrom(ca, true);
+        fetchedFromDb.copyFrom(ca.copy(false), true);
         return cashAccountRepository.save(fetchedFromDb);
     }
 

@@ -60,4 +60,11 @@ public interface PutMapper {
 
     @InheritConfiguration
     AccountOwnerTypeApplicableToAccountType put(AccountOwnerTypeApplicableToAccountType setValuesFromThisInstance, @MappingTarget AccountOwnerTypeApplicableToAccountType accountOwnerTypeApplicableToAccountType);
+
+    @InheritConfiguration
+    AccountHistory put(AccountHistory setValuesFromThisInstance, @MappingTarget AccountHistory accountHistory);
+
+    @InheritConfiguration
+    AccountTransactionItem put(AccountTransactionItem setValuesFromThisInstance, @MappingTarget AccountTransactionItem accountTransactionItem);
+
 }
