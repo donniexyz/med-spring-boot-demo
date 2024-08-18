@@ -28,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
+import com.github.donniexyz.demo.med.entity.ref.IHasOrderNumber;
 import com.github.donniexyz.demo.med.enums.DebitCreditEnum;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
 import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
@@ -55,25 +56,26 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(indexes = {
+        @Index(name = "idx_accTrxItem_accId_trxId", columnList = "acc_id,trx_id")})
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
 @FieldNameConstants
-public class AccountTransactionItem implements IBaseEntity<AccountTransactionItem>, IHasCopy<AccountTransactionItem>, Serializable {
+public class AccountTransactionItem implements IBaseEntity<AccountTransactionItem>, IHasCopy<AccountTransactionItem>, IHasOrderNumber, Serializable {
 
     @Serial
-    private static final long serialVersionUID = -2224985971646147708L;
+    private static final long serialVersionUID = 8065578887369866423L;
 
     @Id
     @Column(name = "trx_id")
     private Long transactionId;
 
-    @Id
     @Column(name = "acc_id")
     private Long accountId;
 
     @Id
-    @Column(nullable = false, name = "'order'")
-    private Integer order;
+    @Column(name = "order_number", nullable = false)
+    private Integer orderNumber;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -99,14 +101,16 @@ public class AccountTransactionItem implements IBaseEntity<AccountTransactionIte
     private AccountTransactionType type;
 
     @OneToOne
-    @JoinColumn(name = "acc_id")
+    @JoinColumn(name = "acc_id", insertable = false, updatable = false)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonIgnore
     private CashAccount account;
 
     @OneToOne
-    @JoinColumn(name = "trx_id")
+    @JoinColumn(name = "trx_id", insertable = false, updatable = false)
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @JsonIgnore
     private AccountTransaction accountTransaction;
 
@@ -116,10 +120,10 @@ public class AccountTransactionItem implements IBaseEntity<AccountTransactionIte
 
     @Formula("true")
     @JsonIgnore
-    @Transient
     @org.springframework.data.annotation.Transient
     @FieldNameConstants.Exclude
-    private transient Boolean retrievedFromDb;
+    @EqualsAndHashCode.Exclude
+    private Boolean retrievedFromDb;
 
     @Version
     private Integer version;

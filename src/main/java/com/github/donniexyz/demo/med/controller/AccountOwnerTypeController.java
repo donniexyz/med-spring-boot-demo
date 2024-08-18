@@ -61,7 +61,7 @@ public class AccountOwnerTypeController {
     public AccountOwnerType update(@PathVariable("typeCode") String typeCode,
                                @RequestBody AccountOwnerType accountOwnerType) {
         AccountOwnerType fetchedFromDb = accountOwnerTypeRepository.findById(typeCode).orElseThrow();
-        fetchedFromDb.copyFrom(accountOwnerType, true);
+        fetchedFromDb.copyFrom(accountOwnerType.copy(false), true);
         return accountOwnerTypeRepository.save(fetchedFromDb);
     }
 }

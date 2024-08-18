@@ -29,7 +29,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
+import com.github.donniexyz.demo.med.entity.ref.IHasOrderNumber;
 import com.github.donniexyz.demo.med.enums.DebitCreditEnum;
+import com.github.donniexyz.demo.med.lib.PatchMapper;
+import com.github.donniexyz.demo.med.lib.PutMapper;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.NonNullLazyFieldsFilter;
 import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import jakarta.persistence.*;
@@ -43,7 +46,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.Formula;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.core.Ordered;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -58,27 +60,28 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(indexes = {@Index(name = "idx_accTypeApplToTrxType_trxTCode_order", columnList = "trx_tcode,'order'", unique = true)})
+@Table(indexes = {
+        @Index(name = "idx_accTypeApplToTrxType_accTCode_order", columnList = "acc_tcode,trx_tcode")})
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonNullLazyFieldsFilter.class)
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @FieldNameConstants
-public class AccountTypeApplicableToTransactionType implements IBaseEntity<AccountTypeApplicableToTransactionType>, IHasCopy<AccountTypeApplicableToTransactionType>, Ordered, Serializable {
+public class AccountTypeApplicableToTransactionType implements IBaseEntity<AccountTypeApplicableToTransactionType>, IHasCopy<AccountTypeApplicableToTransactionType>, IHasOrderNumber, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 3128913381381916069L;
+    private static final long serialVersionUID = -3330006119049351963L;
 
     @Id
     @Column(name = "trx_tcode")
     private String transactionTypeCode;
 
-    @Column(name = "acc_tcode")
+    @Column(name = "acc_tcode", nullable = false)
     private String accountTypeCode;
 
     @Id
-    @Column(name = "'order'")
-    private int order;
+    @Column(name = "order_number")
+    private Integer orderNumber;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -120,10 +123,10 @@ public class AccountTypeApplicableToTransactionType implements IBaseEntity<Accou
 
     @Formula("true")
     @JsonIgnore
-    @Transient
     @org.springframework.data.annotation.Transient
     @FieldNameConstants.Exclude
-    private transient Boolean retrievedFromDb;
+    @EqualsAndHashCode.Exclude
+    private Boolean retrievedFromDb;
 
     @Version
     private Integer version;
@@ -168,6 +171,13 @@ public class AccountTypeApplicableToTransactionType implements IBaseEntity<Accou
                 .setAccountType(BaseEntity.cascade(Fields.accountType, relFields, AccountType.class, accountType))
                 .setTransactionType(BaseEntity.cascade(Fields.transactionType, relFields, AccountTransactionType.class, transactionType))
                 ;
+    }
+
+    @JsonIgnore
+    public AccountTypeApplicableToTransactionType copyFrom(AccountTypeApplicableToTransactionType setValuesFromThisInstance, boolean nonNullOnly) {
+        return nonNullOnly
+                ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
+                : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
     }
 
     // -------------------------------------------------------------------------------------------------

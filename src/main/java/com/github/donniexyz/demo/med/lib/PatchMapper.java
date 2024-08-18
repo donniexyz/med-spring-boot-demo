@@ -54,4 +54,7 @@ public interface PatchMapper {
 
     @InheritConfiguration
     AccountOwnerTypeApplicableToAccountType patch(AccountOwnerTypeApplicableToAccountType setValuesFromThisInstance, @MappingTarget AccountOwnerTypeApplicableToAccountType accountOwnerTypeApplicableToAccountType);
+
+    AccountTypeApplicableToTransactionType patch(AccountTypeApplicableToTransactionType setValuesFromThisInstance, @MappingTarget AccountTypeApplicableToTransactionType accountTypeApplicableToTransactionType);
+
 }

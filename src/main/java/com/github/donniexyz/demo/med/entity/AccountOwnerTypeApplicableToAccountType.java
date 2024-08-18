@@ -29,6 +29,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
+import com.github.donniexyz.demo.med.lib.PatchMapper;
+import com.github.donniexyz.demo.med.lib.PutMapper;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.NonNullLazyFieldsFilter;
 import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import jakarta.persistence.*;
@@ -99,10 +101,10 @@ public class AccountOwnerTypeApplicableToAccountType implements IBaseEntity<Acco
 
     @Formula("true")
     @JsonIgnore
-    @Transient
     @org.springframework.data.annotation.Transient
     @FieldNameConstants.Exclude
-    private transient Boolean retrievedFromDb;
+    @EqualsAndHashCode.Exclude
+    private Boolean retrievedFromDb;
 
     @Version
     private Integer version;
@@ -148,6 +150,15 @@ public class AccountOwnerTypeApplicableToAccountType implements IBaseEntity<Acco
                 .setOwnerType(BaseEntity.cascade(Fields.ownerType, relFields, AccountOwnerType.class, ownerType))
                 ;
     }
+
+    @JsonIgnore
+    public AccountOwnerTypeApplicableToAccountType copyFrom(AccountOwnerTypeApplicableToAccountType setValuesFromThisInstance, boolean nonNullOnly) {
+        return nonNullOnly
+                ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
+                : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
+    }
+
+    // -------------------------------------------------------------------------------------------------
 
     public AccountOwnerTypeApplicableToAccountType setOwnerType(AccountOwnerType ownerType) {
         this.ownerType = ownerType;

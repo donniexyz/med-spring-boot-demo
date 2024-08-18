@@ -87,13 +87,13 @@ public class AccountTransactionService {
         accountTransactionExecution.setTransactionType(transactionType);
         accountTransactionExecution.setAccountsFromDb(accounts);
 
-        accountTransaction.getItems().sort(Comparator.comparingInt(AccountTransactionItem::getOrder));
+        accountTransaction.getItems().sort(Comparator.comparingInt(AccountTransactionItem::getOrderNumber));
 
         Map<Integer, AccountTransactionItem> accountMapFromTransaction = new HashMap<>();
         int smallestOrder = Integer.MAX_VALUE;
         int largestOrder = Integer.MIN_VALUE;
         for (AccountTransactionItem accountFromInput : accountTransaction.getItems()) {
-            Integer order = accountFromInput.getOrder();
+            Integer order = accountFromInput.getOrderNumber();
             if (accountMapFromTransaction.containsKey(order)) {
                 throw new CashAccountException(CashAccountErrorCode.TRANSACTION_ITEM_DUPLICATE)
                         .addErrorDetail(ErrorDetail.builder().source("INPUT").value(order).notes("DUPLICATE").build())
@@ -115,14 +115,14 @@ public class AccountTransactionService {
 
             if (applicableAccountType.getMinOccurrences() == 0) {
                 // if optional and not passed then continue
-                if (!accountMapFromTransaction.containsKey(applicableAccountType.getOrder())) continue;
+                if (!accountMapFromTransaction.containsKey(applicableAccountType.getOrderNumber())) continue;
                 // max = 0 but item is passed
                 if (null == applicableAccountType.getMaxOccurrences() || applicableAccountType.getMaxOccurrences() == 0) {
-                    log.error("[create] Invalid trx item: settings maxOccurrences = 0, i: {}", applicableAccountType.getOrder());
+                    log.error("[create] Invalid trx item: settings maxOccurrences = 0, i: {}", applicableAccountType.getOrderNumber());
                     throw new CashAccountException(CashAccountErrorCode.TRANSACTION_ITEM_INVALID);
                 }
                 // if optional and passed then validate 1 item
-                AccountTransactionItem accountFromMap = accountMapFromTransaction.get(applicableAccountType.getOrder());
+                AccountTransactionItem accountFromMap = accountMapFromTransaction.get(applicableAccountType.getOrderNumber());
                 validateTransactionItem(applicableAccountType, accountFromMap, 0);
 
                 accountTransactionExecution.add(accountFromMap.copy(false));
@@ -131,7 +131,7 @@ public class AccountTransactionService {
 
                 // process transaction item up until .minOccurrences
                 for (int i = 0; i < applicableAccountType.getMinOccurrences(); i++) {
-                    AccountTransactionItem accountFromMap = accountMapFromTransaction.get(applicableAccountType.getOrder() + i);
+                    AccountTransactionItem accountFromMap = accountMapFromTransaction.get(applicableAccountType.getOrderNumber() + i);
                     validateTransactionItem(applicableAccountType, accountFromMap, i);
 
                     accountTransactionExecution.add(accountFromMap.copy(false));
@@ -141,7 +141,7 @@ public class AccountTransactionService {
             // process transaction item up to .maxOccurrences
             if (null != applicableAccountType.getMaxOccurrences() && applicableAccountType.getMaxOccurrences() > applicableAccountType.getMinOccurrences()) {
                 for (int i = applicableAccountType.getMinOccurrences(); i < applicableAccountType.getMaxOccurrences(); i++) {
-                    AccountTransactionItem accountFromMap = accountMapFromTransaction.get(applicableAccountType.getOrder() + i);
+                    AccountTransactionItem accountFromMap = accountMapFromTransaction.get(applicableAccountType.getOrderNumber() + i);
                     if (null != accountFromMap) {
                         validateTransactionItem(applicableAccountType, accountFromMap, i);
 
@@ -161,19 +161,19 @@ public class AccountTransactionService {
     private static void validateTransactionItem(AccountTypeApplicableToTransactionType applicableAccountType, AccountTransactionItem accountFromMap, int counter) {
         if (null == accountFromMap) {
             log.error("[validateTransactionItem] Failed. From settings: order: {}, minOccurrences: {}. Counter: {}",
-                    applicableAccountType.getOrder(), applicableAccountType.getMinOccurrences(), counter);
+                    applicableAccountType.getOrderNumber(), applicableAccountType.getMinOccurrences(), counter);
             throw new CashAccountException(CashAccountErrorCode.TRANSACTION_ITEM_INVALID);
         }
 
         if (!accountFromMap.getAccount().getAccountType().getTypeCode().equals(applicableAccountType.getAccountTypeCode())) {
             log.error("[validateTransactionItem] Failed: order: {}, accNo: {}, typeCode: {}. From settings: order: {}, typeCode:{}. Counter: {}",
-                    accountFromMap.getOrder(), accountFromMap.getAccountId(), accountFromMap.getAccount().getAccountType().getTypeCode(),
-                    applicableAccountType.getOrder(), applicableAccountType.getAccountTypeCode(), counter);
+                    accountFromMap.getOrderNumber(), accountFromMap.getAccountId(), accountFromMap.getAccount().getAccountType().getTypeCode(),
+                    applicableAccountType.getOrderNumber(), applicableAccountType.getAccountTypeCode(), counter);
             throw new CashAccountException(CashAccountErrorCode.TRANSACTION_ITEM_INVALID);
         } else if (!accountFromMap.getDebitCredit().equals(applicableAccountType.getDebitCredit())) {
             log.error("[validateTransactionItem] Failed: order: {}, accId: {}, debitCredit: {}. From settings: order: {}, debitCredit: {}. Counter: {}",
-                    accountFromMap.getOrder(), accountFromMap.getAccountId(), accountFromMap.getDebitCredit(),
-                    applicableAccountType.getOrder(), applicableAccountType.getDebitCredit(), counter);
+                    accountFromMap.getOrderNumber(), accountFromMap.getAccountId(), accountFromMap.getDebitCredit(),
+                    applicableAccountType.getOrderNumber(), applicableAccountType.getDebitCredit(), counter);
             throw new CashAccountException(CashAccountErrorCode.TRANSACTION_ITEM_INVALID);
         }
     }

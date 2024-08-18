@@ -76,13 +76,12 @@ public class AccountOwnerController {
     @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     public AccountOwner patch(@PathVariable("id") Long id,
-                               @RequestBody AccountOwner accountOwner) {
+                              @RequestBody AccountOwner accountOwner) {
         AccountOwner fetchedFromDb = accountOwnerRepository.findById(id).orElseThrow();
         // cannot change ownerType
         if (null != accountOwner.getType() && !fetchedFromDb.getType().getTypeCode().equals(accountOwner.getType().getTypeCode()))
             throw new RuntimeException("Not allowed to change type");
-        accountOwner.setType(null);
-        fetchedFromDb.copyFrom(accountOwner, true);
+        fetchedFromDb.copyFrom(accountOwner.copy(false), true);
         return accountOwnerRepository.save(fetchedFromDb);
     }
 

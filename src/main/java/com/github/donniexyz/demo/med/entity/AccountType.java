@@ -105,7 +105,7 @@ public class AccountType implements IBaseEntity<AccountType>, IHasCopy<AccountTy
     @OneToMany(mappedBy = "accountType", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JsonManagedReference("accountTypeToTransactionType")
     @EqualsAndHashCode.Exclude
-    @OrderBy(AccountTypeApplicableToTransactionType.Fields.order)
+    @OrderBy(AccountTypeApplicableToTransactionType.Fields.orderNumber)
     private List<AccountTypeApplicableToTransactionType> applicableTransactionTypes;
 
 //    @ManyToMany
@@ -124,11 +124,10 @@ public class AccountType implements IBaseEntity<AccountType>, IHasCopy<AccountTy
 
     @Formula("true")
     @JsonIgnore
-    @Transient
     @org.springframework.data.annotation.Transient
     @FieldNameConstants.Exclude
     @EqualsAndHashCode.Exclude
-    private transient Boolean retrievedFromDb;
+    private Boolean retrievedFromDb;
 
     @Version
     private Integer version;

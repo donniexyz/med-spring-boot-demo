@@ -25,7 +25,6 @@ package com.github.donniexyz.demo.med.controller;
 
 import com.github.donniexyz.demo.med.entity.AccountOwnerTypeApplicableToAccountType;
 import com.github.donniexyz.demo.med.entity.AccountType;
-import com.github.donniexyz.demo.med.lib.PatchMapper;
 import com.github.donniexyz.demo.med.repository.AccountOwnerTypeRepository;
 import com.github.donniexyz.demo.med.repository.AccountTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,27 +103,19 @@ public class AccountTypeController {
         if (null != accountType.getBalanceSheetEntry() && !fetchedFromDb.getBalanceSheetEntry().equals(accountType.getBalanceSheetEntry()))
             throw new RuntimeException("Not allowed to change balanceSheetEntry");
 
+        // patch @OneToMany field
         if (null != accountType.getApplicableOwnerTypes()) {
             final Function<AccountOwnerTypeApplicableToAccountType, String> accountOwnerTypeApplicableToAccountTypeTypeCodeExtractorFunction = AccountOwnerTypeApplicableToAccountType::getOwnerTypeCode;
             var applicableOwnerMapFromInput = accountType.getApplicableOwnerTypes().stream().collect(Collectors.toMap(accountOwnerTypeApplicableToAccountTypeTypeCodeExtractorFunction, Function.identity()));
             for (AccountOwnerTypeApplicableToAccountType fetchedApplicableOwnerType : fetchedFromDb.getApplicableOwnerTypes()) {
                 if (applicableOwnerMapFromInput.containsKey(accountOwnerTypeApplicableToAccountTypeTypeCodeExtractorFunction.apply(fetchedApplicableOwnerType))) {
-                    PatchMapper.INSTANCE.patch(applicableOwnerMapFromInput.remove(accountOwnerTypeApplicableToAccountTypeTypeCodeExtractorFunction.apply(fetchedApplicableOwnerType)), fetchedApplicableOwnerType);
+                    fetchedApplicableOwnerType.copyFrom(applicableOwnerMapFromInput.remove(accountOwnerTypeApplicableToAccountTypeTypeCodeExtractorFunction.apply(fetchedApplicableOwnerType)).copy(false), true);
                 }
             }
             fetchedFromDb.getApplicableOwnerTypes().addAll(applicableOwnerMapFromInput.values());
         }
 
-        var tempApplicableOwnerTypes = accountType.getApplicableOwnerTypes();
-        var tempApplicableTransactionTypes = accountType.getApplicableTransactionTypes();
-        try {
-            accountType.setApplicableOwnerTypes(null);
-            accountType.setApplicableTransactionTypes(null);
-            PatchMapper.INSTANCE.patch(accountType, fetchedFromDb);
-        } finally {
-            accountType.setApplicableOwnerTypes(tempApplicableOwnerTypes);
-            accountType.setApplicableTransactionTypes(tempApplicableTransactionTypes);
-        }
+        fetchedFromDb.copyFrom(accountType.copy(false), true);
         return accountTypeRepository.save(fetchedFromDb);
     }
 
