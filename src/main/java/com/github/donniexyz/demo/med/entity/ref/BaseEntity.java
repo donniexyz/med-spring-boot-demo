@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
  * we will use interface generated from this class and copy the fields here into the real Entity class.
  */
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
@@ -101,7 +101,8 @@ public class BaseEntity implements IBaseEntity {
 
     @Nullable
     public static Boolean calculateRetrievedFromDb(Boolean retrievedFromDb) {
-        return null != retrievedFromDb ? false : null;
+        // true --> false <--> null
+        return null == retrievedFromDb ? Boolean.FALSE : (retrievedFromDb ? Boolean.FALSE : null);
     }
 
     // =================================================================================================
