@@ -70,6 +70,9 @@ public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHas
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "type_code", nullable = false)
+    String typeCode;
+
     @AttributeOverride(name = "amount", column = @Column(name = "trx_amount"))
     @AttributeOverride(name = "currency", column = @Column(name = "trx_ccy"))
     @CompositeType(MonetaryAmountType.class)
@@ -80,20 +83,8 @@ public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHas
     private String notes;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_code", foreignKey = @ForeignKey(name = "fk_AccTrx_type"))
+    @JoinColumn(name = "type_code", foreignKey = @ForeignKey(name = "fk_AccTrx_type"), insertable = false, updatable = false)
     private AccountTransactionType type;
-
-//    @ManyToOne
-//    @JoinColumn(name = "dr_account_id")
-//    @ToString.Exclude
-//    @EqualsAndHashCode.Exclude
-//    private CashAccount debitAccount;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "cr_account_id")
-//    @ToString.Exclude
-//    @EqualsAndHashCode.Exclude
-//    private CashAccount creditAccount;
 
     @OneToMany(mappedBy = "accountTransaction", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<AccountTransactionItem> items;
@@ -140,8 +131,7 @@ public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHas
 
     @JsonIgnore
     public AccountTransaction copy(Boolean cascade) {
-        AccountTransaction result = this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb));
-        return result
+        return this.withFlippedRetrievedFromDb()
                 .setType(BaseEntity.cascade(cascade, AccountTransactionType.class, type))
                 .setItems(BaseEntity.cascade(cascade, AccountTransactionItem.class, items))
                 ;
@@ -149,7 +139,7 @@ public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHas
 
     @Override
     public AccountTransaction copy(@NonNull List<String> relFields) {
-        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
+        return this.withFlippedRetrievedFromDb()
                 .setType(BaseEntity.cascade(Fields.type, relFields, AccountTransactionType.class, type))
                 .setItems(BaseEntity.cascade(Fields.items, relFields, AccountTransactionItem.class, items))
                 ;
@@ -160,5 +150,17 @@ public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHas
         return nonNullOnly
                 ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
                 : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
+    }
+
+    public AccountTransaction withFlippedRetrievedFromDb() {
+        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb));
+    }
+
+    // --------------------------------------------------------------------------------
+
+    public AccountTransaction setType(AccountTransactionType type) {
+        this.type = type;
+        if (null != type) this.typeCode = type.getTypeCode();
+        return this;
     }
 }

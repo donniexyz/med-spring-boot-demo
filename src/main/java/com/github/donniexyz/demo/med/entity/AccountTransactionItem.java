@@ -158,7 +158,7 @@ public class AccountTransactionItem implements IBaseEntity<AccountTransactionIte
 
     @JsonIgnore
     public AccountTransactionItem copy(Boolean cascade) {
-        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
+        return this.withFlippedRetrievedFromDb()
                 .setType(BaseEntity.cascade(cascade, AccountTransactionType.class, type))
                 .setAccount(BaseEntity.cascade(cascade, CashAccount.class, account))
                 .setAccountTransaction(BaseEntity.cascade(cascade, AccountTransaction.class, accountTransaction))
@@ -167,7 +167,7 @@ public class AccountTransactionItem implements IBaseEntity<AccountTransactionIte
 
     @Override
     public AccountTransactionItem copy(@NonNull List<String> relFields) {
-        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
+        return this.withFlippedRetrievedFromDb()
                 .setType(BaseEntity.cascade(Fields.type, relFields, AccountTransactionType.class, type))
                 .setAccount(BaseEntity.cascade(Fields.account, relFields, CashAccount.class, account))
                 .setAccountTransaction(BaseEntity.cascade(Fields.accountTransaction, relFields, AccountTransaction.class, accountTransaction))
@@ -180,11 +180,22 @@ public class AccountTransactionItem implements IBaseEntity<AccountTransactionIte
                 ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
                 : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
     }
+
+    public AccountTransactionItem withFlippedRetrievedFromDb() {
+        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb));
+    }
+
 // --------------------------------------------------------------------------------
 
     public AccountTransactionItem setType(AccountTransactionType type) {
         this.type = type;
         if (null != type) transactionTypeCode = type.getTypeCode();
+        return this;
+    }
+
+    public AccountTransactionItem setAccount(CashAccount account) {
+        this.account = account;
+        if (null != account) accountId = account.getId();
         return this;
     }
 

@@ -61,7 +61,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(indexes = {
-        @Index(name = "idx_accTypeApplToTrxType_accTCode_order", columnList = "acc_tcode,trx_tcode")})
+        @Index(name = "idx_accTypeApplToTrxType_accTCode_order", columnList = "acc_tcode,debit_credit,trx_tcode", unique = true)})
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonNullLazyFieldsFilter.class)
 @Cacheable
@@ -159,7 +159,7 @@ public class AccountTypeApplicableToTransactionType implements IBaseEntity<Accou
 
     @JsonIgnore
     public AccountTypeApplicableToTransactionType copy(Boolean cascade) {
-        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
+        return this.withFlippedRetrievedFromDb()
                 .setAccountType(BaseEntity.cascade(cascade, AccountType.class, accountType))
                 .setTransactionType(BaseEntity.cascade(cascade, AccountTransactionType.class, transactionType))
                 ;
@@ -167,7 +167,7 @@ public class AccountTypeApplicableToTransactionType implements IBaseEntity<Accou
 
     @JsonIgnore
     public AccountTypeApplicableToTransactionType copy(@NotNull List<String> relFields) {
-        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
+        return this.withFlippedRetrievedFromDb()
                 .setAccountType(BaseEntity.cascade(Fields.accountType, relFields, AccountType.class, accountType))
                 .setTransactionType(BaseEntity.cascade(Fields.transactionType, relFields, AccountTransactionType.class, transactionType))
                 ;
@@ -178,6 +178,10 @@ public class AccountTypeApplicableToTransactionType implements IBaseEntity<Accou
         return nonNullOnly
                 ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
                 : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
+    }
+
+    public AccountTypeApplicableToTransactionType withFlippedRetrievedFromDb() {
+        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb));
     }
 
     // -------------------------------------------------------------------------------------------------
