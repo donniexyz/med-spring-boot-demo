@@ -118,10 +118,10 @@ class AccountTransactionExecutionDataContainer {
                             : accountTransactionExecutionItem.creditEntryCount));
         }
 
-        if ((effectiveTransactionItem.getOrderNumber() < applicableToTransactionType.getOrderNumber() + applicableToTransactionType.getMinOccurrences())
+        if ((effectiveTransactionItem.getOrderNumber() < applicableToTransactionType.getOrderNumber() + applicableToTransactionType.getMinOccurrences() - 1)
                 || (effectiveTransactionItem.getOrderNumber() > applicableToTransactionType.getOrderNumber() + applicableToTransactionType.getMaxOccurrences())) {
             log.error("[add] Invalid item index, min {} <= index {} <= max {}",
-                    applicableToTransactionType.getOrderNumber() + applicableToTransactionType.getMinOccurrences(),
+                    applicableToTransactionType.getOrderNumber() + applicableToTransactionType.getMinOccurrences() - 1,
                     effectiveTransactionItem.getOrderNumber(),
                     applicableToTransactionType.getOrderNumber() + applicableToTransactionType.getMaxOccurrences());
             throw new CashAccountException(CashAccountErrorCode.TRANSACTION_ITEM_INVALID);

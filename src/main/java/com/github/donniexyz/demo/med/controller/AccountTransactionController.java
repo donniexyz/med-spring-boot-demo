@@ -50,6 +50,7 @@ public class AccountTransactionController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public AccountTransaction create(@RequestBody AccountTransaction accountTransaction) {
+        accountTransactionService.prepareAccountTransaction(accountTransaction);
         return accountTransactionService.create(accountTransaction);
     }
 }

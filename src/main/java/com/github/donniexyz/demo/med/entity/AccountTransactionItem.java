@@ -50,6 +50,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @WithBy
 @With
@@ -67,6 +68,11 @@ public class AccountTransactionItem implements IBaseEntity<AccountTransactionIte
 
     @Serial
     private static final long serialVersionUID = 8065578887369866423L;
+
+//    @Id
+//    @Column
+//    @GeneratedValue
+//    private UUID lineId;
 
     @Id
     @Column(name = "trx_id")
@@ -109,7 +115,7 @@ public class AccountTransactionItem implements IBaseEntity<AccountTransactionIte
     @JsonIgnore
     private CashAccount account;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "trx_id", insertable = false, updatable = false)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
@@ -181,6 +187,7 @@ public class AccountTransactionItem implements IBaseEntity<AccountTransactionIte
                 : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
     }
 
+    @JsonIgnore
     public AccountTransactionItem withFlippedRetrievedFromDb() {
         return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb));
     }
@@ -199,4 +206,13 @@ public class AccountTransactionItem implements IBaseEntity<AccountTransactionIte
         return this;
     }
 
+    public AccountTransactionItem setAccountTransaction(AccountTransaction accountTransaction) {
+        this.accountTransaction = accountTransaction;
+        if (null != accountTransaction) transactionId = accountTransaction.getId();
+        return this;
+    }
+
+    public Long getTransactionId() {
+        return null == accountTransaction ? transactionId : accountTransaction.getId();
+    }
 }

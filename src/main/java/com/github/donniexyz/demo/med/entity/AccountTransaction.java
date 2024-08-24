@@ -31,6 +31,7 @@ import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
 import com.github.donniexyz.demo.med.lib.PatchMapper;
 import com.github.donniexyz.demo.med.lib.PutMapper;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForLocalDateTime;
 import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
 import jakarta.persistence.*;
@@ -79,6 +80,7 @@ public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHas
     private MonetaryAmount transactionAmount;
 
     private String label; // e.g., "Deposit," "Withdrawal"
+    @MedJsonFormatForLocalDateTime
     private LocalDateTime transactionDate;
     private String notes;
 
@@ -152,11 +154,19 @@ public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHas
                 : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
     }
 
+    @JsonIgnore
     public AccountTransaction withFlippedRetrievedFromDb() {
         return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb));
     }
 
     // --------------------------------------------------------------------------------
+
+    @PostPersist
+    public void postPersist() {
+        if (null != items) for (AccountTransactionItem item : items) {
+            item.setAccountTransaction(this);
+        }
+    }
 
     public AccountTransaction setType(AccountTransactionType type) {
         this.type = type;

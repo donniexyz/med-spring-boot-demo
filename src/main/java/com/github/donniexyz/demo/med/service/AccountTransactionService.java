@@ -27,7 +27,10 @@ import com.github.donniexyz.demo.med.entity.AccountTransaction;
 import com.github.donniexyz.demo.med.entity.AccountTransactionItem;
 import com.github.donniexyz.demo.med.entity.AccountTransactionType;
 import com.github.donniexyz.demo.med.entity.CashAccount;
+import com.github.donniexyz.demo.med.enums.DebitCreditEnum;
 import com.github.donniexyz.demo.med.enums.RecordStatusMajorEnum;
+import com.github.donniexyz.demo.med.exception.CashAccountErrorCode;
+import com.github.donniexyz.demo.med.exception.CashAccountException;
 import com.github.donniexyz.demo.med.repository.AccountTransactionRepository;
 import com.github.donniexyz.demo.med.repository.AccountTransactionTypeRepository;
 import com.github.donniexyz.demo.med.repository.CashAccountRepository;
@@ -35,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -75,6 +79,7 @@ public class AccountTransactionService {
         if (accountsFromTransaction.size() > accounts.size()) {
             log.error("Transaction account not found! accountsFromTransaction: {}, existingActiveAccount: {} ",
                     accountsFromTransaction, accounts.stream().map(CashAccount::getId).toList());
+            throw new CashAccountException(CashAccountErrorCode.RECORD_NOT_FOUND);
         }
 
         AccountTransactionExecutionDataContainer accountTransactionExecution =
@@ -87,4 +92,20 @@ public class AccountTransactionService {
         return accountTransactionRepository.save(prepared);
     }
 
+    public AccountTransaction prepareAccountTransaction(AccountTransaction accountTransaction) {
+
+        if (!CollectionUtils.isEmpty(accountTransaction.getItems())) {
+            List<AccountTransactionItem> debitItems = accountTransaction.getItems().stream().filter(k -> DebitCreditEnum.DEBIT.equals(k.getDebitCredit())).toList();
+            List<AccountTransactionItem> creditItems = accountTransaction.getItems().stream().filter(k -> DebitCreditEnum.CREDIT.equals(k.getDebitCredit())).toList();
+            setItemTransactionAmountIfNull(accountTransaction, debitItems);
+            setItemTransactionAmountIfNull(accountTransaction, creditItems);
+        }
+
+        return accountTransaction;
+    }
+
+    private static void setItemTransactionAmountIfNull(AccountTransaction accountTransaction, List<AccountTransactionItem> transactionItems) {
+        if (transactionItems.size() == 1 && null == transactionItems.get(0).getTransactionAmount())
+            transactionItems.get(0).setTransactionAmount(accountTransaction.getTransactionAmount());
+    }
 }

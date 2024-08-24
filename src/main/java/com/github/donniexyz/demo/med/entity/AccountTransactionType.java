@@ -29,6 +29,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
+import com.github.donniexyz.demo.med.entity.ref.IHasValidate;
+import com.github.donniexyz.demo.med.enums.DebitCreditEnum;
 import com.github.donniexyz.demo.med.lib.PatchMapper;
 import com.github.donniexyz.demo.med.lib.PutMapper;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.NonNullLazyFieldsFilter;
@@ -44,11 +46,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.Formula;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.util.CollectionUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <ul>
@@ -73,7 +77,8 @@ import java.util.List;
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @FieldNameConstants
-public class AccountTransactionType implements IBaseEntity<AccountTransactionType>, IHasCopy<AccountTransactionType>, Serializable {
+public class AccountTransactionType implements IBaseEntity<AccountTransactionType>,
+        IHasCopy<AccountTransactionType>, IHasValidate, Serializable {
 
     @Serial
     private static final long serialVersionUID = -4281996479630423914L;
@@ -156,5 +161,26 @@ public class AccountTransactionType implements IBaseEntity<AccountTransactionTyp
         return nonNullOnly
                 ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
                 : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
+    }
+
+    // -------------------------------------------------------------------------------------------------
+
+    @Override
+    public InvalidInfo getInvalid() {
+
+        long debitCount = CollectionUtils.isEmpty(applicableAccountTypes) ? 0 : applicableAccountTypes.stream().filter(k -> DebitCreditEnum.DEBIT.equals(k.getDebitCredit())).count();
+        if (debitCount < 1) return InvalidInfo.builder().fieldName(Fields.applicableAccountTypes).fieldValue(debitCount).errorMessage("debitCount < 1").build();
+        long creditCount = applicableAccountTypes.stream().filter(k -> DebitCreditEnum.CREDIT.equals(k.getDebitCredit())).count();
+        if (creditCount < 1) return InvalidInfo.builder().fieldName(Fields.applicableAccountTypes).fieldValue(debitCount).errorMessage("creditCount < 1").build();
+
+        if (null == singleDebit || Boolean.TRUE.equals(singleDebit)) {
+            if (debitCount == 1) singleDebit = Boolean.TRUE;
+            else return InvalidInfo.builder().fieldName(Fields.singleDebit).fieldValue(singleDebit).errorMessage("singleDebit mismatch debitCount").build();
+        }
+        if (null == singleCredit || Boolean.TRUE.equals(singleCredit)) {
+            if (creditCount == 1) singleCredit = Boolean.TRUE;
+            else return InvalidInfo.builder().fieldName(Fields.singleDebit).fieldValue(singleDebit).errorMessage("singleCredit mismatch creditCount").build();
+        }
+        return applicableAccountTypes.stream().map(IHasValidate::getInvalid).filter(Objects::nonNull).findFirst().orElse(null);
     }
 }

@@ -26,10 +26,7 @@ package com.github.donniexyz.demo.med.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
-import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
-import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
-import com.github.donniexyz.demo.med.entity.ref.IHasOrderNumber;
+import com.github.donniexyz.demo.med.entity.ref.*;
 import com.github.donniexyz.demo.med.enums.DebitCreditEnum;
 import com.github.donniexyz.demo.med.lib.PatchMapper;
 import com.github.donniexyz.demo.med.lib.PutMapper;
@@ -67,7 +64,8 @@ import java.util.List;
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @FieldNameConstants
-public class AccountTypeApplicableToTransactionType implements IBaseEntity<AccountTypeApplicableToTransactionType>, IHasCopy<AccountTypeApplicableToTransactionType>, IHasOrderNumber, Serializable {
+public class AccountTypeApplicableToTransactionType implements IBaseEntity<AccountTypeApplicableToTransactionType>,
+        IHasCopy<AccountTypeApplicableToTransactionType>, IHasOrderNumber, IHasValidate, Serializable {
 
     @Serial
     private static final long serialVersionUID = -3330006119049351963L;
@@ -97,6 +95,7 @@ public class AccountTypeApplicableToTransactionType implements IBaseEntity<Accou
      * null means maxOccurrences matches with minOccurrences.
      * maxOccurrences less than minOccurrences means invalid configuration.
      */
+    @Column(nullable = false)
     private Integer maxOccurrences;
 
     private String notes;
@@ -180,6 +179,7 @@ public class AccountTypeApplicableToTransactionType implements IBaseEntity<Accou
                 : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
     }
 
+    @JsonIgnore
     public AccountTypeApplicableToTransactionType withFlippedRetrievedFromDb() {
         return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb));
     }
@@ -196,5 +196,17 @@ public class AccountTypeApplicableToTransactionType implements IBaseEntity<Accou
         this.accountType = accountType;
         if (null != accountType) this.accountTypeCode = accountType.getTypeCode();
         return this;
+    }
+
+    // -------------------------------------------------------------------------------------------------
+
+    @Override
+    public InvalidInfo getInvalid() {
+        if (null == maxOccurrences && null != minOccurrences)
+            maxOccurrences = minOccurrences <= 0 ? 1 : minOccurrences;
+        return null != maxOccurrences && maxOccurrences >= minOccurrences ? null :
+                InvalidInfo.builder()
+                        .fieldName(AccountTypeApplicableToTransactionType.Fields.maxOccurrences)
+                        .fieldValue(maxOccurrences).build();
     }
 }

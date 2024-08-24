@@ -69,6 +69,8 @@ public class TransactionTypeController {
         if (transactionTypeRepository.existsById(typeCode))
             throw new RuntimeException("AccountTransactionType typeCode=" + typeCode + " already exists");
 
+        accountTransactionType.validate();
+
         return transactionTypeRepository.save(accountTransactionType);
     }
 
