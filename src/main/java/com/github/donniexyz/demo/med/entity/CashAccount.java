@@ -23,7 +23,6 @@
  */
 package com.github.donniexyz.demo.med.entity;
 
-import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -34,6 +33,8 @@ import com.github.donniexyz.demo.med.lib.CashAccountUtilities;
 import com.github.donniexyz.demo.med.lib.PatchMapper;
 import com.github.donniexyz.demo.med.lib.PutMapper;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForLocalDateTime;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -78,8 +79,15 @@ public class CashAccount implements IBaseEntity<CashAccount>, IHasCopy<CashAccou
     @CompositeType(MonetaryAmountType.class)
     private MonetaryAmount accountBalance;
 
+    @MedJsonFormatForLocalDateTime
     private LocalDateTime lastTransactionDate;
     private String notes;
+
+    @Column(name = "type_code")
+    private String accountTypeCode;
+
+    @Column(name = "owner_id")
+    private Long accountOwnerId;
 
     /**
      * This will be used to insert history upon updates of cashAccount (if enabled).
@@ -93,13 +101,13 @@ public class CashAccount implements IBaseEntity<CashAccount>, IHasCopy<CashAccou
     private List<AccountHistory> accountHistories;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id", foreignKey = @ForeignKey(name = "fk_CashAcc_owner"))
+    @JoinColumn(name = "owner_id", foreignKey = @ForeignKey(name = "fk_CashAcc_owner"), insertable = false, updatable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private AccountOwner accountOwner;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_code", foreignKey = @ForeignKey(name = "fk_CashAcc_type"))
+    @JoinColumn(name = "type_code", foreignKey = @ForeignKey(name = "fk_CashAcc_type"), insertable = false, updatable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private AccountType accountType;
@@ -169,6 +177,20 @@ public class CashAccount implements IBaseEntity<CashAccount>, IHasCopy<CashAccou
         return nonNullOnly
                 ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
                 : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    public CashAccount setAccountOwner(AccountOwner accountOwner) {
+        this.accountOwner = accountOwner;
+        if (null != accountOwner) this.accountOwnerId = accountOwner.getId();
+        return this;
+    }
+
+    public CashAccount setAccountType(AccountType accountType) {
+        this.accountType = accountType;
+        if (null != accountType) this.accountTypeCode = accountType.getTypeCode();
+        return this;
     }
 
     // ---------------------------------------------------------------------------------------------

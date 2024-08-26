@@ -38,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -63,6 +64,9 @@ public class AccountTransactionService {
 
     @Transactional
     public AccountTransaction create(AccountTransaction accountTransaction) {
+
+        Assert.isNull(accountTransaction.getVersion(), "Invalid input: version field is not null");
+
         Long id = accountTransaction.getId();
         if (null != id && accountTransactionRepository.existsById(id))
             throw new RuntimeException("AccountTransaction already exists, id: " + id);

@@ -26,6 +26,7 @@ package com.github.donniexyz.demo.med.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.github.donniexyz.demo.med.lib.PatchMapper;
 import com.github.donniexyz.demo.med.lib.PutMapper;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForLocalDateTime;
 import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -89,6 +90,7 @@ public class AccountHistory implements IBaseEntity<AccountHistory>, IHasCopy<Acc
     @CompositeType(MonetaryAmountType.class)
     private MonetaryAmount balance;
 
+    @MedJsonFormatForLocalDateTime
     private LocalDateTime transactionDate;
     private String description;
 

@@ -25,6 +25,7 @@ package com.github.donniexyz.demo.med.controller;
 
 import com.github.donniexyz.demo.med.entity.AccountTransaction;
 import com.github.donniexyz.demo.med.service.AccountTransactionService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +35,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/accountTransaction")
+@Slf4j
 public class AccountTransactionController {
 
     @Autowired
