@@ -21,28 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.donniexyz.demo.med.converter;
+package com.github.donniexyz.demo.med.entity.ref;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+public interface IBaseEntity<T> {
+    Boolean getRetrievedFromDb();
 
-import javax.money.MonetaryAmount;
-import java.io.IOException;
+    Integer getVersion();
 
-public class MonetaryAmountSerializer extends StdSerializer<MonetaryAmount> {
+    java.time.OffsetDateTime getCreatedDateTime();
 
-    public MonetaryAmountSerializer() {
-        super(MonetaryAmount.class);
-    }
+    java.time.OffsetDateTime getLastModifiedDate();
 
-    public MonetaryAmountSerializer(Class<?> vc) {
-        super(vc, false);
-    }
+    T setRetrievedFromDb(Boolean retrievedFromDb);
 
-    @Override
-    public void serialize(MonetaryAmount value, JsonGenerator json, SerializerProvider provider) throws IOException {
-        json.writeString(value.toString());
-    }
+    T setVersion(Integer version);
 
+    T setCreatedDateTime(java.time.OffsetDateTime createdDateTime);
+
+    T setLastModifiedDate(java.time.OffsetDateTime lastModifiedDate);
+
+    Character getRecordStatusMajor();
+
+    Character getStatusMinor();
+
+    /**
+     * Explaining the status of this record:
+     * A: Active
+     * I: Inactive
+     * D: Soft Deleted (will be hidden from .findAll() because entities has @Where(statusMajor not in ['D', 'R', 'V'])
+     * R: Reserved (on case bulk creation of records, but the records actually not yet in use)
+     * V: Marked for archival
+     */
+    T setRecordStatusMajor(Character recordStatusMajor);
+
+    /**
+     * Further explaining the record status. Not handled by common libs. To be handled by individual lib.
+     */
+    T setStatusMinor(Character statusMinor);
 }

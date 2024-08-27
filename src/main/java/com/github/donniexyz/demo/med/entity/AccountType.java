@@ -1,19 +1,53 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2024 (https://github.com/donniexyz)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.github.donniexyz.demo.med.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
+import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
+import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
 import com.github.donniexyz.demo.med.enums.BalanceSheetComponentEnum;
+import com.github.donniexyz.demo.med.lib.PatchMapper;
+import com.github.donniexyz.demo.med.lib.PutMapper;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.NonNullLazyFieldsFilter;
 import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
+import lombok.experimental.FieldNameConstants;
 import lombok.experimental.WithBy;
-import org.hibernate.annotations.CompositeType;
+import org.hibernate.annotations.*;
+import org.jetbrains.annotations.NotNull;
 
 import javax.money.MonetaryAmount;
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * <ul>
@@ -34,7 +68,14 @@ import java.util.stream.Collectors;
 @Entity
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonNullLazyFieldsFilter.class)
-public class AccountType {
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@FieldNameConstants(asEnum = true)
+public class AccountType implements IBaseEntity<AccountType>, IHasCopy<AccountType>, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -5832102092513250717L;
+
     @Id
     private String typeCode;
     private String name;
@@ -50,10 +91,12 @@ public class AccountType {
 
     @ManyToMany(mappedBy = "applicableDebitAccountTypes")
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<AccountTransactionType> applicableDebitTransactionTypes;
 
     @ManyToMany(mappedBy = "applicableCreditAccountTypes")
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<AccountTransactionType> applicableCreditTransactionTypes;
 
     @ManyToMany
@@ -61,39 +104,68 @@ public class AccountType {
     @EqualsAndHashCode.Exclude
     private Set<AccountOwnerType> applicableForAccountOwnerTypes;
 
+    // ==============================================================
+    // BaseEntity fields
+    //---------------------------------------------------------------
+
+    @Formula("true")
+    @JsonIgnore
+    @Transient
+    @org.springframework.data.annotation.Transient
+    @FieldNameConstants.Exclude
+    private transient Boolean retrievedFromDb;
+
+    @Version
+    private Integer version;
+
+    @CreationTimestamp
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    private OffsetDateTime createdDateTime;
+
+    @CurrentTimestamp
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    private OffsetDateTime lastModifiedDate;
+
+    /**
+     * Explaining the status of this record:
+     * A: Active
+     * I: Inactive
+     * D: Soft Deleted (will be hidden from .findAll() because entities has @Where(statusMajor not in ['D', 'R', 'V'])
+     * R: Reserved (on case bulk creation of records, but the records actually not yet in use)
+     * V: Marked for archival
+     */
+    private Character recordStatusMajor;
+
+    /**
+     * Further explaining the record status. Not handled by common libs. To be handled by individual lib.
+     */
+    private Character statusMinor;
+
     // --------------------------------------------------------------------------
 
     @JsonIgnore
-    public AccountType copy() {
-        return copy(null);
+
+    public AccountType copy(Boolean cascade) {
+        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
+                .setApplicableForAccountOwnerTypes(BaseEntity.cascadeSet(cascade, AccountOwnerType.class, applicableForAccountOwnerTypes))
+                .setApplicableDebitTransactionTypes(BaseEntity.cascadeSet(cascade, AccountTransactionType.class, applicableDebitTransactionTypes))
+                .setApplicableCreditTransactionTypes(BaseEntity.cascadeSet(cascade, AccountTransactionType.class, applicableCreditTransactionTypes))
+                ;
     }
 
     @JsonIgnore
-    public AccountType copy(Boolean cascade) {
-        return this
-                .withApplicableForAccountOwnerTypes(null == applicableForAccountOwnerTypes || !Boolean.TRUE.equals(cascade) ? null : applicableForAccountOwnerTypes.stream().map(accountOwnerType -> accountOwnerType.copy(false)).collect(Collectors.toSet()))
-                .setApplicableDebitTransactionTypes(null == applicableDebitTransactionTypes || !Boolean.TRUE.equals(cascade) ? null : applicableDebitTransactionTypes.stream().map(debitAccountTransactionType -> debitAccountTransactionType.copy(false)).collect(Collectors.toSet()))
-                .setApplicableCreditTransactionTypes(null == applicableCreditTransactionTypes || !Boolean.TRUE.equals(cascade) ? null : applicableCreditTransactionTypes.stream().map(creditAccountTransactionType -> creditAccountTransactionType.copy(false)).collect(Collectors.toSet()));
+    public AccountType copy(@NotNull List<String> relFields) {
+        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
+                .setApplicableForAccountOwnerTypes(BaseEntity.cascadeSet(Fields.applicableForAccountOwnerTypes.name(), relFields, AccountOwnerType.class, applicableForAccountOwnerTypes))
+                .setApplicableDebitTransactionTypes(BaseEntity.cascadeSet(Fields.applicableDebitTransactionTypes.name(), relFields, AccountTransactionType.class, applicableDebitTransactionTypes))
+                .setApplicableCreditTransactionTypes(BaseEntity.cascadeSet(Fields.applicableCreditTransactionTypes.name(), relFields, AccountTransactionType.class, applicableCreditTransactionTypes))
+                ;
     }
 
     @JsonIgnore
     public AccountType copyFrom(AccountType setValuesFromThisInstance, boolean nonNullOnly) {
-        if (!nonNullOnly || null != setValuesFromThisInstance.typeCode)
-            this.typeCode = setValuesFromThisInstance.typeCode;
-        if (!nonNullOnly || null != setValuesFromThisInstance.name)
-            this.name = setValuesFromThisInstance.name;
-        if (!nonNullOnly || null != setValuesFromThisInstance.balanceSheetEntry)
-            this.balanceSheetEntry = setValuesFromThisInstance.balanceSheetEntry;
-        if (!nonNullOnly || null != setValuesFromThisInstance.minimumBalance)
-            this.minimumBalance = setValuesFromThisInstance.minimumBalance;
-        if (!nonNullOnly || null != setValuesFromThisInstance.notes)
-            this.notes = setValuesFromThisInstance.notes;
-        if (!nonNullOnly || null != setValuesFromThisInstance.applicableDebitTransactionTypes)
-            this.applicableDebitTransactionTypes = setValuesFromThisInstance.applicableDebitTransactionTypes;
-        if (!nonNullOnly || null != setValuesFromThisInstance.applicableCreditTransactionTypes)
-            this.applicableCreditTransactionTypes = setValuesFromThisInstance.applicableCreditTransactionTypes;
-        if (!nonNullOnly || null != setValuesFromThisInstance.applicableForAccountOwnerTypes)
-            this.applicableForAccountOwnerTypes = setValuesFromThisInstance.applicableForAccountOwnerTypes;
-        return this;
+        return nonNullOnly
+                ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
+                : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
     }
 }

@@ -1,3 +1,26 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2024 (https://github.com/donniexyz)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.github.donniexyz.demo.med.controller;
 
 import com.github.donniexyz.demo.med.entity.AccountOwner;
@@ -9,9 +32,15 @@ import com.github.donniexyz.demo.med.repository.AccountOwnerTypeRepository;
 import com.github.donniexyz.demo.med.repository.AccountTypeRepository;
 import com.github.donniexyz.demo.med.repository.CashAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import javax.money.CurrencyUnit;
+import javax.money.MonetaryAmount;
 
 import static com.github.donniexyz.demo.med.lib.CashAccountConstants.MA;
 
@@ -32,8 +61,21 @@ public class CashAccountController {
     private AccountOwnerTypeRepository accountOwnerTypeRepository;
 
     @GetMapping("/{id}")
-    public CashAccount get(@PathVariable("id") Long id) {
-        return cashAccountRepository.getReferenceById(id);
+    @Transactional(readOnly = true)
+    public CashAccount get(@PathVariable("id") Long id,
+                           @RequestParam(value = "cascade", required = false) String cascade) {
+        return cashAccountRepository.findById(id).orElseThrow().copy(null == cascade || cascade.isEmpty() ? null : "true".equals(cascade));
+    }
+
+    @GetMapping("/")
+    @Transactional(readOnly = true)
+    public Page<CashAccount> getAll(Pageable pageable) {
+        Specification<CashAccount> cashAccountSpecification = (root, query, criteriaBuilder) -> {
+            root.fetch("accountOwner");
+            return criteriaBuilder.conjunction();
+        };
+        return cashAccountRepository.findAll(cashAccountSpecification, null == pageable ? Pageable.unpaged() : pageable)
+                .map(ca -> ca.copy());
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -50,8 +92,15 @@ public class CashAccountController {
         cashAccount.getAccountType().getApplicableForAccountOwnerTypes().stream()
                 .filter(ot -> ot.getTypeCode().equals(accountOwnerType.getTypeCode())).findFirst()
                 .orElseThrow(() -> new RuntimeException("Invalid combination of owner type - account type"));
+        cashAccount.setAccountOwner(accountOwner);
 
-        cashAccount.setAccountBalance(MA.ZERO_THROUGH_TEN_PER_CCY.get(accountType.getMinimumBalance().getCurrency())[0]);
+        CurrencyUnit currency;
+        if (null != accountType.getMinimumBalance()) {
+            currency = accountType.getMinimumBalance().getCurrency();
+        } else
+            currency = MA.ALLOWED_CURRENCIES.get(0);
+        MonetaryAmount accountBalance = MA.ZERO_THROUGH_TEN_PER_CCY.get(currency)[0];
+        cashAccount.setAccountBalance(accountBalance);
 
         return cashAccountRepository.save(cashAccount);
     }
@@ -73,5 +122,15 @@ public class CashAccountController {
         ca.setAccountType(null);
         fetchedFromDb.copyFrom(ca, true);
         return cashAccountRepository.save(fetchedFromDb);
+    }
+
+    @PostMapping("/changeId")
+    @Transactional
+    public CashAccount changeId(@RequestParam("from") Long from, @RequestParam("to") Long to) {
+        if (!from.equals(to)) {
+            int updatedCount = cashAccountRepository.changeId(from, to);
+            if (updatedCount < 1) throw new RuntimeException("Unable to update record");
+        }
+        return cashAccountRepository.findById(to).orElseThrow();
     }
 }

@@ -21,28 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.donniexyz.demo.med.converter;
+package com.github.donniexyz.demo.med.lib;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import com.github.donniexyz.demo.med.entity.*;
+import org.mapstruct.*;
+import org.mapstruct.factory.Mappers;
 
-import javax.money.MonetaryAmount;
-import java.io.IOException;
+@Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+public interface PatchMapper {
+    PatchMapper INSTANCE = Mappers.getMapper(PatchMapper.class);
 
-public class MonetaryAmountSerializer extends StdSerializer<MonetaryAmount> {
+    @Mapping(target = "retrievedFromDb", ignore = true)
+    AccountTransactionType patch(AccountTransactionType source, @MappingTarget AccountTransactionType target);
 
-    public MonetaryAmountSerializer() {
-        super(MonetaryAmount.class);
-    }
+    @InheritConfiguration
+    AccountTransaction patch(AccountTransaction source, @MappingTarget AccountTransaction target);
 
-    public MonetaryAmountSerializer(Class<?> vc) {
-        super(vc, false);
-    }
+    @InheritConfiguration
+    AccountType patch(AccountType source, @MappingTarget AccountType target);
 
-    @Override
-    public void serialize(MonetaryAmount value, JsonGenerator json, SerializerProvider provider) throws IOException {
-        json.writeString(value.toString());
-    }
+    @InheritConfiguration
+    AccountOwnerType patch(AccountOwnerType setValuesFromThisInstance, @MappingTarget AccountOwnerType accountOwnerType);
 
+    @InheritConfiguration
+    AccountOwner patch(AccountOwner setValuesFromThisInstance, @MappingTarget AccountOwner accountOwner);
+
+    @InheritConfiguration
+    CashAccount patch(CashAccount setValuesFromThisInstance, @MappingTarget CashAccount cashAccount);
 }

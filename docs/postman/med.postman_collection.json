@@ -1290,7 +1290,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"transactionAmount\": 1000000,\r\n    \"label\": \"Increase clearing account by 1mil\",\r\n    \"notes\": \"Increase clearing account by 1mil\",\r\n    \"fromAccount\": {\r\n        \"id\": 12\r\n    },\r\n    \"toAccount\": {\r\n        \"id\": 13\r\n    },\r\n    \"type\": {\r\n        \"typeCode\": \"INCREASE_CLEARING\"\r\n    }\r\n}",
+							"raw": "{\r\n    \"transactionAmount\": \"USD 1000000\",\r\n    \"label\": \"Increase clearing account by 1mil\",\r\n    \"notes\": \"Increase clearing account by 1mil\",\r\n    \"debitAccount\": {\r\n        \"id\": 1\r\n    },\r\n    \"creditAccount\": {\r\n        \"id\": 3\r\n    },\r\n    \"type\": {\r\n        \"typeCode\": \"INCREASE_CLEARING\"\r\n    }\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1866,6 +1866,20 @@
 					"item": [
 						{
 							"name": "AccountOwnerType - BANK_SELF",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
@@ -1892,6 +1906,20 @@
 						},
 						{
 							"name": "AccountOwnerType - CORP",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
@@ -1918,6 +1946,20 @@
 						},
 						{
 							"name": "AccountOwnerType - STAFF",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
@@ -1944,6 +1986,20 @@
 						},
 						{
 							"name": "AccountOwnerType - INDI",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
@@ -1970,12 +2026,26 @@
 						},
 						{
 							"name": "AccountType - INTERNAL_CR",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"typeCode\": \"INTERNAL_CR\",\r\n    \"name\": \"Internal Credit/Assets Accounts\",\r\n    \"balanceSheetEntry\": \"A\",\r\n    \"notes\": \"Assets account for internal use only\"\r\n}",
+									"raw": "{\r\n    \"typeCode\": \"INTERNAL_CR\",\r\n    \"name\": \"Internal Credit/Assets Accounts\",\r\n    \"balanceSheetEntry\": \"A\",\r\n    \"notes\": \"Assets account for internal use only\",\r\n    \"applicableForAccountOwnerTypes\": [\r\n        {\r\n            \"typeCode\": \"BANK_SELF\"\r\n        }\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1983,12 +2053,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{med_server}}/accountTypes",
+									"raw": "{{med_server}}/accountType",
 									"host": [
 										"{{med_server}}"
 									],
 									"path": [
-										"accountTypes"
+										"accountType"
 									]
 								}
 							},
@@ -2337,12 +2407,26 @@
 						},
 						{
 							"name": "AccountType - INTERNAL_DR",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"typeCode\": \"INTERNAL_DR\",\r\n    \"name\": \"Internal Debit/Liabilities Accounts\",\r\n    \"balanceSheetEntry\": \"L\",\r\n    \"notes\": \"Liability account for internal use only\"\r\n}",
+									"raw": "{\r\n    \"typeCode\": \"INTERNAL_DR\",\r\n    \"name\": \"Internal Debit/Liabilities Accounts\",\r\n    \"balanceSheetEntry\": \"L\",\r\n    \"notes\": \"Liability account for internal use only\",\r\n    \"applicableForAccountOwnerTypes\": [\r\n        {\r\n            \"typeCode\": \"BANK_SELF\"\r\n        }\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2350,12 +2434,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{med_server}}/accountTypes",
+									"raw": "{{med_server}}/accountType",
 									"host": [
 										"{{med_server}}"
 									],
 									"path": [
-										"accountTypes"
+										"accountType"
 									]
 								}
 							},
@@ -2363,12 +2447,26 @@
 						},
 						{
 							"name": "AccountType - CLEARING",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"typeCode\": \"CLEARING\",\r\n    \"name\": \"Clearing A Account\",\r\n    \"balanceSheetEntry\": \"ASSETS\",\r\n    \"notes\": \"to be used for incoming/outgoing transfer\"\r\n}",
+									"raw": "{\r\n    \"typeCode\": \"CLEARING\",\r\n    \"name\": \"Clearing A Account\",\r\n    \"balanceSheetEntry\": \"ASSETS\",\r\n    \"notes\": \"to be used for incoming/outgoing transfer\",\r\n    \"applicableForAccountOwnerTypes\": [\r\n        {\r\n            \"typeCode\": \"BANK_SELF\"\r\n        }\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2376,12 +2474,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{med_server}}/accountTypes",
+									"raw": "{{med_server}}/accountType",
 									"host": [
 										"{{med_server}}"
 									],
 									"path": [
-										"accountTypes"
+										"accountType"
 									]
 								}
 							},
@@ -2389,12 +2487,26 @@
 						},
 						{
 							"name": "AccountType - DRAWERS",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"typeCode\": \"DRAWERS\",\r\n    \"name\": \"Physical Drawer\",\r\n    \"balanceSheetEntry\": \"ASSETS\",\r\n    \"minimumBalance\": {\r\n        \"amount\": 10,\r\n        \"currency\": \"USD\"\r\n    },\r\n    \"notes\": \"Physical Drawer at Bank Branch\"\r\n}",
+									"raw": "{\r\n    \"typeCode\": \"DRAWERS\",\r\n    \"name\": \"Physical Drawer\",\r\n    \"balanceSheetEntry\": \"ASSETS\",\r\n    \"minimumBalance\": {\r\n        \"amount\": 10,\r\n        \"currency\": \"USD\"\r\n    },\r\n    \"notes\": \"Physical Drawer at Bank Branch\",\r\n    \"applicableForAccountOwnerTypes\": [\r\n        {\r\n            \"typeCode\": \"BANK_SELF\"\r\n        }\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2402,12 +2514,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{med_server}}/accountTypes",
+									"raw": "{{med_server}}/accountType",
 									"host": [
 										"{{med_server}}"
 									],
 									"path": [
-										"accountTypes"
+										"accountType"
 									]
 								}
 							},
@@ -2415,12 +2527,26 @@
 						},
 						{
 							"name": "AccountType - SAVING",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"typeCode\": \"SAVING\",\r\n    \"name\": \"Saving Account\",\r\n    \"balanceSheetEntry\": \"LIABILITIES\",\r\n    \"minimumBalance\": \"USD 10\",\r\n    \"notes\": \"\"\r\n}",
+									"raw": "{\r\n    \"typeCode\": \"SAVING\",\r\n    \"name\": \"Saving Account\",\r\n    \"balanceSheetEntry\": \"LIABILITIES\",\r\n    \"minimumBalance\": \"USD 10\",\r\n    \"notes\": \"\",\r\n    \"applicableForAccountOwnerTypes\": [\r\n        {\r\n            \"typeCode\": \"CORP\"\r\n        },\r\n        {\r\n            \"typeCode\": \"STAFF\"\r\n        },\r\n        {\r\n            \"typeCode\": \"INDI\"\r\n        }\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2428,12 +2554,12 @@
 									}
 								},
 								"url": {
-									"raw": "{{med_server}}/accountTypes",
+									"raw": "{{med_server}}/accountType",
 									"host": [
 										"{{med_server}}"
 									],
 									"path": [
-										"accountTypes"
+										"accountType"
 									]
 								}
 							},
@@ -2441,6 +2567,20 @@
 						},
 						{
 							"name": "AccountTransactionType - REDUCE_CLEARING",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
@@ -2876,6 +3016,20 @@
 						},
 						{
 							"name": "AccountTransactionType - INCREASE_CLEARING",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
@@ -3311,6 +3465,20 @@
 						},
 						{
 							"name": "AccountTransactionType - INCOMING",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
@@ -3337,6 +3505,20 @@
 						},
 						{
 							"name": "AccountTransactionType - OUTGOING",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
@@ -3363,6 +3545,20 @@
 						},
 						{
 							"name": "AccountTransactionType - INTERNAL",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
@@ -3389,6 +3585,20 @@
 						},
 						{
 							"name": "AccountTransactionType - ADJUSTMENT_DR",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
@@ -3415,6 +3625,20 @@
 						},
 						{
 							"name": "AccountTransactionType - ADJUSTMENT_CR",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
@@ -3440,6 +3664,1563 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "account - demo#1",
+					"item": [
+						{
+							"name": "AccountOwner - ACME BANK -create",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.environment.set(\"accountOwnerId\", jsonData.id);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"ACME BANK\",\r\n    \"lastName\": \"\",\r\n    \"email\": \"corsec@acme.com\",\r\n    \"phoneNumber\": \"+00100010001\",\r\n    \"notes\": \"The Bank itself\",\r\n    \"type\": {\r\n        \"typeCode\": \"BANK_SELF\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountOwner",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountOwner"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "AccountOwner - ACME BANK -create",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"firstName\": \"ACME BANK\",\r\n    \"lastName\": \"\",\r\n    \"email\": \"corsec@acme.com\",\r\n    \"phoneNumber\": \"+00100010001\",\r\n    \"notes\": \"The Bank itself\",\r\n    \"type\": {\r\n        \"typeCode\": \"BANK_SELF\"\r\n    }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{med_server}}/accountOwner",
+											"host": [
+												"{{med_server}}"
+											],
+											"path": [
+												"accountOwner"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 09 Jun 2024 07:15:40 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 1,\n    \"firstName\": \"ACME BANK\",\n    \"lastName\": \"\",\n    \"email\": \"corsec@acme.com\",\n    \"phoneNumber\": \"+00100010001\",\n    \"notes\": \"The Bank itself\",\n    \"type\": {\n        \"typeCode\": \"BANK_SELF\",\n        \"name\": \"The Finance Institution\",\n        \"notes\": \"This is the bank itself\",\n        \"self\": true,\n        \"individualOrGroup\": \"G\"\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "AccountOwner - ACME BANK -id 0",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "from",
+											"value": "{{accountOwnerId}}",
+											"type": "text"
+										},
+										{
+											"key": "to",
+											"value": "0",
+											"type": "text"
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountOwner/changeId",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountOwner",
+										"changeId"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "AccountOwner - ACME BANK -update id",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "from",
+													"value": "{{accountOwnerId}}",
+													"type": "text"
+												},
+												{
+													"key": "to",
+													"value": "0",
+													"type": "text"
+												}
+											],
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{med_server}}/accountOwner/changeId",
+											"host": [
+												"{{med_server}}"
+											],
+											"path": [
+												"accountOwner",
+												"changeId"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 09 Jun 2024 07:15:45 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 0,\n    \"firstName\": \"ACME BANK\",\n    \"lastName\": \"\",\n    \"email\": \"corsec@acme.com\",\n    \"phoneNumber\": \"+00100010001\",\n    \"notes\": \"The Bank itself\",\n    \"type\": {\n        \"typeCode\": \"BANK_SELF\",\n        \"name\": \"The Finance Institution\",\n        \"notes\": \"This is the bank itself\",\n        \"self\": true,\n        \"individualOrGroup\": \"G\"\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "AccountOwner - SKYBRIDGE",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.environment.set(\"accountOwnerId\", jsonData.id);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"SKYBRIDGE Corp\",\r\n    \"lastName\": \"\",\r\n    \"email\": \"cs@skybridge.com\",\r\n    \"phoneNumber\": \"+00100010004\",\r\n    \"notes\": \"A normal corporate customer\",\r\n    \"type\": {\r\n        \"typeCode\": \"CORP\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountOwner",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountOwner"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "AccountOwner - SKYBRIDGE",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"firstName\": \"SKYBRIDGE Corp\",\r\n    \"lastName\": \"\",\r\n    \"email\": \"cs@skybridge.com\",\r\n    \"phoneNumber\": \"+00100010004\",\r\n    \"notes\": \"A normal corporate customer\",\r\n    \"type\": {\r\n        \"typeCode\": \"CORP\"\r\n    }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{med_server}}/accountOwner",
+											"host": [
+												"{{med_server}}"
+											],
+											"path": [
+												"accountOwner"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 09 Jun 2024 07:23:31 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 5,\n    \"firstName\": \"SKYBRIDGE Corp\",\n    \"lastName\": \"\",\n    \"email\": \"cs@skybridge.com\",\n    \"phoneNumber\": \"+00100010004\",\n    \"notes\": \"A normal corporate customer\",\n    \"type\": {\n        \"typeCode\": \"CORP\",\n        \"name\": \"Corporate customer\",\n        \"notes\": \"Corporate or organization customer\",\n        \"self\": null,\n        \"individualOrGroup\": \"I\"\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "AccountOwner - update id 2",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "from",
+											"value": "{{accountOwnerId}}",
+											"type": "text"
+										},
+										{
+											"key": "to",
+											"value": "2",
+											"type": "text"
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountOwner/changeId",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountOwner",
+										"changeId"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AccountOwner - Mr Joe",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.environment.set(\"accountOwnerId\", jsonData.id);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"Mr Joe\",\r\n    \"lastName\": \"Luck S\",\r\n    \"email\": \"jl@skybridge.com\",\r\n    \"phoneNumber\": \"+00100010001\",\r\n    \"notes\": \"SkyBridge normal employee\",\r\n    \"type\": {\r\n        \"typeCode\": \"INDI\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountOwner",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountOwner"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "AccountOwner - Mr Joe",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"firstName\": \"Mr Joe\",\r\n    \"lastName\": \"Luck S\",\r\n    \"email\": \"jl@skybridge.com\",\r\n    \"phoneNumber\": \"+00100010001\",\r\n    \"notes\": \"SkyBridge normal employee\",\r\n    \"type\": {\r\n        \"typeCode\": \"INDI\"\r\n    }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{med_server}}/accountOwner",
+											"host": [
+												"{{med_server}}"
+											],
+											"path": [
+												"accountOwner"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 09 Jun 2024 07:20:49 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 2,\n    \"firstName\": \"Mr Joe\",\n    \"lastName\": \"Luck S\",\n    \"email\": \"jl@skybridge.com\",\n    \"phoneNumber\": \"+00100010001\",\n    \"notes\": \"SkyBridge normal employee\",\n    \"type\": {\n        \"typeCode\": \"INDI\",\n        \"name\": \"Individual customer\",\n        \"notes\": \"Myriads of individual customer\",\n        \"self\": null,\n        \"individualOrGroup\": \"I\"\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "AccountOwner - update id 3",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "from",
+											"value": "{{accountOwnerId}}",
+											"type": "text"
+										},
+										{
+											"key": "to",
+											"value": "3",
+											"type": "text"
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountOwner/changeId",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountOwner",
+										"changeId"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AccountOwner - Ms Jean",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.environment.set(\"accountOwnerId\", jsonData.id);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"Ms Jean\",\r\n    \"lastName\": \"Everdeen\",\r\n    \"email\": \"je@corpA.com\",\r\n    \"phoneNumber\": \"+00100010003\",\r\n    \"notes\": \"A normal customer\",\r\n    \"type\": {\r\n        \"typeCode\": \"INDI\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountOwner",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountOwner"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "AccountOwner - Ms Jean",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"firstName\": \"Ms Jean\",\r\n    \"lastName\": \"Everdeen\",\r\n    \"email\": \"je@corpA.com\",\r\n    \"phoneNumber\": \"+00100010003\",\r\n    \"notes\": \"A normal customer\",\r\n    \"type\": {\r\n        \"typeCode\": \"INDI\"\r\n    }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{med_server}}/accountOwner",
+											"host": [
+												"{{med_server}}"
+											],
+											"path": [
+												"accountOwner"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 09 Jun 2024 07:21:50 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 3,\n    \"firstName\": \"Ms Jean\",\n    \"lastName\": \"Everdeen\",\n    \"email\": \"je@corpA.com\",\n    \"phoneNumber\": \"+00100010003\",\n    \"notes\": \"A normal customer\",\n    \"type\": {\n        \"typeCode\": \"INDI\",\n        \"name\": \"Individual customer\",\n        \"notes\": \"Myriads of individual customer\",\n        \"self\": null,\n        \"individualOrGroup\": \"I\"\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "AccountOwner - update id 4",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "from",
+											"value": "{{accountOwnerId}}",
+											"type": "text"
+										},
+										{
+											"key": "to",
+											"value": "4\n",
+											"type": "text"
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountOwner/changeId",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountOwner",
+										"changeId"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "AccountOwner - Mr Michael",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.environment.set(\"accountOwnerId\", jsonData.id);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstName\": \"Mr Michael\",\r\n    \"lastName\": \"Saymore\",\r\n    \"email\": \"je@corpA.com\",\r\n    \"phoneNumber\": \"+00100010005\",\r\n    \"notes\": \"A bank's normal staff\",\r\n    \"type\": {\r\n        \"typeCode\": \"STAFF\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountOwner",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountOwner"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "AccountOwner - Mr Michael",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"firstName\": \"Mr Michael\",\r\n    \"lastName\": \"Saymore\",\r\n    \"email\": \"je@corpA.com\",\r\n    \"phoneNumber\": \"+00100010005\",\r\n    \"notes\": \"A bank's normal staff\",\r\n    \"type\": {\r\n        \"typeCode\": \"STAFF\"\r\n    }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{med_server}}/accountOwner",
+											"host": [
+												"{{med_server}}"
+											],
+											"path": [
+												"accountOwner"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 09 Jun 2024 07:22:30 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": 4,\n    \"firstName\": \"Mr Michael\",\n    \"lastName\": \"Saymore\",\n    \"email\": \"je@corpA.com\",\n    \"phoneNumber\": \"+00100010005\",\n    \"notes\": \"A bank's normal staff\",\n    \"type\": {\n        \"typeCode\": \"STAFF\",\n        \"name\": \"Staffs of the bank\",\n        \"notes\": \"Staffs might entitled to special rates, transaction fees discount, etc\",\n        \"self\": null,\n        \"individualOrGroup\": \"I\"\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "AccountOwner - update id 5",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "from",
+											"value": "{{accountOwnerId}}",
+											"type": "text"
+										},
+										{
+											"key": "to",
+											"value": "5\n",
+											"type": "text"
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountOwner/changeId",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountOwner",
+										"changeId"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CashAccount - INTERNAL_DR",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.environment.set(\"accountId\", jsonData.id);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Bank Internal Cash Account Liabilities\",\r\n    \"notes\": \"Bank Internal Cash Account Liabilities - under Finance Dept\",\r\n    \"accountOwner\": {\r\n        \"id\": 0\r\n    },\r\n    \"accountType\": {\r\n        \"typeCode\": \"INTERNAL_DR\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/cashAccount",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"cashAccount"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CashAccount - update id 1",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "from",
+											"value": "{{accountId}}",
+											"type": "text"
+										},
+										{
+											"key": "to",
+											"value": "1",
+											"type": "text"
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/cashAccount/changeId",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"cashAccount",
+										"changeId"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CashAccount - INTERNAL_CR",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.environment.set(\"accountId\", jsonData.id);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Bank Internal Cash Account Assets\",\r\n    \"notes\": \"Bank Internal Cash Account Assets - under Finance Dept\",\r\n    \"accountOwner\": {\r\n        \"id\": 0\r\n    },\r\n    \"accountType\": {\r\n        \"typeCode\": \"INTERNAL_CR\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/cashAccount",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"cashAccount"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CashAccount - update id 2",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "from",
+											"value": "{{accountId}}",
+											"type": "text"
+										},
+										{
+											"key": "to",
+											"value": "2",
+											"type": "text"
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/cashAccount/changeId",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"cashAccount",
+										"changeId"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CashAccount - CLEARING",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.environment.set(\"accountId\", jsonData.id);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Bank Internal Clearing Account Nostro\",\r\n    \"notes\": \"Bank Internal Clearing Account Nostro - under Finance Dept\",\r\n    \"accountOwner\": {\r\n        \"id\": 0\r\n    },\r\n    \"accountType\": {\r\n        \"typeCode\": \"CLEARING\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/cashAccount",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"cashAccount"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CashAccount - update id 3",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "from",
+											"value": "{{accountId}}",
+											"type": "text"
+										},
+										{
+											"key": "to",
+											"value": "3",
+											"type": "text"
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/cashAccount/changeId",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"cashAccount",
+										"changeId"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CashAccount - DRAWERS",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.environment.set(\"accountId\", jsonData.id);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Bank Branch X1 Drawer #1\",\r\n    \"notes\": \"BankAccountof Drawer #1 in Branch X1\",\r\n    \"accountOwner\": {\r\n        \"id\": 0\r\n    },\r\n    \"accountType\": {\r\n        \"typeCode\": \"DRAWERS\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/cashAccount",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"cashAccount"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CashAccount - update id 4",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "from",
+											"value": "{{accountId}}",
+											"type": "text"
+										},
+										{
+											"key": "to",
+											"value": "4",
+											"type": "text"
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/cashAccount/changeId",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"cashAccount",
+										"changeId"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CashAccount - SAVING Mr Joe",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.environment.set(\"accountId\", jsonData.id);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Saving Account #1 - Mr Joe\",\r\n    \"notes\": \"Saving Account #1 - owned by Mr Joe Luck S\",\r\n    \"accountOwner\": {\r\n        \"id\": 3\r\n    },\r\n    \"accountType\": {\r\n        \"typeCode\": \"SAVING\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/cashAccount",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"cashAccount"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CashAccount - update id 5",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "from",
+											"value": "{{accountId}}",
+											"type": "text"
+										},
+										{
+											"key": "to",
+											"value": "5",
+											"type": "text"
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/cashAccount/changeId",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"cashAccount",
+										"changeId"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CashAccount - SAVING Ms Jean Everdeen",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.environment.set(\"accountId\", jsonData.id);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Saving Account #1 - Ms Jean Everdeen\",\r\n    \"notes\": \"Saving Account #2 - owned by Ms Jean Everdeen\",\r\n    \"accountOwner\": {\r\n        \"id\": 4\r\n    },\r\n    \"accountType\": {\r\n        \"typeCode\": \"SAVING\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/cashAccount",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"cashAccount"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CashAccount - update id 6",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "from",
+											"value": "{{accountId}}",
+											"type": "text"
+										},
+										{
+											"key": "to",
+											"value": "6",
+											"type": "text"
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/cashAccount/changeId",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"cashAccount",
+										"changeId"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CashAccount - SAVING -SKYBRIDGE #1",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.environment.set(\"accountId\", jsonData.id);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Saving Account #3 - SKYBRIDGE\",\r\n    \"notes\": \"Saving Account #3 - owned by SKYBRIDGE Corp\",\r\n    \"accountOwner\": {\r\n        \"id\": 2\r\n    },\r\n    \"accountType\": {\r\n        \"typeCode\": \"SAVING\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/cashAccount",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"cashAccount"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CashAccount - update id 7",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "from",
+											"value": "{{accountId}}",
+											"type": "text"
+										},
+										{
+											"key": "to",
+											"value": "7",
+											"type": "text"
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/cashAccount/changeId",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"cashAccount",
+										"changeId"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CashAccount - SAVING -SKYBRIDGE #1 Copy",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.environment.set(\"accountId\", jsonData.id);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Saving Account #4 - SKYBRIDGE\",\r\n    \"notes\": \"Saving Account #4 - owned by SKYBRIDGE Corp for Online Transactions\",\r\n    \"accountOwner\": {\r\n        \"id\": 2\r\n    },\r\n    \"accountType\": {\r\n        \"typeCode\": \"SAVING\"\r\n    }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/cashAccount",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"cashAccount"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CashAccount - update id 8",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Successful POST request\", function () {\r",
+											"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "from",
+											"value": "{{accountId}}",
+											"type": "text"
+										},
+										{
+											"key": "to",
+											"value": "8",
+											"type": "text"
+										}
+									],
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/cashAccount/changeId",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"cashAccount",
+										"changeId"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		},
@@ -3449,13 +5230,37 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{med_server}}/cashAccount/1",
+					"raw": "{{med_server}}/cashAccount/:accNo",
 					"host": [
 						"{{med_server}}"
 					],
 					"path": [
 						"cashAccount",
-						"1"
+						":accNo"
+					],
+					"variable": [
+						{
+							"key": "accNo",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get Account All",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{med_server}}/cashAccount/",
+					"host": [
+						"{{med_server}}"
+					],
+					"path": [
+						"cashAccount",
+						""
 					]
 				}
 			},
