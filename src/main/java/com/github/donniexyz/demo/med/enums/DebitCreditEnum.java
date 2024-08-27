@@ -31,10 +31,12 @@ import java.util.stream.Stream;
 
 public enum DebitCreditEnum {
 
-    DEBIT('D', "Dr", "Debit"),
-    CREDIT('C', "Cr", "Credit"),
+    DEBIT("DEBIT", 'D', "Dr", "Debit"),
+    CREDIT("CREDIT", 'C', "Cr", "Credit"),
     ;
 
+    @Getter
+    private final String value;
     private final char sign;
     @Getter
     private final String sign2;
@@ -43,7 +45,8 @@ public enum DebitCreditEnum {
 
     // --------------------------------------------------------------
 
-    DebitCreditEnum(char sign, String sign2, String label) {
+    DebitCreditEnum(String value, char sign, String sign2, String label) {
+        this.value = value;
         this.sign = sign;
         this.sign2 = sign2;
         this.label = label;
@@ -60,7 +63,7 @@ public enum DebitCreditEnum {
                 .filter(e -> {
                     if (code.length() == 1)
                         return e.sign == code.charAt(0);
-                    return e.sign2.equals(code) || e.label.equals(code);
+                    return e.value.equalsIgnoreCase(code) || e.sign2.equals(code) || e.label.equals(code);
                 })
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Unknown value:" + code));

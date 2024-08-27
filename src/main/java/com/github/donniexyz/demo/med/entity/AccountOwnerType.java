@@ -23,7 +23,7 @@
  */
 package com.github.donniexyz.demo.med.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
@@ -60,7 +60,7 @@ import java.util.List;
  */
 @WithBy
 @With
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -69,7 +69,7 @@ import java.util.List;
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@FieldNameConstants(asEnum = true)
+@FieldNameConstants
 public class AccountOwnerType implements IBaseEntity<AccountOwnerType>, IHasCopy<AccountOwnerType>, Serializable {
 
     @Serial
@@ -94,20 +94,21 @@ public class AccountOwnerType implements IBaseEntity<AccountOwnerType>, IHasCopy
 
     @Formula("true")
     @JsonIgnore
-    @Transient
     @org.springframework.data.annotation.Transient
     @FieldNameConstants.Exclude
-    private transient Boolean retrievedFromDb;
+    @EqualsAndHashCode.Exclude
+    private Boolean retrievedFromDb;
 
     @Version
     private Integer version;
 
     @CreationTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
+    @Column(updatable = false)
     private OffsetDateTime createdDateTime;
 
     @CurrentTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
     private OffsetDateTime lastModifiedDate;
 
     /**
@@ -123,7 +124,7 @@ public class AccountOwnerType implements IBaseEntity<AccountOwnerType>, IHasCopy
     /**
      * Further explaining the record status. Not handled by common libs. To be handled by individual lib.
      */
-    private Character statusMinor;
+    private String statusMinor;
 
     // ----------------------------------------------------------------------------------
 

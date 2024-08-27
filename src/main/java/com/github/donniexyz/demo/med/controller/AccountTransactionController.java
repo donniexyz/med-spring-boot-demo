@@ -25,24 +25,34 @@ package com.github.donniexyz.demo.med.controller;
 
 import com.github.donniexyz.demo.med.entity.AccountTransaction;
 import com.github.donniexyz.demo.med.service.AccountTransactionService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/accountTransaction")
+@Slf4j
 public class AccountTransactionController {
 
     @Autowired
     private AccountTransactionService accountTransactionService;
 
     @GetMapping("/{id}")
-    public AccountTransaction get(@PathVariable("id") Long id) {
-        return accountTransactionService.get(id);
+    @Transactional(readOnly = true)
+    public AccountTransaction get(@PathVariable("id") Long id,
+                                  @RequestParam(required = false) Boolean cascade,
+                                  @RequestParam(required = false) List<String> relFields) {
+        AccountTransaction fetched = accountTransactionService.get(id);
+        return null != relFields ? fetched.copy(relFields) : fetched.copy(cascade);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public AccountTransaction create(@RequestBody AccountTransaction accountTransaction) {
+        accountTransactionService.prepareAccountTransaction(accountTransaction);
         return accountTransactionService.create(accountTransaction);
     }
 }

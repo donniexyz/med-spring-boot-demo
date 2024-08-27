@@ -23,83 +23,63 @@
  */
 package com.github.donniexyz.demo.med.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.github.donniexyz.demo.med.lib.PatchMapper;
-import com.github.donniexyz.demo.med.lib.PutMapper;
-import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForLocalDateTime;
 import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
+import com.github.donniexyz.demo.med.lib.PatchMapper;
+import com.github.donniexyz.demo.med.lib.PutMapper;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
-import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
 import lombok.experimental.WithBy;
-import org.hibernate.annotations.CompositeType;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.Formula;
 import org.jetbrains.annotations.NotNull;
 
-import javax.money.MonetaryAmount;
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-
+/**
+ * Each history type need type handler that actually does the insertion.
+ *
+ * <ul>
+ * History types:
+ * <li>TRANSACTION, inserted when transaction occurs</li>
+ * <li>END_OF_DAY, inserted when EOD balance closure</li>
+ * <li>END_OF_MONTH, inserted when EOM balance closure</li>
+ * <li>END_OF_YEAR, inserted when EOY balance closure</li>
+ * </ul>
+ */
 @WithBy
 @With
-@Data
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Entity
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @FieldNameConstants
-public class AccountHistory implements IBaseEntity<AccountHistory>, IHasCopy<AccountHistory>, Serializable {
+public class AccountHistoryType implements IBaseEntity<AccountHistoryType>, IHasCopy<AccountHistoryType>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 3618940602969096296L;
+    private static final long serialVersionUID = -5832102092513250717L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    /**
-     * <ul>
-     * History types:
-     * <li>TRANSACTION, inserted when transaction occurs</li>
-     * <li>END_OF_DAY, inserted when EOD balance closure</li>
-     * <li>END_OF_MONTH, inserted when EOM balance closure</li>
-     * <li>END_OF_YEAR, inserted when EOY balance closure</li>
-     * </ul>
-     */
-    private String historyType;
-    private String transactionType; // e.g., "Deposit," "Withdrawal"
-
-    @AttributeOverride(name = "amount", column = @Column(name = "acc_balance"))
-    @AttributeOverride(name = "currency", column = @Column(name = "acc_ccy"))
-    @CompositeType(MonetaryAmountType.class)
-    private MonetaryAmount balance;
-
-    @MedJsonFormatForLocalDateTime
-    private LocalDateTime transactionDate;
-    private String description;
-
-    @ManyToOne
-    @JoinColumn(name = "account_id", foreignKey = @ForeignKey(name = "fk_AccHist_acc"))
-    @JsonBackReference
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    private CashAccount account;
+    private String typeCode;
+    private String name;
+    private String notes;
 
     // ==============================================================
     // BaseEntity fields
@@ -139,24 +119,24 @@ public class AccountHistory implements IBaseEntity<AccountHistory>, IHasCopy<Acc
      */
     private String statusMinor;
 
-    // -------------------------------------------------------------------
+    // ----------------------------------------------------------------------------------
 
     @JsonIgnore
-    public AccountHistory copy(Boolean cascade) {
-        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setAccount(BaseEntity.cascade(cascade, CashAccount.class, account))
+    public AccountHistoryType copy(Boolean cascade) {
+        return this
+                .withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
                 ;
     }
 
     @JsonIgnore
-    public AccountHistory copy(@NotNull List<String> relFields) {
-        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setAccount(BaseEntity.cascade(Fields.account, relFields, CashAccount.class, account))
+    public AccountHistoryType copy(@NotNull List<String> relFields) {
+        return this
+                .withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
                 ;
     }
 
-    @Override
-    public AccountHistory copyFrom(AccountHistory setValuesFromThisInstance, boolean nonNullOnly) {
+    @JsonIgnore
+    public AccountHistoryType copyFrom(AccountHistoryType setValuesFromThisInstance, boolean nonNullOnly) {
         return nonNullOnly
                 ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
                 : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);

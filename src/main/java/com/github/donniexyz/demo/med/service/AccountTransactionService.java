@@ -24,21 +24,29 @@
 package com.github.donniexyz.demo.med.service;
 
 import com.github.donniexyz.demo.med.entity.AccountTransaction;
+import com.github.donniexyz.demo.med.entity.AccountTransactionItem;
 import com.github.donniexyz.demo.med.entity.AccountTransactionType;
-import com.github.donniexyz.demo.med.entity.AccountType;
 import com.github.donniexyz.demo.med.entity.CashAccount;
-import com.github.donniexyz.demo.med.lib.CashAccountUtilities;
+import com.github.donniexyz.demo.med.enums.DebitCreditEnum;
+import com.github.donniexyz.demo.med.enums.RecordStatusMajorEnum;
+import com.github.donniexyz.demo.med.exception.CashAccountErrorCode;
+import com.github.donniexyz.demo.med.exception.CashAccountException;
 import com.github.donniexyz.demo.med.repository.AccountTransactionRepository;
 import com.github.donniexyz.demo.med.repository.AccountTransactionTypeRepository;
 import com.github.donniexyz.demo.med.repository.CashAccountRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
-import javax.money.MonetaryAmount;
-import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class AccountTransactionService {
 
     @Autowired
@@ -56,60 +64,52 @@ public class AccountTransactionService {
 
     @Transactional
     public AccountTransaction create(AccountTransaction accountTransaction) {
+
+        Assert.isNull(accountTransaction.getVersion(), "Invalid input: version field is not null");
+
         Long id = accountTransaction.getId();
         if (null != id && accountTransactionRepository.existsById(id))
             throw new RuntimeException("AccountTransaction already exists, id: " + id);
-
-        LocalDateTime transactionDate = null != accountTransaction.getTransactionDate() ? accountTransaction.getTransactionDate() : LocalDateTime.now();
 
         if (accountTransaction.getTransactionAmount().isNegativeOrZero())
             throw new RuntimeException("Transaction amount must be positive");
 
         // make sure trx type exists
-        AccountTransactionType transactionType = accountTransactionTypeRepository.findById(accountTransaction.getType().getTypeCode()).orElseThrow();
+        AccountTransactionType transactionType = accountTransactionTypeRepository.findById(accountTransaction.getTypeCode()).orElseThrow();
 
-        // make sure debitAccount is allowed
-        CashAccount debitAccount = cashAccountRepository.findById(accountTransaction.getDebitAccount().getId()).orElseThrow();
-        AccountType debitAccountType = debitAccount.getAccountType();
-        transactionType.getApplicableDebitAccountTypes().stream().filter(at -> at.getTypeCode().equals(debitAccountType.getTypeCode())).findFirst()
-                .orElseThrow(() -> new RuntimeException("Invalid combination of trx type - from account type"));
-
-        // make sure creditAccount is allowed
-        CashAccount creditAccount = cashAccountRepository.findById(accountTransaction.getCreditAccount().getId()).orElseThrow();
-        AccountType creditAccountType = creditAccount.getAccountType();
-        transactionType.getApplicableCreditAccountTypes().stream().filter(at -> at.getTypeCode().equals(creditAccountType.getTypeCode())).findFirst()
-                .orElseThrow(() -> new RuntimeException("Invalid combination of trx type - to account type"));
-
-        // no currency conversion for now
-        if ((null != debitAccountType.getMinimumBalance() && !accountTransaction.getTransactionAmount().getCurrency().equals(debitAccountType.getMinimumBalance().getCurrency()))
-                || (null != creditAccountType.getMinimumBalance() && !accountTransaction.getTransactionAmount().getCurrency().equals(creditAccountType.getMinimumBalance().getCurrency()))) {
-            throw new RuntimeException("Invalid combination of currencies");
+        // get all accounts
+        Set<Long> accountsFromTransaction = accountTransaction.getItems().stream().map(AccountTransactionItem::getAccountId).collect(Collectors.toSet());
+        List<CashAccount> accounts = cashAccountRepository.findByIdInAndRecordStatusMajor(accountsFromTransaction, RecordStatusMajorEnum.ACTIVE.getFlag());
+        if (accountsFromTransaction.size() > accounts.size()) {
+            log.error("Transaction account not found! accountsFromTransaction: {}, existingActiveAccount: {} ",
+                    accountsFromTransaction, accounts.stream().map(CashAccount::getId).toList());
+            throw new CashAccountException(CashAccountErrorCode.RECORD_NOT_FOUND);
         }
 
-        // make sure balance is positive after transaction (configurable via AccountType.minimumBalance)
-        var debitAccountNewBalance = CashAccountUtilities.debit(debitAccount.getAccountBalance(), accountTransaction.getTransactionAmount(), debitAccount.getAccountType().getBalanceSheetEntry());
-        if (null != debitAccountType.getMinimumBalance() && debitAccountType.getMinimumBalance().compareTo(debitAccountNewBalance) > 0)
-            throw new RuntimeException("Transaction amount exceed available balance - debit");
+        AccountTransactionExecutionDataContainer accountTransactionExecution =
+                new AccountTransactionExecutionDataContainer(transactionType, accounts, accountTransaction);
 
-        var creditAccountNewBalance = CashAccountUtilities.credit(creditAccount.getAccountBalance(), accountTransaction.getTransactionAmount(), creditAccount.getAccountType().getBalanceSheetEntry());
-        if (null != creditAccountType.getMinimumBalance() && creditAccountType.getMinimumBalance().compareTo(creditAccountNewBalance) > 0)
-            throw new RuntimeException("Transaction amount exceed available balance - credit");
+        accountTransactionExecution.validate();
 
-        debitAccount.setAccountBalance(debitAccountNewBalance);
-        if (null == debitAccount.getLastTransactionDate() || debitAccount.getLastTransactionDate().isBefore(transactionDate))
-            debitAccount.setLastTransactionDate(transactionDate);
-
-        creditAccount.credit(creditAccountNewBalance);
-        if (null == creditAccount.getLastTransactionDate() || creditAccount.getLastTransactionDate().isBefore(transactionDate))
-            creditAccount.setLastTransactionDate(transactionDate);
-
-        AccountTransaction prepared = accountTransaction.copy(false)
-                .setCreditAccount(creditAccount)
-                .setDebitAccount(debitAccount)
-                .setType(transactionType)
-                .setTransactionDate(transactionDate);
+        AccountTransaction prepared = accountTransactionExecution.closing();
 
         return accountTransactionRepository.save(prepared);
     }
 
+    public AccountTransaction prepareAccountTransaction(AccountTransaction accountTransaction) {
+
+        if (!CollectionUtils.isEmpty(accountTransaction.getItems())) {
+            List<AccountTransactionItem> debitItems = accountTransaction.getItems().stream().filter(k -> DebitCreditEnum.DEBIT.equals(k.getDebitCredit())).toList();
+            List<AccountTransactionItem> creditItems = accountTransaction.getItems().stream().filter(k -> DebitCreditEnum.CREDIT.equals(k.getDebitCredit())).toList();
+            setItemTransactionAmountIfNull(accountTransaction, debitItems);
+            setItemTransactionAmountIfNull(accountTransaction, creditItems);
+        }
+
+        return accountTransaction;
+    }
+
+    private static void setItemTransactionAmountIfNull(AccountTransaction accountTransaction, List<AccountTransactionItem> transactionItems) {
+        if (transactionItems.size() == 1 && null == transactionItems.get(0).getTransactionAmount())
+            transactionItems.get(0).setTransactionAmount(accountTransaction.getTransactionAmount());
+    }
 }

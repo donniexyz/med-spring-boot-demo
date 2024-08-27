@@ -23,18 +23,22 @@
  */
 package com.github.donniexyz.demo.med.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
+import com.github.donniexyz.demo.med.lib.PatchMapper;
+import com.github.donniexyz.demo.med.lib.PutMapper;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForLocalDateTime;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
+import lombok.experimental.SuperBuilder;
 import lombok.experimental.WithBy;
 import org.hibernate.annotations.CompositeType;
 import org.hibernate.annotations.CreationTimestamp;
@@ -50,14 +54,14 @@ import java.util.List;
 
 @WithBy
 @With
-@Builder
+@SuperBuilder(toBuilder = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
-@FieldNameConstants(asEnum = true)
+@FieldNameConstants
 public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHasCopy<AccountTransaction>, Serializable {
 
     @Serial
@@ -67,30 +71,25 @@ public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHas
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "type_code", nullable = false)
+    String typeCode;
+
     @AttributeOverride(name = "amount", column = @Column(name = "trx_amount"))
     @AttributeOverride(name = "currency", column = @Column(name = "trx_ccy"))
     @CompositeType(MonetaryAmountType.class)
     private MonetaryAmount transactionAmount;
 
     private String label; // e.g., "Deposit," "Withdrawal"
+    @MedJsonFormatForLocalDateTime
     private LocalDateTime transactionDate;
     private String notes;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_code")
+    @JoinColumn(name = "type_code", foreignKey = @ForeignKey(name = "fk_AccTrx_type"), insertable = false, updatable = false)
     private AccountTransactionType type;
 
-    @ManyToOne
-    @JoinColumn(name = "dr_account_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private CashAccount debitAccount;
-
-    @ManyToOne
-    @JoinColumn(name = "cr_account_id")
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private CashAccount creditAccount;
+    @OneToMany(mappedBy = "accountTransaction", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<AccountTransactionItem> items;
 
     // ==============================================================
     // BaseEntity fields
@@ -98,20 +97,21 @@ public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHas
 
     @Formula("true")
     @JsonIgnore
-    @Transient
     @org.springframework.data.annotation.Transient
     @FieldNameConstants.Exclude
-    private transient Boolean retrievedFromDb;
+    @EqualsAndHashCode.Exclude
+    private Boolean retrievedFromDb;
 
     @Version
     private Integer version;
 
     @CreationTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
+    @Column(updatable = false)
     private OffsetDateTime createdDateTime;
 
     @CurrentTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
     private OffsetDateTime lastModifiedDate;
 
     /**
@@ -127,25 +127,50 @@ public class AccountTransaction implements IBaseEntity<AccountTransaction>, IHas
     /**
      * Further explaining the record status. Not handled by common libs. To be handled by individual lib.
      */
-    private Character statusMinor;
+    private String statusMinor;
 
     // --------------------------------------------------------------------------------
 
     @JsonIgnore
     public AccountTransaction copy(Boolean cascade) {
-        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
+        return this.withFlippedRetrievedFromDb()
                 .setType(BaseEntity.cascade(cascade, AccountTransactionType.class, type))
-                .setDebitAccount(BaseEntity.cascade(cascade, CashAccount.class, debitAccount))
-                .setCreditAccount(BaseEntity.cascade(cascade, CashAccount.class, creditAccount))
+                .setItems(BaseEntity.cascade(cascade, AccountTransactionItem.class, items))
                 ;
     }
 
     @Override
     public AccountTransaction copy(@NonNull List<String> relFields) {
-        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setType(BaseEntity.cascade(Fields.type.name(), relFields, AccountTransactionType.class, type))
-                .setDebitAccount(BaseEntity.cascade(Fields.debitAccount.name(), relFields, CashAccount.class, debitAccount))
-                .setCreditAccount(BaseEntity.cascade(Fields.creditAccount.name(), relFields, CashAccount.class, creditAccount))
+        return this.withFlippedRetrievedFromDb()
+                .setType(BaseEntity.cascade(Fields.type, relFields, AccountTransactionType.class, type))
+                .setItems(BaseEntity.cascade(Fields.items, relFields, AccountTransactionItem.class, items))
                 ;
+    }
+
+    @Override
+    public AccountTransaction copyFrom(AccountTransaction setValuesFromThisInstance, boolean nonNullOnly) {
+        return nonNullOnly
+                ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
+                : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
+    }
+
+    @JsonIgnore
+    public AccountTransaction withFlippedRetrievedFromDb() {
+        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb));
+    }
+
+    // --------------------------------------------------------------------------------
+
+    @PostPersist
+    public void postPersist() {
+        if (null != items) for (AccountTransactionItem item : items) {
+            item.setAccountTransaction(this);
+        }
+    }
+
+    public AccountTransaction setType(AccountTransactionType type) {
+        this.type = type;
+        if (null != type) this.typeCode = type.getTypeCode();
+        return this;
     }
 }
