@@ -23,7 +23,6 @@
  */
 package com.github.donniexyz.demo.med.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -34,6 +33,8 @@ import com.github.donniexyz.demo.med.lib.CashAccountUtilities;
 import com.github.donniexyz.demo.med.lib.PatchMapper;
 import com.github.donniexyz.demo.med.lib.PutMapper;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForLocalDateTime;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -45,7 +46,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.Formula;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.money.MonetaryAmount;
 import java.io.Serial;
@@ -53,18 +53,17 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @WithBy
 @With
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Entity
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
-@FieldNameConstants(asEnum = true)
+@FieldNameConstants
 public class CashAccount implements IBaseEntity<CashAccount>, IHasCopy<CashAccount>, Serializable {
 
     @Serial
@@ -80,10 +79,21 @@ public class CashAccount implements IBaseEntity<CashAccount>, IHasCopy<CashAccou
     @CompositeType(MonetaryAmountType.class)
     private MonetaryAmount accountBalance;
 
+    @MedJsonFormatForLocalDateTime
     private LocalDateTime lastTransactionDate;
     private String notes;
 
-    @OneToMany(mappedBy = "account")
+    @Column(name = "type_code")
+    private String accountTypeCode;
+
+    @Column(name = "owner_id")
+    private Long accountOwnerId;
+
+    /**
+     * This will be used to insert history upon updates of cashAccount (if enabled).
+     * This is not to be used to retrieve history! Retrieving history must be done via API with Pagination support.
+     */
+    @OneToMany(mappedBy = "account", cascade = CascadeType.MERGE)
     @JsonManagedReference
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -91,13 +101,13 @@ public class CashAccount implements IBaseEntity<CashAccount>, IHasCopy<CashAccou
     private List<AccountHistory> accountHistories;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "owner_id", foreignKey = @ForeignKey(name = "fk_CashAcc_owner"), insertable = false, updatable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private AccountOwner accountOwner;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_code")
+    @JoinColumn(name = "type_code", foreignKey = @ForeignKey(name = "fk_CashAcc_type"), insertable = false, updatable = false)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private AccountType accountType;
@@ -108,20 +118,21 @@ public class CashAccount implements IBaseEntity<CashAccount>, IHasCopy<CashAccou
 
     @Formula("true")
     @JsonIgnore
-    @Transient
     @org.springframework.data.annotation.Transient
     @FieldNameConstants.Exclude
-    private transient Boolean retrievedFromDb;
+    @EqualsAndHashCode.Exclude
+    private Boolean retrievedFromDb;
 
     @Version
     private Integer version;
 
     @CreationTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
+    @Column(updatable = false)
     private OffsetDateTime createdDateTime;
 
     @CurrentTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
     private OffsetDateTime lastModifiedDate;
 
     /**
@@ -137,7 +148,7 @@ public class CashAccount implements IBaseEntity<CashAccount>, IHasCopy<CashAccou
     /**
      * Further explaining the record status. Not handled by common libs. To be handled by individual lib.
      */
-    private Character statusMinor;
+    private String statusMinor;
 
     // ------------------------------------------------------
 
@@ -155,9 +166,9 @@ public class CashAccount implements IBaseEntity<CashAccount>, IHasCopy<CashAccou
     public CashAccount copy(@NotNull List<String> relFields) {
         return this
                 .withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setAccountOwner(BaseEntity.cascade(Fields.accountOwner.name(), relFields, AccountOwner.class, accountOwner))
-                .setAccountType(BaseEntity.cascade(Fields.accountType.name(), relFields, AccountType.class, accountType))
-                .setAccountHistories(BaseEntity.cascade(Fields.accountHistories.name(), relFields, AccountHistory.class, accountHistories))
+                .setAccountOwner(BaseEntity.cascade(Fields.accountOwner, relFields, AccountOwner.class, accountOwner))
+                .setAccountType(BaseEntity.cascade(Fields.accountType, relFields, AccountType.class, accountType))
+                .setAccountHistories(BaseEntity.cascade(Fields.accountHistories, relFields, AccountHistory.class, accountHistories))
                 ;
     }
 
@@ -167,6 +178,22 @@ public class CashAccount implements IBaseEntity<CashAccount>, IHasCopy<CashAccou
                 ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
                 : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
     }
+
+    // ---------------------------------------------------------------------------------------------
+
+    public CashAccount setAccountOwner(AccountOwner accountOwner) {
+        this.accountOwner = accountOwner;
+        if (null != accountOwner) this.accountOwnerId = accountOwner.getId();
+        return this;
+    }
+
+    public CashAccount setAccountType(AccountType accountType) {
+        this.accountType = accountType;
+        if (null != accountType) this.accountTypeCode = accountType.getTypeCode();
+        return this;
+    }
+
+    // ---------------------------------------------------------------------------------------------
 
     @JsonIgnore
     public CashAccount debit(MonetaryAmount amount) {

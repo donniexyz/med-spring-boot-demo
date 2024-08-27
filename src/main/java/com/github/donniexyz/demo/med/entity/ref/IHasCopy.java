@@ -41,4 +41,6 @@ public interface IHasCopy<T> {
     @JsonIgnore
     T copy(@NonNull List<String> relFields);
 
+    @JsonIgnore
+    T copyFrom(T setValuesFromThisInstance, boolean nonNullOnly);
 }

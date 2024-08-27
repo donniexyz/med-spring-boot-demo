@@ -23,39 +23,52 @@
  */
 package com.github.donniexyz.demo.med.controller;
 
-import com.github.donniexyz.demo.med.entity.AccountOwner;
 import com.github.donniexyz.demo.med.entity.AccountOwnerType;
-import com.github.donniexyz.demo.med.repository.AccountOwnerTypeRepository;
+import com.github.donniexyz.demo.med.service.AccountOwnerTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/accountOwnerType")
 public class AccountOwnerTypeController {
 
     @Autowired
-    private AccountOwnerTypeRepository accountOwnerTypeRepository;
+    private AccountOwnerTypeService accountOwnerTypeService;
 
     @GetMapping("/{typeCode}")
-    public AccountOwnerType get(@PathVariable("typeCode") String typeCode) {
-        return accountOwnerTypeRepository.findById(typeCode).orElseThrow();
+    @Transactional(readOnly = true)
+    public AccountOwnerType get(@PathVariable("typeCode") String typeCode,
+                                @RequestParam(required = false) Boolean cascade,
+                                @RequestParam(required = false) List<String> relFields) {
+        AccountOwnerType fetched = accountOwnerTypeService.findById(typeCode).orElseThrow();
+        return null != relFields ? fetched.copy(relFields) : fetched.copy(cascade);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @Transactional
     public AccountOwnerType create(@RequestBody AccountOwnerType accountOwnerType) {
-        accountOwnerTypeRepository.findById(accountOwnerType.getTypeCode()).orElseThrow();
-        return accountOwnerTypeRepository.save(accountOwnerType);
+        return accountOwnerTypeService.create(accountOwnerType);
     }
 
     @PutMapping(path = "/{typeCode}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @Transactional
     public AccountOwnerType update(@PathVariable("typeCode") String typeCode,
-                               @RequestBody AccountOwnerType accountOwnerType) {
-        AccountOwnerType fetchedFromDb = accountOwnerTypeRepository.findById(typeCode).orElseThrow();
-        fetchedFromDb.copyFrom(accountOwnerType, true);
-        return accountOwnerTypeRepository.save(fetchedFromDb);
+                                   @RequestBody AccountOwnerType accountOwnerType) {
+
+        Assert.isTrue(typeCode.equals(accountOwnerType.getTypeCode()), "Invalid request: id mismatch");
+
+        return accountOwnerTypeService.update(accountOwnerType);
+    }
+
+    @PatchMapping(path = "/{typeCode}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public AccountOwnerType patch(@PathVariable("typeCode") String typeCode,
+                                  @RequestBody AccountOwnerType accountOwnerType) {
+
+        Assert.isTrue(typeCode.equals(accountOwnerType.getTypeCode()), "Invalid request: id mismatch");
+
+        return accountOwnerTypeService.patch(accountOwnerType);
     }
 }

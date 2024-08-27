@@ -31,6 +31,8 @@ import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/accountOwner")
 public class AccountOwnerController {
@@ -42,8 +44,12 @@ public class AccountOwnerController {
     private AccountOwnerTypeRepository accountOwnerTypeRepository;
 
     @GetMapping("/{id}")
-    public AccountOwner get(@PathVariable("id") Long id) {
-        return accountOwnerRepository.getReferenceById(id);
+    @Transactional(readOnly = true)
+    public AccountOwner get(@PathVariable("id") Long id,
+                            @RequestParam(required = false) Boolean cascade,
+                            @RequestParam(required = false) List<String> relFields) {
+        AccountOwner fetched = accountOwnerRepository.getReferenceById(id);
+        return null != relFields ? fetched.copy(relFields) : fetched.copy(cascade);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -70,13 +76,12 @@ public class AccountOwnerController {
     @PatchMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     public AccountOwner patch(@PathVariable("id") Long id,
-                               @RequestBody AccountOwner accountOwner) {
+                              @RequestBody AccountOwner accountOwner) {
         AccountOwner fetchedFromDb = accountOwnerRepository.findById(id).orElseThrow();
         // cannot change ownerType
         if (null != accountOwner.getType() && !fetchedFromDb.getType().getTypeCode().equals(accountOwner.getType().getTypeCode()))
             throw new RuntimeException("Not allowed to change type");
-        accountOwner.setType(null);
-        fetchedFromDb.copyFrom(accountOwner, true);
+        fetchedFromDb.copyFrom(accountOwner.copy(false), true);
         return accountOwnerRepository.save(fetchedFromDb);
     }
 

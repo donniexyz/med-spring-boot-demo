@@ -23,7 +23,7 @@
  */
 package com.github.donniexyz.demo.med.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
@@ -59,14 +59,14 @@ import java.util.List;
 @EqualsAndHashCode
 @WithBy
 @With
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
-@FieldNameConstants(asEnum = true)
+@FieldNameConstants
 public class AccountOwner implements IBaseEntity<AccountOwner>, IHasCopy<AccountOwner>, Serializable {
 
     @Serial
@@ -85,7 +85,7 @@ public class AccountOwner implements IBaseEntity<AccountOwner>, IHasCopy<Account
     // Other relevant fields (e.g., address, phone number, etc.)
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_code")
+    @JoinColumn(name = "type_code", foreignKey = @ForeignKey(name = "fk_AccOwner_type"))
     private AccountOwnerType type;
 
     // ==============================================================
@@ -94,20 +94,21 @@ public class AccountOwner implements IBaseEntity<AccountOwner>, IHasCopy<Account
 
     @Formula("true")
     @JsonIgnore
-    @Transient
     @org.springframework.data.annotation.Transient
     @FieldNameConstants.Exclude
-    private transient Boolean retrievedFromDb;
+    @EqualsAndHashCode.Exclude
+    private Boolean retrievedFromDb;
 
     @Version
     private Integer version;
 
     @CreationTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
+    @Column(updatable = false)
     private OffsetDateTime createdDateTime;
 
     @CurrentTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
     private OffsetDateTime lastModifiedDate;
 
     /**
@@ -123,7 +124,7 @@ public class AccountOwner implements IBaseEntity<AccountOwner>, IHasCopy<Account
     /**
      * Further explaining the record status. Not handled by common libs. To be handled by individual lib.
      */
-    private Character statusMinor;
+    private String statusMinor;
 
     // --------------------------------------------------------------------------
 
@@ -137,7 +138,7 @@ public class AccountOwner implements IBaseEntity<AccountOwner>, IHasCopy<Account
     @JsonIgnore
     public AccountOwner copy(@NonNull List<String> relFields) {
         return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setType(BaseEntity.cascade(Fields.type.name(), relFields, AccountOwnerType.class, type))
+                .setType(BaseEntity.cascade(Fields.type, relFields, AccountOwnerType.class, type))
                 ;
     }
 

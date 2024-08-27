@@ -23,9 +23,9 @@
  */
 package com.github.donniexyz.demo.med.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
@@ -33,7 +33,10 @@ import com.github.donniexyz.demo.med.enums.BalanceSheetComponentEnum;
 import com.github.donniexyz.demo.med.lib.PatchMapper;
 import com.github.donniexyz.demo.med.lib.PutMapper;
 import com.github.donniexyz.demo.med.lib.fieldsfilter.NonNullLazyFieldsFilter;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -47,7 +50,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Set;
 
 /**
  * <ul>
@@ -61,7 +63,7 @@ import java.util.Set;
  */
 @WithBy
 @With
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -70,13 +72,14 @@ import java.util.Set;
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonNullLazyFieldsFilter.class)
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@FieldNameConstants(asEnum = true)
+@FieldNameConstants
 public class AccountType implements IBaseEntity<AccountType>, IHasCopy<AccountType>, Serializable {
 
     @Serial
     private static final long serialVersionUID = -5832102092513250717L;
 
     @Id
+    @EqualsAndHashCode.Include
     private String typeCode;
     private String name;
     @Enumerated(EnumType.STRING)
@@ -89,20 +92,31 @@ public class AccountType implements IBaseEntity<AccountType>, IHasCopy<AccountTy
 
     private String notes;
 
-    @ManyToMany(mappedBy = "applicableDebitAccountTypes")
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    private Set<AccountTransactionType> applicableDebitTransactionTypes;
+//    @ManyToMany(mappedBy = "applicableDebitAccountTypes")
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+//    private Set<AccountTransactionType> applicableDebitTransactionTypes;
+//
+//    @ManyToMany(mappedBy = "applicableCreditAccountTypes")
+//    @EqualsAndHashCode.Exclude
+//    @ToString.Exclude
+//    private Set<AccountTransactionType> applicableCreditTransactionTypes;
 
-    @ManyToMany(mappedBy = "applicableCreditAccountTypes")
+    @OneToMany(mappedBy = "accountType", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JsonManagedReference("accountTypeToTransactionType")
     @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    private Set<AccountTransactionType> applicableCreditTransactionTypes;
+    @OrderBy(AccountTypeApplicableToTransactionType.Fields.orderNumber)
+    private List<AccountTypeApplicableToTransactionType> applicableTransactionTypes;
 
-    @ManyToMany
-    @JoinTable
+//    @ManyToMany
+//    @JoinTable
+//    @EqualsAndHashCode.Exclude
+//    private Set<AccountOwnerType> applicableForAccountOwnerTypes;
+
+    @OneToMany(mappedBy = "accountType", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JsonManagedReference("accountTypeToOwnerType")
     @EqualsAndHashCode.Exclude
-    private Set<AccountOwnerType> applicableForAccountOwnerTypes;
+    private List<AccountOwnerTypeApplicableToAccountType> applicableOwnerTypes;
 
     // ==============================================================
     // BaseEntity fields
@@ -110,20 +124,23 @@ public class AccountType implements IBaseEntity<AccountType>, IHasCopy<AccountTy
 
     @Formula("true")
     @JsonIgnore
-    @Transient
     @org.springframework.data.annotation.Transient
     @FieldNameConstants.Exclude
-    private transient Boolean retrievedFromDb;
+    @EqualsAndHashCode.Exclude
+    private Boolean retrievedFromDb;
 
     @Version
     private Integer version;
 
     @CreationTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
+    @Column(updatable = false)
+    @EqualsAndHashCode.Exclude
     private OffsetDateTime createdDateTime;
 
     @CurrentTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
+    @EqualsAndHashCode.Exclude
     private OffsetDateTime lastModifiedDate;
 
     /**
@@ -139,7 +156,7 @@ public class AccountType implements IBaseEntity<AccountType>, IHasCopy<AccountTy
     /**
      * Further explaining the record status. Not handled by common libs. To be handled by individual lib.
      */
-    private Character statusMinor;
+    private String statusMinor;
 
     // --------------------------------------------------------------------------
 
@@ -147,18 +164,20 @@ public class AccountType implements IBaseEntity<AccountType>, IHasCopy<AccountTy
 
     public AccountType copy(Boolean cascade) {
         return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setApplicableForAccountOwnerTypes(BaseEntity.cascadeSet(cascade, AccountOwnerType.class, applicableForAccountOwnerTypes))
-                .setApplicableDebitTransactionTypes(BaseEntity.cascadeSet(cascade, AccountTransactionType.class, applicableDebitTransactionTypes))
-                .setApplicableCreditTransactionTypes(BaseEntity.cascadeSet(cascade, AccountTransactionType.class, applicableCreditTransactionTypes))
+                .setApplicableTransactionTypes(BaseEntity.cascade(cascade, AccountTypeApplicableToTransactionType.class, applicableTransactionTypes))
+                .setApplicableOwnerTypes(BaseEntity.cascade(cascade, AccountOwnerTypeApplicableToAccountType.class, applicableOwnerTypes))
+//                .setApplicableDebitTransactionTypes(BaseEntity.cascadeSet(cascade, AccountTransactionType.class, applicableDebitTransactionTypes))
+//                .setApplicableCreditTransactionTypes(BaseEntity.cascadeSet(cascade, AccountTransactionType.class, applicableCreditTransactionTypes))
                 ;
     }
 
     @JsonIgnore
     public AccountType copy(@NotNull List<String> relFields) {
         return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setApplicableForAccountOwnerTypes(BaseEntity.cascadeSet(Fields.applicableForAccountOwnerTypes.name(), relFields, AccountOwnerType.class, applicableForAccountOwnerTypes))
-                .setApplicableDebitTransactionTypes(BaseEntity.cascadeSet(Fields.applicableDebitTransactionTypes.name(), relFields, AccountTransactionType.class, applicableDebitTransactionTypes))
-                .setApplicableCreditTransactionTypes(BaseEntity.cascadeSet(Fields.applicableCreditTransactionTypes.name(), relFields, AccountTransactionType.class, applicableCreditTransactionTypes))
+                .setApplicableTransactionTypes(BaseEntity.cascade(Fields.applicableTransactionTypes, relFields, AccountTypeApplicableToTransactionType.class, applicableTransactionTypes))
+                .setApplicableOwnerTypes(BaseEntity.cascade(Fields.applicableOwnerTypes, relFields, AccountOwnerTypeApplicableToAccountType.class, applicableOwnerTypes))
+//                .setApplicableDebitTransactionTypes(BaseEntity.cascadeSet(Fields.applicableDebitTransactionTypes, relFields, AccountTransactionType.class, applicableDebitTransactionTypes))
+//                .setApplicableCreditTransactionTypes(BaseEntity.cascadeSet(Fields.applicableCreditTransactionTypes, relFields, AccountTransactionType.class, applicableCreditTransactionTypes))
                 ;
     }
 

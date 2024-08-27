@@ -21,25 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.donniexyz.demo.med.repository;
+package com.github.donniexyz.demo.med.exception;
 
-import com.github.donniexyz.demo.med.entity.CashAccount;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import lombok.Getter;
 
-import java.util.Collection;
-import java.util.List;
+@Getter
+public enum CashAccountErrorCode implements ErrorInfo {
 
-@Repository
-public interface CashAccountRepository extends JpaRepositoryImplementation<CashAccount, Long> {
+    RECORD_NOT_FOUND("0001", "Record not found"),
+    TRANSACTION_INVALID("0002", "Invalid transaction"),
+    TRANSACTION_ITEM_DUPLICATE("0003", "Invalid transaction: duplicate item"),
+    TRANSACTION_SETTINGS_INVALID("0004", "Invalid transaction settings"),
+    TRANSACTION_ITEM_INVALID("0005", "Invalid transaction item"),
+    TRANSACTION_VALIDATION_FAILED("0006", "Transaction validation failed"),
+    TRANSACTION_CURRENCY_MISMATCH("0007", "Transaction currency does not match"),
+    INSUFFICIENT_BALANCE("0008", "Insufficient balance"),
+    ID_MISMATCH("0009", "Id mismatch"),
+    ;
 
-    @Query(value = "UPDATE AccountType SET id=:to WHERE id=:from")
-    @Transactional
-    @Modifying
-    int changeId(Long from, Long to);
+    private final String errorCode;
+    private final String errorMessage;
 
-    List<CashAccount> findByIdInAndRecordStatusMajor(Collection<Long> accountIdList, Character recordStatusMajor);
+
+    CashAccountErrorCode(String errorCode, String errorMessage) {
+        this.errorCode = errorCode;
+        this.errorMessage = errorMessage;
+    }
+
+    @Override
+    public String getAppCode() {
+        return "CashAccount";
+    }
 }

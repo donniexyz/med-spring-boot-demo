@@ -24,7 +24,10 @@
 package com.github.donniexyz.demo.med.lib;
 
 import com.github.donniexyz.demo.med.entity.*;
-import org.mapstruct.*;
+import org.mapstruct.InheritConfiguration;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
@@ -48,4 +51,20 @@ public interface PutMapper {
 
     @InheritConfiguration
     CashAccount put(CashAccount setValuesFromThisInstance, @MappingTarget CashAccount cashAccount);
+
+    @InheritConfiguration
+    AccountHistoryType put(AccountHistoryType setValuesFromThisInstance, @MappingTarget AccountHistoryType accountHistoryType);
+
+    @InheritConfiguration
+    AccountTypeApplicableToTransactionType put(AccountTypeApplicableToTransactionType setValuesFromThisInstance, @MappingTarget AccountTypeApplicableToTransactionType accountTypeApplicableToTransactionType);
+
+    @InheritConfiguration
+    AccountOwnerTypeApplicableToAccountType put(AccountOwnerTypeApplicableToAccountType setValuesFromThisInstance, @MappingTarget AccountOwnerTypeApplicableToAccountType accountOwnerTypeApplicableToAccountType);
+
+    @InheritConfiguration
+    AccountHistory put(AccountHistory setValuesFromThisInstance, @MappingTarget AccountHistory accountHistory);
+
+    @InheritConfiguration
+    AccountTransactionItem put(AccountTransactionItem setValuesFromThisInstance, @MappingTarget AccountTransactionItem accountTransactionItem);
+
 }

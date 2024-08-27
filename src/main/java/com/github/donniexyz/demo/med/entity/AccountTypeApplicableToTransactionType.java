@@ -23,13 +23,10 @@
  */
 package com.github.donniexyz.demo.med.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
-import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
-import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
-import com.github.donniexyz.demo.med.entity.ref.IHasValidate;
+import com.github.donniexyz.demo.med.entity.ref.*;
 import com.github.donniexyz.demo.med.enums.DebitCreditEnum;
 import com.github.donniexyz.demo.med.lib.PatchMapper;
 import com.github.donniexyz.demo.med.lib.PutMapper;
@@ -46,24 +43,12 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.Formula;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.util.CollectionUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Objects;
 
-/**
- * <ul>
- * Examples of AccountTransactionType:
- * <li>INTERNAL, from_accts=[SAVING], to_accts=[SAVING], name="Bank internal transfer", notes="to be used for internal bank customer to customer transaction"</li>
- * <li>INCOMING, from_accts=[CLEARING], to_accts=[SAVING], name="Incoming transfer", notes="to be used for incoming transfer from clearing to customer account"</li>
- * <li>OUTGOING, from_accts=[SAVING], to_accts=[CLEARING], name="Outgoing transfer", notes="to be used for outgoing transfer from customer account to clearing"</li>
- * <li>ADJUSTMENT_DR, from_accts=[INTERNAL_DR], to_accts=[INTERNAL_DR,INTERNAL_CR], name="Adjustment debit transaction", notes="Only for internal use only. Requires C Level and Finance Dept. approval."</li>
- * <li>ADJUSTMENT_CR, from_accts=[INTERNAL_CR], to_accts=[INTERNAL_CR,INTERNAL_DR], name="Adjustment credit transaction", notes="Only for internal use only. Requires C Level and Finance Dept. approval."</li>
- * </ul>
- */
 @EqualsAndHashCode
 @WithBy
 @With
@@ -72,36 +57,64 @@ import java.util.Objects;
 @AllArgsConstructor
 @Data
 @Entity
+@Table(indexes = {
+        @Index(name = "idx_accTypeApplToTrxType_accTCode_order", columnList = "acc_tcode,debit_credit,trx_tcode", unique = true)})
 @Accessors(chain = true)
 @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonNullLazyFieldsFilter.class)
 @Cacheable
 @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @FieldNameConstants
-public class AccountTransactionType implements IBaseEntity<AccountTransactionType>,
-        IHasCopy<AccountTransactionType>, IHasValidate, Serializable {
+public class AccountTypeApplicableToTransactionType implements IBaseEntity<AccountTypeApplicableToTransactionType>,
+        IHasCopy<AccountTypeApplicableToTransactionType>, IHasOrderNumber, IHasValidate, Serializable {
 
     @Serial
-    private static final long serialVersionUID = -4281996479630423914L;
+    private static final long serialVersionUID = -3330006119049351963L;
 
     @Id
-    private String typeCode;
-    private String name;
+    @Column(name = "trx_tcode")
+    private String transactionTypeCode;
+
+    @Column(name = "acc_tcode", nullable = false)
+    private String accountTypeCode;
+
+    @Id
+    @Column(name = "order_number")
+    private Integer orderNumber;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private DebitCreditEnum debitCredit;
+
+    /**
+     * 0 means the entry is optional
+     */
+    @Column(nullable = false)
+    private Integer minOccurrences;
+
+    /**
+     * null means maxOccurrences matches with minOccurrences.
+     * maxOccurrences less than minOccurrences means invalid configuration.
+     */
+    @Column(nullable = false)
+    private Integer maxOccurrences;
+
     private String notes;
 
-    /**
-     * If true there can be only one account to debit
-     */
-    private Boolean singleDebit;
-    /**
-     * If true there can be only one account to credit
-     */
-    private Boolean singleCredit;
-
-    @OneToMany(mappedBy = "transactionType", cascade = {CascadeType.ALL}, orphanRemoval = true)
-    @JsonManagedReference("transactionTypeToAccountType")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trx_tcode", insertable = false, updatable = false,
+            foreignKey = @ForeignKey(name = "fk_AccTypeApplToTrxType_trxType"))
     @EqualsAndHashCode.Exclude
-    @OrderBy(AccountTypeApplicableToTransactionType.Fields.orderNumber)
-    private List<AccountTypeApplicableToTransactionType> applicableAccountTypes;
+    @ToString.Exclude
+    @JsonBackReference("transactionTypeToAccountType")
+    private AccountTransactionType transactionType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "acc_tcode", insertable = false, updatable = false,
+            foreignKey = @ForeignKey(name = "fk_AccTypeApplToTrxType_accType"))
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonBackReference("accountTypeToTransactionType")
+    private AccountType accountType;
 
     // ==============================================================
     // BaseEntity fields
@@ -111,6 +124,7 @@ public class AccountTransactionType implements IBaseEntity<AccountTransactionTyp
     @JsonIgnore
     @org.springframework.data.annotation.Transient
     @FieldNameConstants.Exclude
+    @EqualsAndHashCode.Exclude
     private Boolean retrievedFromDb;
 
     @Version
@@ -143,44 +157,56 @@ public class AccountTransactionType implements IBaseEntity<AccountTransactionTyp
     // -------------------------------------------------------------------------------------------------
 
     @JsonIgnore
-    public AccountTransactionType copy(Boolean cascade) {
-        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setApplicableAccountTypes(BaseEntity.cascade(cascade, AccountTypeApplicableToTransactionType.class, applicableAccountTypes))
+    public AccountTypeApplicableToTransactionType copy(Boolean cascade) {
+        return this.withFlippedRetrievedFromDb()
+                .setAccountType(BaseEntity.cascade(cascade, AccountType.class, accountType))
+                .setTransactionType(BaseEntity.cascade(cascade, AccountTransactionType.class, transactionType))
                 ;
     }
 
     @JsonIgnore
-    public AccountTransactionType copy(@NotNull List<String> relFields) {
-        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setApplicableAccountTypes(BaseEntity.cascade(Fields.applicableAccountTypes, relFields, AccountTypeApplicableToTransactionType.class, applicableAccountTypes))
+    public AccountTypeApplicableToTransactionType copy(@NotNull List<String> relFields) {
+        return this.withFlippedRetrievedFromDb()
+                .setAccountType(BaseEntity.cascade(Fields.accountType, relFields, AccountType.class, accountType))
+                .setTransactionType(BaseEntity.cascade(Fields.transactionType, relFields, AccountTransactionType.class, transactionType))
                 ;
     }
 
     @JsonIgnore
-    public AccountTransactionType copyFrom(AccountTransactionType setValuesFromThisInstance, boolean nonNullOnly) {
+    public AccountTypeApplicableToTransactionType copyFrom(AccountTypeApplicableToTransactionType setValuesFromThisInstance, boolean nonNullOnly) {
         return nonNullOnly
                 ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
                 : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
+    }
+
+    @JsonIgnore
+    public AccountTypeApplicableToTransactionType withFlippedRetrievedFromDb() {
+        return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb));
+    }
+
+    // -------------------------------------------------------------------------------------------------
+
+    public AccountTypeApplicableToTransactionType setTransactionType(AccountTransactionType transactionType) {
+        this.transactionType = transactionType;
+        if (null != transactionType) this.transactionTypeCode = transactionType.getTypeCode();
+        return this;
+    }
+
+    public AccountTypeApplicableToTransactionType setAccountType(AccountType accountType) {
+        this.accountType = accountType;
+        if (null != accountType) this.accountTypeCode = accountType.getTypeCode();
+        return this;
     }
 
     // -------------------------------------------------------------------------------------------------
 
     @Override
     public InvalidInfo getInvalid() {
-
-        long debitCount = CollectionUtils.isEmpty(applicableAccountTypes) ? 0 : applicableAccountTypes.stream().filter(k -> DebitCreditEnum.DEBIT.equals(k.getDebitCredit())).count();
-        if (debitCount < 1) return InvalidInfo.builder().fieldName(Fields.applicableAccountTypes).fieldValue(debitCount).errorMessage("debitCount < 1").build();
-        long creditCount = applicableAccountTypes.stream().filter(k -> DebitCreditEnum.CREDIT.equals(k.getDebitCredit())).count();
-        if (creditCount < 1) return InvalidInfo.builder().fieldName(Fields.applicableAccountTypes).fieldValue(debitCount).errorMessage("creditCount < 1").build();
-
-        if (null == singleDebit || Boolean.TRUE.equals(singleDebit)) {
-            if (debitCount == 1) singleDebit = Boolean.TRUE;
-            else return InvalidInfo.builder().fieldName(Fields.singleDebit).fieldValue(singleDebit).errorMessage("singleDebit mismatch debitCount").build();
-        }
-        if (null == singleCredit || Boolean.TRUE.equals(singleCredit)) {
-            if (creditCount == 1) singleCredit = Boolean.TRUE;
-            else return InvalidInfo.builder().fieldName(Fields.singleDebit).fieldValue(singleDebit).errorMessage("singleCredit mismatch creditCount").build();
-        }
-        return applicableAccountTypes.stream().map(IHasValidate::getInvalid).filter(Objects::nonNull).findFirst().orElse(null);
+        if (null == maxOccurrences && null != minOccurrences)
+            maxOccurrences = minOccurrences <= 0 ? 1 : minOccurrences;
+        return null != maxOccurrences && maxOccurrences >= minOccurrences ? null :
+                InvalidInfo.builder()
+                        .fieldName(AccountTypeApplicableToTransactionType.Fields.maxOccurrences)
+                        .fieldValue(maxOccurrences).build();
     }
 }

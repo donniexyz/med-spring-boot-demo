@@ -23,15 +23,13 @@
  */
 package com.github.donniexyz.demo.med.entity.ref;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
 import lombok.experimental.SuperBuilder;
@@ -52,12 +50,12 @@ import java.util.stream.Collectors;
  * we will use interface generated from this class and copy the fields here into the real Entity class.
  */
 @Data
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @MappedSuperclass
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@FieldNameConstants(asEnum = true)
+@FieldNameConstants
 public class BaseEntity implements IBaseEntity {
 
     // ==============================================================
@@ -66,20 +64,21 @@ public class BaseEntity implements IBaseEntity {
 
     @Formula("true")
     @JsonIgnore
-    @Transient
     @org.springframework.data.annotation.Transient
     @FieldNameConstants.Exclude
-    private transient Boolean retrievedFromDb;
+    @EqualsAndHashCode.Exclude
+    private Boolean retrievedFromDb;
 
     @Version
     private Integer version;
 
     @CreationTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
+    @Column(updatable = false)
     private OffsetDateTime createdDateTime;
 
     @CurrentTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    @MedJsonFormatForOffsetDateTime
     private OffsetDateTime lastModifiedDate;
 
     /**
@@ -95,14 +94,15 @@ public class BaseEntity implements IBaseEntity {
     /**
      * Further explaining the record status. Not handled by common libs. To be handled by individual lib.
      */
-    private Character statusMinor;
+    private String statusMinor;
 
 
     // =================================================================================================
 
     @Nullable
     public static Boolean calculateRetrievedFromDb(Boolean retrievedFromDb) {
-        return null != retrievedFromDb ? false : null;
+        // true --> false <--> null
+        return null == retrievedFromDb ? Boolean.FALSE : (retrievedFromDb ? Boolean.FALSE : null);
     }
 
     // =================================================================================================

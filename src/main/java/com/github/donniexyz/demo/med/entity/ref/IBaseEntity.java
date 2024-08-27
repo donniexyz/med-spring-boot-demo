@@ -42,7 +42,7 @@ public interface IBaseEntity<T> {
 
     Character getRecordStatusMajor();
 
-    Character getStatusMinor();
+    String getStatusMinor();
 
     /**
      * Explaining the status of this record:
@@ -57,5 +57,5 @@ public interface IBaseEntity<T> {
     /**
      * Further explaining the record status. Not handled by common libs. To be handled by individual lib.
      */
-    T setStatusMinor(Character statusMinor);
+    T setStatusMinor(String statusMinor);
 }

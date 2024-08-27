@@ -2045,7 +2045,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"typeCode\": \"INTERNAL_CR\",\r\n    \"name\": \"Internal Credit/Assets Accounts\",\r\n    \"balanceSheetEntry\": \"A\",\r\n    \"notes\": \"Assets account for internal use only\",\r\n    \"applicableForAccountOwnerTypes\": [\r\n        {\r\n            \"typeCode\": \"BANK_SELF\"\r\n        }\r\n    ]\r\n}",
+									"raw": "{\r\n    \"typeCode\": \"INTERNAL_CR\",\r\n    \"name\": \"Internal Credit/Assets Accounts\",\r\n    \"balanceSheetEntry\": \"A\",\r\n    \"notes\": \"Assets account for internal use only\",\r\n    \"applicableOwnerTypes\": [\r\n        {\r\n            \"ownerTypeCode\": \"BANK_SELF\"\r\n        }\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2426,7 +2426,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"typeCode\": \"INTERNAL_DR\",\r\n    \"name\": \"Internal Debit/Liabilities Accounts\",\r\n    \"balanceSheetEntry\": \"L\",\r\n    \"notes\": \"Liability account for internal use only\",\r\n    \"applicableForAccountOwnerTypes\": [\r\n        {\r\n            \"typeCode\": \"BANK_SELF\"\r\n        }\r\n    ]\r\n}",
+									"raw": "{\r\n    \"typeCode\": \"INTERNAL_DR\",\r\n    \"name\": \"Internal Debit/Liabilities Accounts\",\r\n    \"balanceSheetEntry\": \"L\",\r\n    \"notes\": \"Liability account for internal use only\",\r\n    \"applicableOwnerTypes\": [\r\n        {\r\n            \"ownerTypeCode\": \"BANK_SELF\"\r\n        }\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2466,7 +2466,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"typeCode\": \"CLEARING\",\r\n    \"name\": \"Clearing A Account\",\r\n    \"balanceSheetEntry\": \"ASSETS\",\r\n    \"notes\": \"to be used for incoming/outgoing transfer\",\r\n    \"applicableForAccountOwnerTypes\": [\r\n        {\r\n            \"typeCode\": \"BANK_SELF\"\r\n        }\r\n    ]\r\n}",
+									"raw": "{\r\n    \"typeCode\": \"CLEARING\",\r\n    \"name\": \"Clearing A Account\",\r\n    \"balanceSheetEntry\": \"ASSETS\",\r\n    \"notes\": \"to be used for incoming/outgoing transfer\",\r\n    \"applicableOwnerTypes\": [\r\n        {\r\n            \"ownerTypeCode\": \"BANK_SELFXX\"\r\n        }\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2506,7 +2506,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"typeCode\": \"DRAWERS\",\r\n    \"name\": \"Physical Drawer\",\r\n    \"balanceSheetEntry\": \"ASSETS\",\r\n    \"minimumBalance\": {\r\n        \"amount\": 10,\r\n        \"currency\": \"USD\"\r\n    },\r\n    \"notes\": \"Physical Drawer at Bank Branch\",\r\n    \"applicableForAccountOwnerTypes\": [\r\n        {\r\n            \"typeCode\": \"BANK_SELF\"\r\n        }\r\n    ]\r\n}",
+									"raw": "{\r\n    \"typeCode\": \"DRAWERS\",\r\n    \"name\": \"Physical Drawer\",\r\n    \"balanceSheetEntry\": \"ASSETS\",\r\n    \"minimumBalance\": {\r\n        \"amount\": 10,\r\n        \"currency\": \"USD\"\r\n    },\r\n    \"notes\": \"Physical Drawer at Bank Branch\",\r\n    \"applicableOwnerTypes\": [\r\n        {\r\n            \"ownerTypeCode\": \"BANK_SELF\"\r\n        }\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2546,7 +2546,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"typeCode\": \"SAVING\",\r\n    \"name\": \"Saving Account\",\r\n    \"balanceSheetEntry\": \"LIABILITIES\",\r\n    \"minimumBalance\": \"USD 10\",\r\n    \"notes\": \"\",\r\n    \"applicableForAccountOwnerTypes\": [\r\n        {\r\n            \"typeCode\": \"CORP\"\r\n        },\r\n        {\r\n            \"typeCode\": \"STAFF\"\r\n        },\r\n        {\r\n            \"typeCode\": \"INDI\"\r\n        }\r\n    ]\r\n}",
+									"raw": "{\r\n    \"typeCode\": \"SAVING\",\r\n    \"name\": \"Saving Account\",\r\n    \"balanceSheetEntry\": \"LIABILITIES\",\r\n    \"minimumBalance\": \"USD 10\",\r\n    \"notes\": \"\",\r\n    \"applicableOwnerTypes\": [\r\n        {\r\n            \"ownerTypeCode\": \"CORP\"\r\n        },\r\n        {\r\n            \"ownerTypeCode\": \"STAFF\"\r\n        },\r\n        {\r\n            \"ownerTypeCode\": \"INDI\"\r\n        }\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2586,7 +2586,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"typeCode\": \"REDUCE_CLEARING\",\r\n    \"name\": \"Credit/reduce clearing accounts\",\r\n    \"notes\": \"To be used to decrease balance of clearing accounts\",\r\n    \"applicableDebitAccountTypes\": [{\r\n        \"typeCode\": \"CLEARING\"\r\n    }],\r\n    \"applicableCreditAccountTypes\": [{\r\n        \"typeCode\": \"INTERNAL_DR\"\r\n    }]\r\n}",
+									"raw": "{\r\n    \"typeCode\": \"REDUCE_CLEARING\",\r\n    \"name\": \"Credit/reduce clearing accounts\",\r\n    \"notes\": \"To be used to decrease balance of clearing accounts\",\r\n    \"singleDebit\": true,\r\n    \"singleCredit\": true,\r\n    \"applicableAccountTypes\": [\r\n        {\r\n            \"accountTypeCode\": \"CLEARING\",\r\n            \"orderNumber\": 0,\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"D\"\r\n        },\r\n        {\r\n            \"accountTypeCode\": \"INTERNAL_DR\",\r\n            \"orderNumber\": 1,\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"C\"\r\n        }\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2809,6 +2809,58 @@
 									"body": "{\n    \"name\": \"Adjustment debit transaction\",\n    \"notes\": \"Only for internal use only. Requires C Level and/or Finance Dept. approval.\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/ADJUSTMENT_DR\"\n        },\n        \"accountTransactionType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/ADJUSTMENT_DR\"\n        },\n        \"applicableToAccountTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/ADJUSTMENT_DR/applicableToAccountTypes\"\n        },\n        \"applicableFromAccountTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/ADJUSTMENT_DR/applicableFromAccountTypes\"\n        }\n    }\n}"
 								},
 								{
+									"name": "AccountTransactionType - REDUCE_CLEARING",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"typeCode\": \"REDUCE_CLEARING\",\r\n    \"name\": \"Credit/reduce clearing accounts\",\r\n    \"notes\": \"To be used to decrease balance of clearing accounts\",\r\n    \"singleDebit\": true,\r\n    \"singleCredit\": true,\r\n    \"applicableAccountTypes\": [\r\n        {\r\n            \"accountTypeCode\": \"CLEARING\",\r\n            \"order\": 0,\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"D\"\r\n        },\r\n        {\r\n            \"accountTypeCode\": \"INTERNAL_DR\",\r\n            \"order\": 0,\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"C\"\r\n        }\r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{med_server}}/accountTransactionType",
+											"host": [
+												"{{med_server}}"
+											],
+											"path": [
+												"accountTransactionType"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 17 Aug 2024 14:15:09 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"typeCode\": \"REDUCE_CLEARING\",\n    \"name\": \"Credit/reduce clearing accounts\",\n    \"notes\": \"To be used to decrease balance of clearing accounts\",\n    \"singleDebit\": true,\n    \"singleCredit\": true,\n    \"applicableAccountTypes\": [\n        {\n            \"transactionTypeCode\": \"REDUCE_CLEARING\",\n            \"accountTypeCode\": \"CLEARING\",\n            \"order\": 0,\n            \"debitCredit\": \"D\",\n            \"minOccurrences\": 1,\n            \"version\": 0,\n            \"createdDateTime\": \"2024-08-17T14:15:09.240Z\",\n            \"lastModifiedDate\": \"2024-08-17T14:15:09.132Z\"\n        },\n        {\n            \"transactionTypeCode\": \"REDUCE_CLEARING\",\n            \"accountTypeCode\": \"INTERNAL_DR\",\n            \"order\": 0,\n            \"debitCredit\": \"C\",\n            \"minOccurrences\": 1,\n            \"version\": 0,\n            \"createdDateTime\": \"2024-08-17T14:15:09.248Z\",\n            \"lastModifiedDate\": \"2024-08-17T14:15:09.132Z\"\n        }\n    ],\n    \"version\": 0,\n    \"createdDateTime\": \"2024-08-17T14:15:09.207Z\",\n    \"lastModifiedDate\": \"2024-08-17T14:15:09.132Z\"\n}"
+								},
+								{
 									"name": "create AccountTransactionType-ADJUSTMENT_CR",
 									"originalRequest": {
 										"method": "POST",
@@ -2875,6 +2927,58 @@
 									],
 									"cookie": [],
 									"body": "{\n    \"name\": \"Adjustment credit transaction\",\n    \"notes\": \"Only for internal use only. Requires C Level and/or Finance Dept. approval.\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/ADJUSTMENT_CR\"\n        },\n        \"accountTransactionType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/ADJUSTMENT_CR\"\n        },\n        \"applicableToAccountTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/ADJUSTMENT_CR/applicableToAccountTypes\"\n        },\n        \"applicableFromAccountTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTransactionTypes/ADJUSTMENT_CR/applicableFromAccountTypes\"\n        }\n    }\n}"
+								},
+								{
+									"name": "AccountTransactionType - REDUCE_CLEARING",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"typeCode\": \"REDUCE_CLEARING\",\r\n    \"name\": \"Credit/reduce clearing accounts\",\r\n    \"notes\": \"To be used to decrease balance of clearing accounts\",\r\n    \"singleDebit\": true,\r\n    \"singleCredit\": true,\r\n    \"applicableAccountTypes\": [\r\n        {\r\n            \"accountTypeCode\": \"CLEARING\",\r\n            \"orderNumber\": 0,\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"D\"\r\n        },\r\n        {\r\n            \"accountTypeCode\": \"INTERNAL_DR\",\r\n            \"orderNumber\": 1,\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"C\"\r\n        }\r\n    ]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{med_server}}/accountTransactionType",
+											"host": [
+												"{{med_server}}"
+											],
+											"path": [
+												"accountTransactionType"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Transfer-Encoding",
+											"value": "chunked"
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 18 Aug 2024 00:46:41 GMT"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=60"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"typeCode\": \"REDUCE_CLEARING\",\n    \"name\": \"Credit/reduce clearing accounts\",\n    \"notes\": \"To be used to decrease balance of clearing accounts\",\n    \"singleDebit\": true,\n    \"singleCredit\": true,\n    \"applicableAccountTypes\": [\n        {\n            \"transactionTypeCode\": \"REDUCE_CLEARING\",\n            \"accountTypeCode\": \"CLEARING\",\n            \"orderNumber\": 0,\n            \"debitCredit\": \"D\",\n            \"minOccurrences\": 1,\n            \"version\": 0,\n            \"createdDateTime\": \"2024-08-18T00:46:41.077Z\",\n            \"lastModifiedDate\": \"2024-08-18T00:46:41.062Z\"\n        },\n        {\n            \"transactionTypeCode\": \"REDUCE_CLEARING\",\n            \"accountTypeCode\": \"INTERNAL_DR\",\n            \"orderNumber\": 1,\n            \"debitCredit\": \"C\",\n            \"minOccurrences\": 1,\n            \"version\": 0,\n            \"createdDateTime\": \"2024-08-18T00:46:41.089Z\",\n            \"lastModifiedDate\": \"2024-08-18T00:46:41.062Z\"\n        }\n    ],\n    \"version\": 0,\n    \"createdDateTime\": \"2024-08-18T00:46:41.069Z\",\n    \"lastModifiedDate\": \"2024-08-18T00:46:41.062Z\"\n}"
 								},
 								{
 									"name": "create AccountTransactionType-OUTGOING",
@@ -3035,7 +3139,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"typeCode\": \"INCREASE_CLEARING\",\r\n    \"name\": \"Debit/increase clearing accounts\",\r\n    \"notes\": \"To be used to increase balance of clearing accounts\",\r\n    \"applicableDebitAccountTypes\": [{\r\n        \"typeCode\": \"INTERNAL_DR\"\r\n    }],\r\n    \"applicableCreditAccountTypes\": [{\r\n        \"typeCode\": \"CLEARING\"\r\n    }]\r\n}",
+									"raw": "{\r\n    \"typeCode\": \"INCREASE_CLEARING\",\r\n    \"name\": \"Debit/increase clearing accounts\",\r\n    \"notes\": \"To be used to increase balance of clearing accounts\",\r\n    \"singleDebit\": true,\r\n    \"singleCredit\": true,\r\n    \"applicableAccountTypes\": [\r\n        {\r\n            \"accountTypeCode\": \"INTERNAL_DR\",\r\n            \"orderNumber\": 0,\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"D\"\r\n        },\r\n        {\r\n            \"accountTypeCode\": \"CLEARING\",\r\n            \"orderNumber\": 1,\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"C\"\r\n        }\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3484,7 +3588,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"typeCode\": \"INCOMING\",\r\n    \"name\": \"Incoming transfer\",\r\n    \"notes\": \"to be used for incoming transfer from clearing to customer account\",\r\n    \"applicableDebitAccountTypes\": [{\r\n        \"typeCode\": \"CLEARING\"\r\n    }],\r\n    \"applicableCreditAccountTypes\": [{\r\n        \"typeCode\": \"SAVING\"\r\n    }]\r\n}",
+									"raw": "{\r\n    \"typeCode\": \"INCOMING\",\r\n    \"name\": \"Incoming transfer\",\r\n    \"notes\": \"to be used for incoming transfer from clearing to customer account\",\r\n    \"applicableAccountTypes\": [\r\n        {\r\n            \"accountTypeCode\": \"CLEARING\",\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"D\"\r\n        },\r\n        {\r\n            \"accountTypeCode\": \"SAVING\",\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"C\"\r\n        }\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3524,7 +3628,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"typeCode\": \"OUTGOING\",\r\n    \"name\": \"Outgoing transfer\",\r\n    \"notes\": \"to be used for outgoing transfer from customer account to clearing\",\r\n    \"applicableDebitAccountTypes\": [{\r\n        \"typeCode\": \"SAVING\"\r\n    }],\r\n    \"applicableCreditAccountTypes\": [{\r\n        \"typeCode\": \"CLEARING\"\r\n    }]\r\n}",
+									"raw": "{\r\n    \"typeCode\": \"OUTGOING\",\r\n    \"name\": \"Outgoing transfer\",\r\n    \"notes\": \"to be used for outgoing transfer from customer account to clearing\",\r\n    \"applicableAccountTypes\": [\r\n        {\r\n            \"accountTypeCode\": \"SAVING\",\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"D\"\r\n        },\r\n        {\r\n            \"accountTypeCode\": \"CLEARING\",\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"C\"\r\n        }\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3564,7 +3668,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"typeCode\": \"INTERNAL\",\r\n    \"name\": \"Bank internal transfer\",\r\n    \"notes\": \"to be used for internal bank customer to customer transaction\",\r\n    \"applicableDebitAccountTypes\": [{\r\n        \"typeCode\": \"SAVING\"\r\n    }],\r\n    \"applicableCreditAccountTypes\": [{\r\n        \"typeCode\": \"SAVING\"\r\n    }]\r\n}",
+									"raw": "{\r\n    \"typeCode\": \"INTERNAL\",\r\n    \"name\": \"Bank internal transfer\",\r\n    \"notes\": \"to be used for internal bank customer to customer transaction\",\r\n    \"applicableAccountTypes\": [\r\n        {\r\n            \"accountTypeCode\": \"SAVING\",\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"D\"\r\n        },\r\n        {\r\n            \"accountTypeCode\": \"SAVING\",\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"C\"\r\n        }\r\n    ]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3604,7 +3708,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"typeCode\": \"ADJUSTMENT_DR\",\r\n    \"name\": \"Adjustment debit transaction\",\r\n    \"notes\": \"Only for internal use only. Requires C Level and/or Finance Dept. approval.\",\r\n    \"applicableDebitAccountTypes\": [{\r\n        \"typeCode\": \"INTERNAL_DR\"\r\n    }],\r\n    \"applicableCreditAccountTypes\": [{\r\n        \"typeCode\": \"INTERNAL_DR\"\r\n    }, {\r\n        \"typeCode\": \"INTERNAL_CR\"\r\n    }]\r\n}",
+									"raw": "{\r\n    \"typeCode\": \"ADJUSTMENT_DR\",\r\n    \"name\": \"Adjustment debit transaction\",\r\n    \"notes\": \"Only for internal use only. Requires C Level and/or Finance Dept. approval.\",\r\n    \"applicableAccountTypes\": [{\r\n        \"accountTypeCode\": \"INTERNAL_DR\",\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"D\"\r\n    },{\r\n        \"accountTypeCode\": \"INTERNAL_DR\",\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"C\"\r\n    }, {\r\n        \"accountTypeCode\": \"INTERNAL_CR\",\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"C\"\r\n    }]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -3644,7 +3748,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"typeCode\": \"ADJUSTMENT_CR\",\r\n    \"name\": \"Adjustment credit transaction\",\r\n    \"notes\": \"Only for internal use only. Requires C Level and/or Finance Dept. approval.\",\r\n    \"applicableDebitAccountTypes\": [{\r\n        \"typeCode\": \"INTERNAL_CR\"\r\n    }],\r\n    \"applicableCreditAccountTypes\": [{\r\n        \"typeCode\": \"INTERNAL_CR\"\r\n    }, {\r\n        \"typeCode\": \"INTERNAL_DR\"\r\n    }]\r\n}",
+									"raw": "{\r\n    \"typeCode\": \"ADJUSTMENT_CR\",\r\n    \"name\": \"Adjustment credit transaction\",\r\n    \"notes\": \"Only for internal use only. Requires C Level and/or Finance Dept. approval.\",\r\n    \"applicableAccountTypes\": [{\r\n        \"accountTypeCode\": \"INTERNAL_CR\",\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"D\"\r\n    },{\r\n        \"accountTypeCode\": \"INTERNAL_CR\",\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"C\"\r\n    }, {\r\n        \"accountTypeCode\": \"INTERNAL_DR\",\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"C\"\r\n    }]\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -5219,6 +5323,1172 @@
 								}
 							},
 							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "GET",
+			"item": [
+				{
+					"name": "get accountOwnerTypes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{med_server}}/accountOwnerTypes/:ownerTypeCode",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountOwnerTypes",
+								":ownerTypeCode"
+							],
+							"variable": [
+								{
+									"key": "ownerTypeCode",
+									"value": "BANK_SELF"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get AccountType",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{med_server}}/accountType/:accTypeCode?relFields=applicableOwnerTypes",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountType",
+								":accTypeCode"
+							],
+							"query": [
+								{
+									"key": "cascade",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "relFields",
+									"value": "applicableOwnerTypes"
+								}
+							],
+							"variable": [
+								{
+									"key": "accTypeCode",
+									"value": "INTERNAL_CR"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "get AccountType",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{med_server}}/accountType/:accTypeCode?cascade=true",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountType",
+										":accTypeCode"
+									],
+									"query": [
+										{
+											"key": "cascade",
+											"value": "true"
+										}
+									],
+									"variable": [
+										{
+											"key": "accTypeCode",
+											"value": "INTERNAL_CR"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 17 Aug 2024 11:59:51 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"typeCode\": \"INTERNAL_CR\",\n    \"name\": \"Internal Credit/Assets Accounts4\",\n    \"balanceSheetEntry\": \"A\",\n    \"notes\": \"Assets account for internal use only\",\n    \"applicableTransactionTypes\": [],\n    \"applicableOwnerTypes\": [\n        {\n            \"accountTypeCode\": \"INTERNAL_CR\",\n            \"ownerTypeCode\": \"INDI\",\n            \"version\": 0,\n            \"createdDateTime\": \"2024-08-17T11:26:34.142Z\",\n            \"lastModifiedDate\": \"2024-08-17T11:25:14.109Z\"\n        },\n        {\n            \"accountTypeCode\": \"INTERNAL_CR\",\n            \"ownerTypeCode\": \"STAFF\",\n            \"version\": 0,\n            \"createdDateTime\": \"2024-08-17T11:32:59.969Z\",\n            \"lastModifiedDate\": \"2024-08-17T11:32:59.956Z\"\n        }\n    ],\n    \"version\": 12,\n    \"createdDateTime\": \"2024-08-17T05:43:40.909Z\",\n    \"lastModifiedDate\": \"2024-08-17T11:40:04.913Z\"\n}"
+						},
+						{
+							"name": "get AccountType",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{med_server}}/accountType/:accTypeCode?relFields=applicableTransactionTypes,applicableOwnerTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountType",
+										":accTypeCode"
+									],
+									"query": [
+										{
+											"key": "cascade",
+											"value": "true",
+											"disabled": true
+										},
+										{
+											"key": "relFields",
+											"value": "applicableTransactionTypes,applicableOwnerTypes"
+										}
+									],
+									"variable": [
+										{
+											"key": "accTypeCode",
+											"value": "INTERNAL_CR"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 17 Aug 2024 12:01:34 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"typeCode\": \"INTERNAL_CR\",\n    \"name\": \"Internal Credit/Assets Accounts4\",\n    \"balanceSheetEntry\": \"A\",\n    \"notes\": \"Assets account for internal use only\",\n    \"applicableTransactionTypes\": [],\n    \"applicableOwnerTypes\": [\n        {\n            \"accountTypeCode\": \"INTERNAL_CR\",\n            \"ownerTypeCode\": \"INDI\",\n            \"version\": 0,\n            \"createdDateTime\": \"2024-08-17T11:26:34.142Z\",\n            \"lastModifiedDate\": \"2024-08-17T11:25:14.109Z\"\n        },\n        {\n            \"accountTypeCode\": \"INTERNAL_CR\",\n            \"ownerTypeCode\": \"STAFF\",\n            \"version\": 0,\n            \"createdDateTime\": \"2024-08-17T11:32:59.969Z\",\n            \"lastModifiedDate\": \"2024-08-17T11:32:59.956Z\"\n        }\n    ],\n    \"version\": 12,\n    \"createdDateTime\": \"2024-08-17T05:43:40.909Z\",\n    \"lastModifiedDate\": \"2024-08-17T11:40:04.913Z\"\n}"
+						},
+						{
+							"name": "get AccountType",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{med_server}}/accountType/:accTypeCode?relFields=applicableOwnerTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountType",
+										":accTypeCode"
+									],
+									"query": [
+										{
+											"key": "cascade",
+											"value": "true",
+											"disabled": true
+										},
+										{
+											"key": "relFields",
+											"value": "applicableOwnerTypes"
+										}
+									],
+									"variable": [
+										{
+											"key": "accTypeCode",
+											"value": "INTERNAL_CR"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 17 Aug 2024 12:02:25 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"typeCode\": \"INTERNAL_CR\",\n    \"name\": \"Internal Credit/Assets Accounts4\",\n    \"balanceSheetEntry\": \"A\",\n    \"notes\": \"Assets account for internal use only\",\n    \"applicableOwnerTypes\": [\n        {\n            \"accountTypeCode\": \"INTERNAL_CR\",\n            \"ownerTypeCode\": \"INDI\",\n            \"version\": 0,\n            \"createdDateTime\": \"2024-08-17T11:26:34.142Z\",\n            \"lastModifiedDate\": \"2024-08-17T11:25:14.109Z\"\n        },\n        {\n            \"accountTypeCode\": \"INTERNAL_CR\",\n            \"ownerTypeCode\": \"STAFF\",\n            \"version\": 0,\n            \"createdDateTime\": \"2024-08-17T11:32:59.969Z\",\n            \"lastModifiedDate\": \"2024-08-17T11:32:59.956Z\"\n        }\n    ],\n    \"version\": 12,\n    \"createdDateTime\": \"2024-08-17T05:43:40.909Z\",\n    \"lastModifiedDate\": \"2024-08-17T11:40:04.913Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "get AccountTransactionType",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{med_server}}/accountTransactionType/:accTrxTypeCode?cascade=true",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountTransactionType",
+								":accTrxTypeCode"
+							],
+							"query": [
+								{
+									"key": "cascade",
+									"value": "true"
+								}
+							],
+							"variable": [
+								{
+									"key": "accTrxTypeCode",
+									"value": "OUTGOING"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "PUT",
+			"item": [
+				{
+					"name": "put AccountType - INTERNAL_CR",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeCode\": \"INTERNAL_CR\",\r\n    \"name\": \"Internal Credit/Assets Accounts4\",\r\n    \"balanceSheetEntry\": \"A\",\r\n    \"notes\": \"Assets account for internal use only\",\r\n    \"version\": 7,\r\n    \"applicableOwnerTypes\": [\r\n        {\r\n            \"ownerTypeCode\": \"INDI\"\r\n        },\r\n        {\r\n            \"accountTypeCode\": \"SAVING\",\r\n            \"ownerTypeCode\": \"CORP\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountType/:accTypeCode",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountType",
+								":accTypeCode"
+							],
+							"variable": [
+								{
+									"key": "accTypeCode",
+									"value": "INTERNAL_CR"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "create AccountType-SAVING",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"SAVING\",\r\n    \"name\": \"Saving Account\",\r\n    \"balanceSheetEntry\": \"LIABILITIES\",\r\n    \"minimumBalance\": 0,\r\n    \"notes\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTypes/SAVING"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:34:15 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Saving Account\",\n    \"balanceSheetEntry\": \"L\",\n    \"minimumBalance\": 0,\n    \"notes\": \"\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/SAVING\"\n        },\n        \"accountType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/SAVING\"\n        },\n        \"applicableToTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/SAVING/applicableToTransactionTypes\"\n        },\n        \"applicableFromTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/SAVING/applicableFromTransactionTypes\"\n        },\n        \"applicableForAccountOwnerTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/SAVING/applicableForAccountOwnerTypes\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountType-INTERNAL_CR",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"INTERNAL_CR\",\r\n    \"name\": \"Internal Credit Accounts\",\r\n    \"balanceSheetEntry\": \"A\",\r\n    \"notes\": \"Assets account for internal use only\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTypes/INTERNAL_CR"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:38:38 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Internal Credit Accounts\",\n    \"balanceSheetEntry\": \"A\",\n    \"minimumBalance\": null,\n    \"notes\": \"Assets account for internal use only\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_CR\"\n        },\n        \"accountType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_CR\"\n        },\n        \"applicableToTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_CR/applicableToTransactionTypes\"\n        },\n        \"applicableFromTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_CR/applicableFromTransactionTypes\"\n        },\n        \"applicableForAccountOwnerTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_CR/applicableForAccountOwnerTypes\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountType-DRAWER",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"DRAWERS\",\r\n    \"name\": \"Physical Drawer\",\r\n    \"balanceSheetEntry\": \"ASSETS\",\r\n    \"minimumBalance\": 0,\r\n    \"notes\": \"Physical Drawer at Bank Branch\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTypes/DRAWERS"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:35:41 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Physical Drawer\",\n    \"balanceSheetEntry\": \"A\",\n    \"minimumBalance\": 0,\n    \"notes\": \"Physical Drawer at Bank Branch\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/DRAWERS\"\n        },\n        \"accountType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/DRAWERS\"\n        },\n        \"applicableToTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/DRAWERS/applicableToTransactionTypes\"\n        },\n        \"applicableFromTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/DRAWERS/applicableFromTransactionTypes\"\n        },\n        \"applicableForAccountOwnerTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/DRAWERS/applicableForAccountOwnerTypes\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountType-INTERNAL_DR",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"INTERNAL_DR\",\r\n    \"name\": \"Internal Debit Accounts\",\r\n    \"balanceSheetEntry\": \"L\",\r\n    \"notes\": \"Liability account for internal use only\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTypes/INTERNAL_DR"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:38:05 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Internal Debit Accounts\",\n    \"balanceSheetEntry\": \"L\",\n    \"minimumBalance\": null,\n    \"notes\": \"Liability account for internal use only\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_DR\"\n        },\n        \"accountType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_DR\"\n        },\n        \"applicableToTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_DR/applicableToTransactionTypes\"\n        },\n        \"applicableFromTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_DR/applicableFromTransactionTypes\"\n        },\n        \"applicableForAccountOwnerTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_DR/applicableForAccountOwnerTypes\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountType-CLEARING",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"CLEARING\",\r\n    \"name\": \"Clearing Accounts\",\r\n    \"balanceSheetEntry\": \"ASSETS\",\r\n    \"notes\": \"to be used for incoming/outgoing transfer\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTypes/CLEARING"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:36:59 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Clearing Accounts\",\n    \"balanceSheetEntry\": \"A\",\n    \"minimumBalance\": null,\n    \"notes\": \"to be used for incoming/outgoing transfer\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/CLEARING\"\n        },\n        \"accountType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/CLEARING\"\n        },\n        \"applicableToTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/CLEARING/applicableToTransactionTypes\"\n        },\n        \"applicableFromTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/CLEARING/applicableFromTransactionTypes\"\n        },\n        \"applicableForAccountOwnerTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/CLEARING/applicableForAccountOwnerTypes\"\n        }\n    }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "PATCH",
+			"item": [
+				{
+					"name": "AccountTransactionType - OUTGOING",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeCode\": \"OUTGOING\",\r\n    \"name\": \"Outgoing transfer\",\r\n    \"version\": 1,\r\n    \"notes\": \"to be used for outgoing transfer from customer account to clearing\",\r\n    \"applicableAccountTypes\": [\r\n        {\r\n            \"accountTypeCode\": \"SAVING\",\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"D\"\r\n        },\r\n        {\r\n            \"accountTypeCode\": \"CLEARING\",\r\n            \"minOccurrences\": 1,\r\n            \"debitCredit\": \"C\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountTransactionType",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountTransactionType"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AccountTransactionType - OUTGOING",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeCode\": \"OUTGOING\",\r\n    \"name\": \"Outgoing transfer4\",\r\n    \"version\": 5,\r\n    \"notes\": \"to be used for outgoing transfer from customer account to clearing\",\r\n    \"applicableAccountTypes\": [\r\n        {\r\n            \"transactionTypeCode\": \"OUTGOING\",\r\n            \"accountTypeCode\": \"SAVING\",\r\n            \"orderNumber\": 10,\r\n            \"debitCredit\": \"D\",\r\n            \"notes\": \"Saving D note6\",\r\n            \"version\": 6,\r\n            \"minOccurrences\": 1,\r\n            \"maxOccurrences\": 1\r\n        },\r\n        {\r\n            \"transactionTypeCode\": \"OUTGOING\",\r\n            \"accountTypeCode\": \"SAVING\",\r\n            \"debitCredit\": \"D\",\r\n            \"minOccurrences\": 1\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountTransactionType/:typeCode",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountTransactionType",
+								":typeCode"
+							],
+							"variable": [
+								{
+									"key": "typeCode",
+									"value": "OUTGOING"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "patch AccountType - INTERNAL_CR",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {\r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"typeCode\": \"INTERNAL_CR\",\r\n    \"notes\": \"Assets account for internal use only13\",\r\n    \"version\": 13,\r\n    \"applicableOwnerTypes\": [\r\n        {\r\n            \"accountTypeCode\": \"INTERNAL_CR\",\r\n            \"ownerTypeCode\": \"BANK_SELF\",\r\n            \"notes\": \"new22\",\r\n            \"version\": 0,\r\n            \"createdDateTime\": \"2024-08-17T12:06:50.625Z\",\r\n            \"lastModifiedDate\": \"2024-08-17T12:06:50.580Z\"\r\n        },{\r\n            \"ownerTypeCode\": \"STAFF\"\r\n        },\r\n        {\r\n            \"accountTypeCode\": \"INTERNAL_CR\",\r\n            \"ownerTypeCode\": \"INDI\",\r\n            \"notes\": \"editted\",\r\n            \"version\": 1,\r\n            \"createdDateTime\": \"2024-08-17T11:26:34.142Z\",\r\n            \"lastModifiedDate\": \"2024-08-17T12:06:50.580Z\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{med_server}}/accountType/:accTypeCode",
+							"host": [
+								"{{med_server}}"
+							],
+							"path": [
+								"accountType",
+								":accTypeCode"
+							],
+							"variable": [
+								{
+									"key": "accTypeCode",
+									"value": "INTERNAL_CR"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "create AccountType-INTERNAL_DR",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"INTERNAL_DR\",\r\n    \"name\": \"Internal Debit Accounts\",\r\n    \"balanceSheetEntry\": \"L\",\r\n    \"notes\": \"Liability account for internal use only\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTypes/INTERNAL_DR"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:38:05 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Internal Debit Accounts\",\n    \"balanceSheetEntry\": \"L\",\n    \"minimumBalance\": null,\n    \"notes\": \"Liability account for internal use only\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_DR\"\n        },\n        \"accountType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_DR\"\n        },\n        \"applicableToTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_DR/applicableToTransactionTypes\"\n        },\n        \"applicableFromTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_DR/applicableFromTransactionTypes\"\n        },\n        \"applicableForAccountOwnerTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_DR/applicableForAccountOwnerTypes\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountType-SAVING",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"SAVING\",\r\n    \"name\": \"Saving Account\",\r\n    \"balanceSheetEntry\": \"LIABILITIES\",\r\n    \"minimumBalance\": 0,\r\n    \"notes\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTypes/SAVING"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:34:15 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Saving Account\",\n    \"balanceSheetEntry\": \"L\",\n    \"minimumBalance\": 0,\n    \"notes\": \"\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/SAVING\"\n        },\n        \"accountType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/SAVING\"\n        },\n        \"applicableToTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/SAVING/applicableToTransactionTypes\"\n        },\n        \"applicableFromTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/SAVING/applicableFromTransactionTypes\"\n        },\n        \"applicableForAccountOwnerTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/SAVING/applicableForAccountOwnerTypes\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountType-INTERNAL_CR",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"INTERNAL_CR\",\r\n    \"name\": \"Internal Credit Accounts\",\r\n    \"balanceSheetEntry\": \"A\",\r\n    \"notes\": \"Assets account for internal use only\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTypes/INTERNAL_CR"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:38:38 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Internal Credit Accounts\",\n    \"balanceSheetEntry\": \"A\",\n    \"minimumBalance\": null,\n    \"notes\": \"Assets account for internal use only\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_CR\"\n        },\n        \"accountType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_CR\"\n        },\n        \"applicableToTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_CR/applicableToTransactionTypes\"\n        },\n        \"applicableFromTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_CR/applicableFromTransactionTypes\"\n        },\n        \"applicableForAccountOwnerTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/INTERNAL_CR/applicableForAccountOwnerTypes\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountType-CLEARING",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"CLEARING\",\r\n    \"name\": \"Clearing Accounts\",\r\n    \"balanceSheetEntry\": \"ASSETS\",\r\n    \"notes\": \"to be used for incoming/outgoing transfer\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTypes/CLEARING"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:36:59 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Clearing Accounts\",\n    \"balanceSheetEntry\": \"A\",\n    \"minimumBalance\": null,\n    \"notes\": \"to be used for incoming/outgoing transfer\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/CLEARING\"\n        },\n        \"accountType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/CLEARING\"\n        },\n        \"applicableToTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/CLEARING/applicableToTransactionTypes\"\n        },\n        \"applicableFromTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/CLEARING/applicableFromTransactionTypes\"\n        },\n        \"applicableForAccountOwnerTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/CLEARING/applicableForAccountOwnerTypes\"\n        }\n    }\n}"
+						},
+						{
+							"name": "create AccountType-DRAWER",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"typeCode\": \"DRAWERS\",\r\n    \"name\": \"Physical Drawer\",\r\n    \"balanceSheetEntry\": \"ASSETS\",\r\n    \"minimumBalance\": 0,\r\n    \"notes\": \"Physical Drawer at Bank Branch\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{med_server}}/accountTypes",
+									"host": [
+										"{{med_server}}"
+									],
+									"path": [
+										"accountTypes"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Location",
+									"value": "http://127.0.0.1:12080/accountTypes/DRAWERS"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/hal+json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 01 Jun 2024 13:35:41 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"Physical Drawer\",\n    \"balanceSheetEntry\": \"A\",\n    \"minimumBalance\": 0,\n    \"notes\": \"Physical Drawer at Bank Branch\",\n    \"_links\": {\n        \"self\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/DRAWERS\"\n        },\n        \"accountType\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/DRAWERS\"\n        },\n        \"applicableToTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/DRAWERS/applicableToTransactionTypes\"\n        },\n        \"applicableFromTransactionTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/DRAWERS/applicableFromTransactionTypes\"\n        },\n        \"applicableForAccountOwnerTypes\": {\n            \"href\": \"http://127.0.0.1:12080/accountTypes/DRAWERS/applicableForAccountOwnerTypes\"\n        }\n    }\n}"
 						}
 					]
 				}

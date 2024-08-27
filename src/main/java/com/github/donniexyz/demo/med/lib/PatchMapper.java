@@ -48,4 +48,20 @@ public interface PatchMapper {
 
     @InheritConfiguration
     CashAccount patch(CashAccount setValuesFromThisInstance, @MappingTarget CashAccount cashAccount);
+
+    @InheritConfiguration
+    AccountHistoryType patch(AccountHistoryType setValuesFromThisInstance, @MappingTarget AccountHistoryType accountHistoryType);
+
+    @InheritConfiguration
+    AccountOwnerTypeApplicableToAccountType patch(AccountOwnerTypeApplicableToAccountType setValuesFromThisInstance, @MappingTarget AccountOwnerTypeApplicableToAccountType accountOwnerTypeApplicableToAccountType);
+
+    @InheritConfiguration
+    AccountTypeApplicableToTransactionType patch(AccountTypeApplicableToTransactionType setValuesFromThisInstance, @MappingTarget AccountTypeApplicableToTransactionType accountTypeApplicableToTransactionType);
+
+    @InheritConfiguration
+    AccountHistory patch(AccountHistory setValuesFromThisInstance, @MappingTarget AccountHistory accountHistory);
+
+    @InheritConfiguration
+    AccountTransactionItem patch(AccountTransactionItem setValuesFromThisInstance, @MappingTarget AccountTransactionItem accountTransactionItem);
+
 }

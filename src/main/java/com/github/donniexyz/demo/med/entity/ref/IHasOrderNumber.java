@@ -21,25 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.donniexyz.demo.med.repository;
+package com.github.donniexyz.demo.med.entity.ref;
 
-import com.github.donniexyz.demo.med.entity.CashAccount;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+public interface IHasOrderNumber {
 
-import java.util.Collection;
-import java.util.List;
+    Integer getOrderNumber();
 
-@Repository
-public interface CashAccountRepository extends JpaRepositoryImplementation<CashAccount, Long> {
-
-    @Query(value = "UPDATE AccountType SET id=:to WHERE id=:from")
-    @Transactional
-    @Modifying
-    int changeId(Long from, Long to);
-
-    List<CashAccount> findByIdInAndRecordStatusMajor(Collection<Long> accountIdList, Character recordStatusMajor);
 }

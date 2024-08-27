@@ -24,82 +24,76 @@
 package com.github.donniexyz.demo.med.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.github.donniexyz.demo.med.lib.PatchMapper;
-import com.github.donniexyz.demo.med.lib.PutMapper;
-import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForLocalDateTime;
-import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.donniexyz.demo.med.entity.ref.BaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IBaseEntity;
 import com.github.donniexyz.demo.med.entity.ref.IHasCopy;
-import com.github.donniexyz.demo.med.lib.fieldsfilter.LazyFieldsFilter;
-import io.hypersistence.utils.hibernate.type.money.MonetaryAmountType;
+import com.github.donniexyz.demo.med.lib.PatchMapper;
+import com.github.donniexyz.demo.med.lib.PutMapper;
+import com.github.donniexyz.demo.med.lib.fieldsfilter.NonNullLazyFieldsFilter;
+import com.github.donniexyz.demo.med.utils.time.MedJsonFormatForOffsetDateTime;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
+import lombok.experimental.SuperBuilder;
 import lombok.experimental.WithBy;
-import org.hibernate.annotations.CompositeType;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.Formula;
 import org.jetbrains.annotations.NotNull;
 
-import javax.money.MonetaryAmount;
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-
+@EqualsAndHashCode
 @WithBy
 @With
-@Data
-@Builder(toBuilder = true)
+@SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Entity
+@Table
 @Accessors(chain = true)
-@JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = LazyFieldsFilter.class)
+@JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonNullLazyFieldsFilter.class)
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @FieldNameConstants
-public class AccountHistory implements IBaseEntity<AccountHistory>, IHasCopy<AccountHistory>, Serializable {
+public class AccountOwnerTypeApplicableToAccountType implements IBaseEntity<AccountOwnerTypeApplicableToAccountType>, IHasCopy<AccountOwnerTypeApplicableToAccountType>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 3618940602969096296L;
+    private static final long serialVersionUID = 3128913381381916069L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "acc_tcode")
+    private String accountTypeCode;
 
-    /**
-     * <ul>
-     * History types:
-     * <li>TRANSACTION, inserted when transaction occurs</li>
-     * <li>END_OF_DAY, inserted when EOD balance closure</li>
-     * <li>END_OF_MONTH, inserted when EOM balance closure</li>
-     * <li>END_OF_YEAR, inserted when EOY balance closure</li>
-     * </ul>
-     */
-    private String historyType;
-    private String transactionType; // e.g., "Deposit," "Withdrawal"
+    @Id
+    @Column(name = "own_tcode")
+    private String ownerTypeCode;
 
-    @AttributeOverride(name = "amount", column = @Column(name = "acc_balance"))
-    @AttributeOverride(name = "currency", column = @Column(name = "acc_ccy"))
-    @CompositeType(MonetaryAmountType.class)
-    private MonetaryAmount balance;
+    private String notes;
 
-    @MedJsonFormatForLocalDateTime
-    private LocalDateTime transactionDate;
-    private String description;
-
-    @ManyToOne
-    @JoinColumn(name = "account_id", foreignKey = @ForeignKey(name = "fk_AccHist_acc"))
-    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "own_tcode", insertable = false, updatable = false,
+            foreignKey = @ForeignKey(name = "fk_AccOwnTypeApplToAccType_ownType"))
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private CashAccount account;
+    @JsonBackReference("ownerType")
+    private AccountOwnerType ownerType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "acc_tcode", insertable = false, updatable = false,
+            foreignKey = @ForeignKey(name = "fk_AccOwnTypeApplToAccType_accType"))
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonBackReference("accountTypeToOwnerType")
+    private AccountType accountType;
 
     // ==============================================================
     // BaseEntity fields
@@ -139,26 +133,42 @@ public class AccountHistory implements IBaseEntity<AccountHistory>, IHasCopy<Acc
      */
     private String statusMinor;
 
-    // -------------------------------------------------------------------
+    // -------------------------------------------------------------------------------------------------
 
     @JsonIgnore
-    public AccountHistory copy(Boolean cascade) {
+    public AccountOwnerTypeApplicableToAccountType copy(Boolean cascade) {
         return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setAccount(BaseEntity.cascade(cascade, CashAccount.class, account))
+                .setAccountType(BaseEntity.cascade(cascade, AccountType.class, accountType))
+                .setOwnerType(BaseEntity.cascade(cascade, AccountOwnerType.class, ownerType))
                 ;
     }
 
     @JsonIgnore
-    public AccountHistory copy(@NotNull List<String> relFields) {
+    public AccountOwnerTypeApplicableToAccountType copy(@NotNull List<String> relFields) {
         return this.withRetrievedFromDb(BaseEntity.calculateRetrievedFromDb(retrievedFromDb))
-                .setAccount(BaseEntity.cascade(Fields.account, relFields, CashAccount.class, account))
+                .setAccountType(BaseEntity.cascade(Fields.accountType, relFields, AccountType.class, accountType))
+                .setOwnerType(BaseEntity.cascade(Fields.ownerType, relFields, AccountOwnerType.class, ownerType))
                 ;
     }
 
-    @Override
-    public AccountHistory copyFrom(AccountHistory setValuesFromThisInstance, boolean nonNullOnly) {
+    @JsonIgnore
+    public AccountOwnerTypeApplicableToAccountType copyFrom(AccountOwnerTypeApplicableToAccountType setValuesFromThisInstance, boolean nonNullOnly) {
         return nonNullOnly
                 ? PatchMapper.INSTANCE.patch(setValuesFromThisInstance, this)
                 : PutMapper.INSTANCE.put(setValuesFromThisInstance, this);
+    }
+
+    // -------------------------------------------------------------------------------------------------
+
+    public AccountOwnerTypeApplicableToAccountType setOwnerType(AccountOwnerType ownerType) {
+        this.ownerType = ownerType;
+        if (null != ownerType) this.ownerTypeCode = ownerType.getTypeCode();
+        return this;
+    }
+
+    public AccountOwnerTypeApplicableToAccountType setAccountType(AccountType accountType) {
+        this.accountType = accountType;
+        if (null != accountType) this.accountTypeCode = accountType.getTypeCode();
+        return this;
     }
 }
