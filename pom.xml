@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.github.donniexyz</groupId>
     <artifactId>med-spring-boot-demo</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>med-spring-boot-demo</name>
     <description>donniexyz med Spring Boot project</description>
 
